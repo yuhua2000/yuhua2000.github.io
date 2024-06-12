@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog Linux 系统调用 </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">Linux 系统调用</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2024-02-04T03:30:29.472Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2024-02-04 11:30:29
+</time>
+
+    
+<div class="post__category">
+  <i class="blogfont">&#xe62d;</i>
+  <a class="category-link" href="/categories/Linux/">Linux</a>
+</div>
+  
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="tag-link-link" href="/tags/%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/" rel="tag">系统调用</a>, <a class="tag-link-link" href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag">转载</a>
+</div>
+
+
+    <div id="/2024/02/04/linux/system_call/" class="leancloud_visitors post__stat" data-flag-title="Linux 系统调用">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="post__toc-text">介绍</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%87%BD%E6%95%B0%E5%AE%9A%E4%B9%89"><span class="post__toc-text">函数定义</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%8F%82%E8%80%83"><span class="post__toc-text">参考</span></a></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>系统调用是程序向内核发出的服务请求，通常是只有内核才有权限执行的操作，例如进行 I&#x2F;O。程序员通常不需要关心系统调用，因为 GNU C 库中有函数可以完成几乎所有系统调用的功能。这些函数通过自身调用系统调用来工作。例如，有一个系统调用可以改变文件的权限，但您不需要了解它，因为您可以直接使用 GNU C 库的 chmod 函数。</p>
+<p>系统调用有时也被称为内核调用。</p>
+<p>然而，有时您可能想要显式地调用一个系统调用，为此，GNU C 库提供了 syscall 函数。syscall 比像 chmod 这样的函数更难使用，也不太可移植，但比用汇编指令编写系统调用更容易，也更可移植。</p>
+<p>syscall 最有用的时候是当您在使用一个特定于您的系统或者比您使用的 GNU C 库更新的系统调用时。syscall 是以一种完全通用的方式实现的；该函数不知道任何一个特定的系统调用做了什么，甚至不知道它是否有效。</p>
+<p>这一节中对 syscall 的描述假设了 GNU C 库在各个平台上运行的系统调用的某种协议。这种协议没有被任何强有力的权威所定义，但我们也不会在这里描述它，因为任何编写 syscall 的人可能不会接受任何低于内核和 C 库源代码的东西作为它们之间的接口的规范。</p>
+<h2 id="函数定义"><a href="#函数定义" class="headerlink" title="函数定义"></a>函数定义</h2><p>sycall 函数定义在 unistd.h</p>
+<p><code>Function: long int syscall (long int sysno, …)</code></p>
+<p>syscall 函数可以执行一个通用的系统调用。sysno 是系统调用的编号。每种系统调用都有一个对应的编号。所有可能的系统调用编号都定义在 sys&#x2F;syscall.h 中。<br>剩余的参数是系统调用的参数，按顺序排列，它们的含义取决于系统调用的种类。每种系统调用有一个确定的参数个数，从零到五。如果您编写的参数多于系统调用需要的，那么右边多余的参数会被忽略。</p>
+<p>返回值是系统调用的返回值，除非系统调用失败。在那种情况下，syscall 返回 -1 并设置 errno 为系统调用返回的错误码。注意，系统调用在成功时不会返回 -1。</p>
+<p>如果您指定了一个无效的 sysno，syscall 返回 -1 并设置 errno 为 ENOSYS。</p>
+<p>示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;unistd.h&gt;</span><br><span class="line">#include &lt;sys/syscall.h&gt;</span><br><span class="line">#include &lt;errno.h&gt;</span><br><span class="line"></span><br><span class="line">…</span><br><span class="line"></span><br><span class="line">int rc;</span><br><span class="line"></span><br><span class="line">rc = syscall(SYS_chmod, &quot;/etc/passwd&quot;, 0444);</span><br><span class="line"></span><br><span class="line">if (rc == -1)</span><br><span class="line">   fprintf(stderr, &quot;chmod failed, errno = %d\n&quot;, errno);</span><br></pre></td></tr></table></figure>
+
+<p>这段代码，等价于下面的代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;sys/types.h&gt;</span><br><span class="line">#include &lt;sys/stat.h&gt;</span><br><span class="line">#include &lt;errno.h&gt;</span><br><span class="line"></span><br><span class="line">…</span><br><span class="line"></span><br><span class="line">int rc;</span><br><span class="line"></span><br><span class="line">rc = chmod(&quot;/etc/passwd&quot;, 0444);</span><br><span class="line">if (rc == -1)</span><br><span class="line">   fprintf(stderr, &quot;chmod failed, errno = %d\n&quot;, errno);</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://www.gnu.org/software/libc/manual/html_node/System-Calls.html">原文：System-Calls</a></p>
+
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont">&#xe6b7; </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont">&#xe61a; </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+  </body>
+</html>

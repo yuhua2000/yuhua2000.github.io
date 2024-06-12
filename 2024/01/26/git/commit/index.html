@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog git commit 写法 </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">git commit 写法</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2024-01-26T03:30:13.648Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2024-01-26 11:30:13
+</time>
+
+    
+<div class="post__category">
+  <i class="blogfont">&#xe62d;</i>
+  <a class="category-link" href="/categories/git/">git</a>
+</div>
+  
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/git/" rel="tag">git</a>
+</div>
+
+
+    <div id="/2024/01/26/git/commit/" class="leancloud_visitors post__stat" data-flag-title="git commit 写法">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#commit-%E5%86%99%E6%B3%95"><span class="post__toc-text">commit 写法</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#type-%E5%89%8D%E7%BC%80"><span class="post__toc-text">type 前缀</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#scope-%E8%8C%83%E5%9B%B4"><span class="post__toc-text">scope 范围</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#subject-%E6%8F%8F%E8%BF%B0"><span class="post__toc-text">subject 描述</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9A"><span class="post__toc-text">示例：</span></a></li></ol></li></ol></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h1 id="commit-写法"><a href="#commit-写法" class="headerlink" title="commit 写法"></a>commit 写法</h1><p>一般来说，git commit 的信息包括三个部分：type、scope 和 subject</p>
+<h2 id="type-前缀"><a href="#type-前缀" class="headerlink" title="type 前缀"></a>type 前缀</h2><p>type 是用来表示你的代码变更的类型，它可以帮助你和其他开发者更清晰地了解你的代码的目的和影响,常用的前缀如下：</p>
+<ul>
+<li>feat: 表示你添加了一个新的功能或特性。</li>
+<li>fix: 表示你修复了一个 bug 或错误。</li>
+<li>docs: 表示你修改了文档或注释。</li>
+<li>style: 表示你修改了代码的格式或风格，不影响代码的逻辑或功能。</li>
+<li>test: 表示你添加或修改了测试用例或代码。</li>
+<li>chore: 表示你修改了构建过程或辅助工具，不影响代码的运行。</li>
+<li>revert: 表示你撤销了之前的一个 commit。</li>
+<li>perf: 表示你优化了代码的性能或效率</li>
+<li>improvement: 表示你改进了一个已有的功能或特性。</li>
+</ul>
+<h2 id="scope-范围"><a href="#scope-范围" class="headerlink" title="scope 范围"></a>scope 范围</h2><p>scope 是用来表示你的代码变更的范围,常用的范围表示如下：</p>
+<p>method：表示你修改了某个方法或函数的代码<br>class：表示你修改了某个类或对象的代码<br>module：表示你修改了某个模块或组件的代码<br>file：表示你修改了某个文件的代码，<br>directory：表示你修改了某个目录下的代码<br>project：表示你修改了整个项目的代码</p>
+<h2 id="subject-描述"><a href="#subject-描述" class="headerlink" title="subject 描述"></a>subject 描述</h2><p>subject 是用来描述你的代码变更的目的，它应该以动词开头，使用第一人称现在时，不超过50个字符，结尾不加句号</p>
+<h3 id="示例："><a href="#示例：" class="headerlink" title="示例："></a>示例：</h3><p><code>refactor (method): optimize performance by adding const and &amp;</code></p>
+
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont">&#xe6b7; </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont">&#xe61a; </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+  </body>
+</html>
