@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog doubled the speed of my Go functiondoubled the speed </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">doubled the speed of my Go functiondoubled the speed</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2023-08-25T09:02:24.000Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2023-08-25 17:02:24
+</time>
+
+    
+<div class="post__category">
+  <i class="blogfont">&#xe62d;</i>
+  <a class="category-link" href="/categories/golang/">golang</a>
+</div>
+  
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" rel="tag">编程语言</a>, <a class="tag-link-link" href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag">转载</a>
+</div>
+
+
+    <div id="/2023/08/25/go/doubledthespeed/index/" class="leancloud_visitors post__stat" data-flag-title="doubled the speed of my Go functiondoubled the speed">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#print-%E2%80%9Clol%E2%80%9D-doubled-the-speed-of-my-Go-functiondoubled-the-speed"><span class="post__toc-text">print(“lol”) doubled the speed of my Go functiondoubled the speed</span></a></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h1 id="print-“lol”-doubled-the-speed-of-my-Go-functiondoubled-the-speed"><a href="#print-“lol”-doubled-the-speed-of-my-Go-functiondoubled-the-speed" class="headerlink" title="print(“lol”) doubled the speed of my Go functiondoubled the speed"></a>print(“lol”) doubled the speed of my Go functiondoubled the speed</h1><p>Here is a Go function, <code>if_max()</code>. It finds the max value of an array of integers. Simple enough:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">if_max</span><span class="params">(values []<span class="type">int</span>)</span></span> <span class="type">int</span> &#123;</span><br><span class="line">    maxV := values[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> values[<span class="number">1</span>:] &#123;</span><br><span class="line">        <span class="keyword">if</span> v &gt; maxV &#123;</span><br><span class="line">            maxV = v</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> maxV</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Next is another function, <code>if_max_lol()</code>, that is identical to <code>if_max()</code>, except that it adds a single print(“lol”) statement:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">if_max_lol</span><span class="params">(values []<span class="type">int</span>)</span></span> <span class="type">int</span> &#123;</span><br><span class="line">    maxV := values[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> values[<span class="number">1</span>:] &#123;</span><br><span class="line">        <span class="keyword">if</span> v &gt; maxV &#123;</span><br><span class="line">            maxV = v</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;lol&quot;</span>) <span class="comment">// &lt;---------- the new line</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> maxV</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>I benchmark them on my M1 Apple Pro on an increasing array. Following standard practice, I use the <code>benchstat</code> tool to compare their speeds. Full code <a target="_blank" rel="noopener" href="https://github.com/ludi317/max/blob/master/blog/max_test.go">here</a>.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">goos: darwin</span><br><span class="line">goarch: arm64</span><br><span class="line">pkg: github.com/ludi317/max/blog</span><br><span class="line">      │   if_max    │             if_max_lol             │</span><br><span class="line">      │   sec/op    │   sec/op     vs base               │</span><br><span class="line">Fn<span class="number">-10</span>   <span class="number">63.51</span>µ ± <span class="number">2</span>%   <span class="number">31.69</span>µ ± <span class="number">0</span>%  <span class="number">-50.10</span>% (p=<span class="number">0.002</span> n=<span class="number">6</span>)</span><br></pre></td></tr></table></figure>
+
+<p><code>if_max_lol()</code> runs in half the time of <code>if_max()</code>. What on Earth?!</p>
+<p>Time to look at the disassembly. I generate a cpu profile by rerunning the benchmarks with an extra arg: <code>-test.cpuprofile cpu.out</code>. I feed the profile into <code>go tool pprof -http=”:” max.test cpu.out</code> and click on <code>View</code> &gt; <code>Source</code> in my browser with great haste. Screenshots of the two functions of interest below:</p>
+<p><img src="/image/doubledthespeed/1.webp"></p>
+<p><img src="/image/doubledthespeed/2.webp"></p>
+<p>This view highlights that the comparison in <code>if_max_lol()</code> spends CPU time executing a branch instruction (Branch if Less Than): <code>BLT -6(PC)</code>.</p>
+<p>So, the compiler saw the <code>print(“lol”)</code> statement in the source code, and generated an extra conditional branch instruction. This, in turn, invokes the branch predictor. What’s that? Here is ChatGPT’s explanation:</p>
+<hr>
+<pre><code>Branch prediction is a technique used in modern microprocessors to improve the throughput of their instruction pipelines by guessing the outcome of a conditional branch instruction before it’s actually executed. Let’s delve deeper into why it’s needed and how it works.
+
+The Need for Branch Prediction:
+
+Microprocessors use pipelines to process multiple instructions simultaneously at different stages. Think of this like an assembly line in a factory, where different stages of a product are being worked on simultaneously. Each instruction goes through various stages like fetching, decoding, executing, and writing results.
+
+When a conditional branch instruction (like “if A is greater than B, jump to instruction X”) comes into the pipeline, the CPU needs to know which instruction to fetch next: the one right after the branch or the one at the target of the jump (instruction X in the example). If the CPU waits until the branch instruction is fully executed to know the outcome, the entire pipeline would stall, leading to inefficiencies.
+
+How Branch Prediction Works:
+
+To avoid these stalls, the CPU makes an educated guess or “predicts” the outcome of the branch. This prediction allows the CPU to speculatively fetch and execute subsequent instructions.
+
+Challenges:
+
+The main challenge with branch prediction is ensuring accuracy. An incorrect prediction (a “misprediction”) causes the pipeline to be flushed, leading to wasted cycles and reduced performance. As such, a significant amount of research and engineering effort is dedicated to improving branch predictor accuracy. Despite these efforts, no predictor is perfect, especially in the face of complex software behaviors.
+</code></pre>
+<hr>
+<p>In this case, the array is increasing. As long as the predictor guesses “true” if <code>v &gt; maxV</code>, it predicts with perfect accuracy. This allows it to keep its pipeline full and execute the next instruction without delay, maximizing its efficiency.</p>
+<p><code>cheat_max()</code>is a function that drops the if <code>v &gt; maxV</code> comparison altogether. It takes a shortcut by explicitly avoiding the work of comparison.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">cheat_max</span><span class="params">(values []<span class="type">int</span>)</span></span> <span class="type">int</span> &#123;</span><br><span class="line">    maxV := values[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> values[<span class="number">1</span>:] &#123;</span><br><span class="line">        maxV = v</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> maxV</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">goos: darwin</span><br><span class="line">goarch: arm64</span><br><span class="line">pkg: github.com/ludi317/max/blog</span><br><span class="line">      │ if_max_lol  │          cheat_max           │</span><br><span class="line">      │   sec/op    │   sec/op     vs base         │</span><br><span class="line">Fn<span class="number">-10</span>   <span class="number">31.70</span>µ ± <span class="number">3</span>%   <span class="number">31.62</span>µ ± <span class="number">1</span>%  ~ (p=<span class="number">0.145</span> n=<span class="number">6</span>)</span><br></pre></td></tr></table></figure>
+
+<p>As the results show, <code>if_max_lol()</code> is about as fast as if it had no if-statement at all. Branch prediction effectively removes the if-statement.</p>
+<p>Of course, this is just a toy example. If you wanted to know the max value of an increasing array, simply return the last element. These benchmarks serve to illustrate that very one-sided if-statements are where branching performance shines.</p>
+<hr>
+<p>Even when the array contains random integers, branch prediction performs better than basic comparisons. There’s no longer certainty about whether the kth element is a new max, but a different pattern emerges. The kth element has a <code>1/k</code> chance of being the new max. As long as the predictor predicts “false” for whether <code>v &gt; maxV</code>, it has a <code>(k-1)/k</code> chance of being right, getting only more accurate as the array grows in size.</p>
+<p>Instead of printing “lol”, we can do something a little more useful to coax the compiler into generating a branch instruction, like finding the min value of the array.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">if_max_min</span><span class="params">(values []<span class="type">int</span>)</span></span> (<span class="type">int</span>, <span class="type">int</span>) &#123;</span><br><span class="line">    minV := values[<span class="number">0</span>]</span><br><span class="line">    maxV := values[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> values[<span class="number">1</span>:] &#123;</span><br><span class="line">         <span class="keyword">if</span> v &gt; maxV &#123;</span><br><span class="line">              maxV = v</span><br><span class="line">              <span class="keyword">continue</span> <span class="comment">// generate branch instruction</span></span><br><span class="line">         &#125;</span><br><span class="line">         <span class="keyword">if</span> v &lt; minV &#123;</span><br><span class="line">              minV = v</span><br><span class="line">              <span class="keyword">continue</span> <span class="comment">// generate branch instruction</span></span><br><span class="line">         &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> minV, maxV</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>How does <code>if_max_min()</code> compare against <code>if_max()</code> on a random array?</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">goos: darwin</span><br><span class="line">goarch: arm64</span><br><span class="line">pkg: github.com/ludi317/max</span><br><span class="line">                 │ if_max_min  │            if_max            │</span><br><span class="line">                 │   sec/op    │   sec/op     vs base         │</span><br><span class="line">Fn/<span class="built_in">len</span>=<span class="number">100000</span><span class="number">-10</span>   <span class="number">64.98</span>µ ± <span class="number">1</span>%   <span class="number">64.68</span>µ ± <span class="number">0</span>%  ~ (p=<span class="number">0.132</span> n=<span class="number">6</span>)</span><br></pre></td></tr></table></figure>
+
+<p>It’s about as fast. But it gives you both the min and max of the array, whereas <code>if_max()</code> only gives the max. Branching allows it to deliver more information in the same amount of time.</p>
+<p>转载于: <a target="_blank" rel="noopener" href="https://medium.com/@ludirehak/printing-lol-doubled-the-speed-of-my-go-code-e32e02fc3f92">https://medium.com/@ludirehak/printing-lol-doubled-the-speed-of-my-go-code-e32e02fc3f92</a></p>
+
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont">&#xe6b7; </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont">&#xe61a; </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+  </body>
+</html>

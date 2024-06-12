@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog 第七章 链接 </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">第七章 链接</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2024-05-24T12:29:56.000Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2024-05-24 20:29:56
+</time>
+
+    
+<div class="post__category">
+  <i class="blogfont">&#xe62d;</i>
+  <a class="category-link" href="/categories/csapp/">csapp</a>
+</div>
+  
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a>
+</div>
+
+
+    <div id="/2024/05/24/csapp/chapter7/chapter7/" class="leancloud_visitors post__stat" data-flag-title="第七章 链接">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E9%93%BE%E6%8E%A5"><span class="post__toc-text">链接</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#7-1-%E7%BC%96%E8%AF%91%E5%99%A8%E9%A9%B1%E5%8A%A8%E7%A8%8B%E5%BA%8F"><span class="post__toc-text">7.1 编译器驱动程序</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#7-2-%E9%9D%99%E6%80%81%E9%93%BE%E6%8E%A5"><span class="post__toc-text">7.2 静态链接</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#7-3-%E7%9B%AE%E6%A0%87%E6%96%87%E4%BB%B6"><span class="post__toc-text">7.3 目标文件</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#7-4-%E5%8F%AF%E9%87%8D%E5%AE%9A%E4%BD%8D%E7%9B%AE%E6%A0%87%E6%96%87%E4%BB%B6"><span class="post__toc-text">7.4 可重定位目标文件</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#7-5-%E7%AC%A6%E5%8F%B7%E5%92%8C%E7%AC%A6%E5%8F%B7%E8%A1%A8"><span class="post__toc-text">7.5 符号和符号表</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#7-6-%E7%AC%A6%E5%8F%B7%E8%A7%A3%E6%9E%90"><span class="post__toc-text">7.6 符号解析</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#7-6-1-%E9%93%BE%E6%8E%A5%E5%99%A8%E5%A6%82%E4%BD%95%E8%A7%A3%E6%9E%90%E5%A4%9A%E9%87%8D%E5%AE%9A%E4%B9%89%E7%9A%84%E5%85%A8%E5%B1%80%E7%AC%A6%E5%8F%B7"><span class="post__toc-text">7.6.1 链接器如何解析多重定义的全局符号</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#7-6-2-%E4%B8%8E%E9%9D%99%E6%80%81%E5%BA%93%E9%93%BE%E6%8E%A5"><span class="post__toc-text">7.6.2 与静态库链接</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#7-6-3-%E9%93%BE%E6%8E%A5%E5%99%A8%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E9%9D%99%E6%80%81%E5%BA%93%E6%9D%A5%E8%A7%A3%E6%9E%90%E5%BC%95%E7%94%A8"><span class="post__toc-text">7.6.3 链接器如何使用静态库来解析引用</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#7-7-%E9%87%8D%E5%AE%9A%E4%BD%8D"><span class="post__toc-text">7.7 重定位</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#7-7-1-%E9%87%8D%E5%AE%9A%E4%BD%8D%E6%9D%A1%E7%9B%AE"><span class="post__toc-text">7.7.1 重定位条目</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#7-7-2-%E9%87%8D%E5%AE%9A%E4%BD%8D%E7%AC%A6%E5%8F%B7%E5%BC%95%E7%94%A8"><span class="post__toc-text">7.7.2 重定位符号引用</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#7-8-%E5%8F%AF%E6%89%A7%E8%A1%8C%E7%9B%AE%E6%A0%87%E6%96%87%E4%BB%B6"><span class="post__toc-text">7.8 可执行目标文件</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#7-9-%E5%8A%A0%E8%BD%BD%E5%8F%AF%E6%89%A7%E8%A1%8C%E7%9B%AE%E6%A0%87%E6%96%87%E4%BB%B6"><span class="post__toc-text">7.9 加载可执行目标文件</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#7-10-%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%85%B1%E4%BA%AB%E5%BA%93"><span class="post__toc-text">7.10 动态链接共享库</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#7-11-%E4%BB%8E%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E4%B8%AD%E5%8A%A0%E8%BD%BD%E5%92%8C%E9%93%BE%E6%8E%A5%E5%85%B1%E4%BA%AB%E5%BA%93"><span class="post__toc-text">7.11 从应用程序中加载和链接共享库</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#7-12-%E4%BD%8D%E7%BD%AE%E6%97%A0%E5%85%B3%E4%BB%A3%E7%A0%81"><span class="post__toc-text">7.12 位置无关代码</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#7-13-%E5%BA%93%E6%89%93%E6%A1%A9%E6%9C%BA%E5%88%B6"><span class="post__toc-text">7.13 库打桩机制</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#7-13-1-%E7%BC%96%E8%AF%91%E6%97%B6%E6%89%93%E6%A1%A9"><span class="post__toc-text">7.13.1 编译时打桩</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#7-13-2-%E9%93%BE%E6%8E%A5%E6%97%B6%E6%89%93%E6%A1%A9"><span class="post__toc-text">7.13.2 链接时打桩</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#7-13-3-%E8%BF%90%E8%A1%8C%E6%97%B6%E6%89%93%E6%A1%A9"><span class="post__toc-text">7.13.3 运行时打桩</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#7-14-%E5%A4%84%E7%90%86%E7%9B%AE%E6%A0%87%E6%96%87%E4%BB%B6%E7%9A%84%E5%B7%A5%E5%85%B7"><span class="post__toc-text">7.14 处理目标文件的工具</span></a></li></ol></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h1 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h1><p>链接(linking)是将各种代码和数据片段收集并组合成为一个单一文件的过程，这个文件可被加载（复制）到内存并执行。链接可以执行于编，译时 (compile time)。 也就是在源代码被翻译成机器代码时；也可以执行于加栽时(load time)。 也就是在程序被加载器(load-time)加载到内存并执行时；甚至执行于运行时(runtime)，也就是由应用程序来执行。在早期的计算机系统中，链接是手动执行的。在现代系统中，链接是由叫做链接器(linker)的程序自动执行的。</p>
+<p>链接器在软件开发中扮演着一个关键的角色，因为它们使得分离编译(separate compilation)成为可能。我们不用将一个大型的应用程序组织为一个巨大的源文件，而是可以把它分解为更小、更好管理的模块，可以独立地修改和编译这些模块。当我们改变这些模块中的一个时，只需简单地重新编译它，并重新链接应用，而不必重新编译其他文件。</p>
+<p>链接通常是由链接器来默默地处理的，对于那些在编程人门课堂上构造小程序的学生而言，链接不是一个重要的议题。那为什么还要这么麻烦地学习关于链接的知识呢？</p>
+<ul>
+<li>理解链接器将帮助你构造大型程序</li>
+<li>理解链接器将帮助你避免一些危险的编程错误</li>
+<li>理解链接将帮助你理解语言的作用域规则是如何实现的</li>
+<li>理解链接将帮助你理解其他重要的系统概念</li>
+<li>理解链接将使你能够利用 共享库</li>
+</ul>
+<h2 id="7-1-编译器驱动程序"><a href="#7-1-编译器驱动程序" class="headerlink" title="7.1 编译器驱动程序"></a>7.1 编译器驱动程序</h2><p>考虑图 7-1 中的 C 语言程序。它将作为贯穿本章的一个小的运行示例，帮助我们说明关于链接是如何工作的一些重要知识点。</p>
+<p><img src="/image/caspp/chapter7/7-1.jpg"><br>图 7-1 示例程序 1。这个示例程序由两个源文件组成，main.c 和 sum.c。main 函数初始化一个整数数组，然后调用 sum 函数来对数组元素求和。</p>
+<p>大多数编译系统提供编译器驱动程序(compiler driver), 它代表用户在需要时调用语言预处理器、编译器、汇编器和链接器。比如，要用 GNU 编译系统构造示例程序，我们就要通过在 shell 中输人下列命令来调用 GCC 驱动程序：</p>
+<blockquote>
+<p>linux&gt; gcc -Og prog main.c sum.c</p>
+</blockquote>
+<p>图 7-2 概括了驱动程序在将示例程序从 ASCII 码源文件翻译成可执行目标文件时的行为。（如果你想看看这些步骤，用-v 选项来运行 GCC。）驱动程序首先运行 C 预处理器(cpp)。它将 C 的源程序 main.c 翻译成一个 ASCII 码的中间文件 main.i:  </p>
+<blockquote>
+<p>cpp [other arguments] main.c &#x2F;tmp&#x2F;main.i</p>
+</blockquote>
+<p>接下来，驱动程序运行 C 编译器(ccl), 它将 main.i 翻译成一个 ASCII 汇编语言文件 main.s: </p>
+<blockquote>
+<p>ccl &#x2F;tmp&#x2F;main.i -Og [other arguments] -o &#x2F;tmp&#x2F;main.s</p>
+</blockquote>
+<p>然后，驱动程序运行汇编器(as)，它将 main.s 翻译成一个可重定位目标文件(relocatable object file)main.o: </p>
+<blockquote>
+<p>as [other arguments] -o &#x2F;tmp&#x2F;main.o &#x2F;tmp&#x2F;main.s</p>
+</blockquote>
+<p>驱动程序经过相同的过程生成 最后，它运行链接器程序 Id, 将 main.o 和 sum.o 以及一些必要的系统目标文件组合起来，创建一个可执行目标文件(executable object file)prog:</p>
+<blockquote>
+<p>Id -o prog [system object files and args] &#x2F;tmp&#x2F;main.o &#x2F;tmp&#x2F;sum.o</p>
+</blockquote>
+<p>要运行可执行文件 prog, 我们在 Linux shell 的命令行上输入它的名字:</p>
+<blockquote>
+<p>linux&gt; .&#x2F;prog</p>
+</blockquote>
+<p>shell 调用操作系统中一个叫做加栽器(loader)的函数，它将可执行文件 prog 中的代码和数据复制到内存，然后将控制转移到这个程序的开头。</p>
+<p><img src="/image/caspp/chapter7/7-1.jpg"><br>图 7-2 静态链接。链接器将可重定位目标文件组合起来，形成一个可执行目标文件 prog</p>
+<h2 id="7-2-静态链接"><a href="#7-2-静态链接" class="headerlink" title="7.2 静态链接"></a>7.2 静态链接</h2><p>像 Linux LD 程序这样的静态链接器(static linker)以一组可重定位目标文件和命令行参数作为输入，生成一个完全链接的、可以加载和运行的可执行目标文件作为输出。输人的可重定位目标文件由各种不同的代码和数据节(section)组成，每一节都是一个连续的字节序列。指令在一节中，初始化了的全局变量在另一节中，而未初始化的变量又在另外一节中。</p>
+<p>为了构造可执行文件，链接器必须完成两个主要任务：</p>
+<ul>
+<li>符号解析(symbol resolution)</li>
+<li>重定位(relocation)</li>
+</ul>
+<h2 id="7-3-目标文件"><a href="#7-3-目标文件" class="headerlink" title="7.3 目标文件"></a>7.3 目标文件</h2><p>目标文件有三种形式：</p>
+<ul>
+<li>可重定位目标文件</li>
+<li>可执行目标文件</li>
+<li>共享目标文件</li>
+</ul>
+<p>编译器和汇编器生成可重定位目标文件（包括共享目标文件）。链接器生成可执行目标文件。从技术上来说，一个目标模块(object module)就是一个字节序列，而一个目标文件(object file)就是一个以文件形式存放在磁盘中的目标模块。不过，我们会互换地使用这些术语。</p>
+<p>目标文件是按照特定的目标文件格式来组织的，各个系统的目标文件格式都不相同。从贝尔实验室诞生的第一个 Unix 系统使用的是 a.out 格式（直到今天，可执行文件仍然称为 a.out 文件）。 Windows 使用可移植可执行(Portable Executable， PE)格式。MacOS-X 使用 Mach-0 格式。现代 x86-64 Linux 和 Unix 系统使用可执行可链接格式(Execute-able and Linkable Format, ELF)。尽管我们的讨论集中在 ELF 上，但是不管是哪种格式，基本的概念是相似的。</p>
+<h2 id="7-4-可重定位目标文件"><a href="#7-4-可重定位目标文件" class="headerlink" title="7.4 可重定位目标文件"></a>7.4 可重定位目标文件</h2><p>图 7-3 展示了一个典型的 ELF 可重定位目标文件的格式。</p>
+<p><img src="/image/caspp/chapter7/7-3.jpg"><br>图 7-3 典型的 ELF 可重定派目标文件</p>
+<h2 id="7-5-符号和符号表"><a href="#7-5-符号和符号表" class="headerlink" title="7.5 符号和符号表"></a>7.5 符号和符号表</h2><p>每个可重定位目标模块 m 都有一个符号表，它包含 m 定义和引用的符号的信息。在链接器的上下文中，有三种不同的符号：</p>
+<ul>
+<li>由模块 m 定义并能被其他模块引用的全局符号。 </li>
+<li>由其他模块定义并被模块 m 引用的全局符号。这些符号称为外部符号。</li>
+<li>只被模块 m 定义和引用的局部符号。</li>
+</ul>
+<p>认识到本地链接器符号和本地程序变量不同是很重要的。.symtab 中的符号表不包含对应于本地非静态程序变量的任何符号。这些符号在运行时在栈中被管理，链接器对此类符号不感兴趣。</p>
+<p>有趣的是，定义为带有 C static 属性的本地过程变量是不在栈中管理的。相反，编译器在 .data 或 .bss 中为每个定义分配空间，并在符号表中创建一个有唯一名字的本地链接器符号。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">static</span> <span class="type">unsigned</span> <span class="type">int</span> val1 = <span class="number">1</span>;        <span class="comment">//val1存放在.data段</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span> val2 = <span class="number">1</span>;               <span class="comment">//初始化的全局变量存放在.data段</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span> val3 ;                  <span class="comment">//未初始化的全局变量存放在.bss段</span></span><br><span class="line"><span class="type">const</span> <span class="type">unsigned</span> <span class="type">int</span> val4 = <span class="number">1</span>;         <span class="comment">//val4存放在.rodata（只读数据段）</span></span><br><span class="line"></span><br><span class="line"><span class="type">unsigned</span> <span class="type">char</span> <span class="title function_">Demo</span><span class="params">(<span class="type">unsigned</span> <span class="type">int</span> num)</span> <span class="comment">//num 存放在栈区</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">char</span> *var = <span class="string">&quot;123456&quot;</span>;               <span class="comment">//var存放在栈区，&quot;123456&quot;存放在常量区,</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> num1 = <span class="number">1</span> ;            <span class="comment">//num1存放在栈区</span></span><br><span class="line">  <span class="type">static</span> <span class="type">unsigned</span> <span class="type">int</span> num2 = <span class="number">0</span>;      <span class="comment">//num2存放在.data段</span></span><br><span class="line">  <span class="type">const</span> <span class="type">unsigned</span> <span class="type">int</span> num3 = <span class="number">7</span>;       <span class="comment">//num3存放在栈区</span></span><br><span class="line">  <span class="type">void</span> *p;</span><br><span class="line">  p = <span class="built_in">malloc</span>(<span class="number">8</span>);                     <span class="comment">//p存放在堆区</span></span><br><span class="line">  <span class="built_in">free</span>(p)</span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> num = <span class="number">0</span> ;</span><br><span class="line">  num = Demo(num);                   <span class="comment">//Demo()函数的返回值存放在栈区。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="7-6-符号解析"><a href="#7-6-符号解析" class="headerlink" title="7.6 符号解析"></a>7.6 符号解析</h2><p>链接器解析符号引用的方法是将每个引用与它输入的可重定位目标文件的符号表中的一个确定的符号定义关联起来。对那些和引用定义在相同模块中的局部符号的引用，符号解析是非常简单明了的。编译器只允许每个模块中每个局部符号有一个定义。静态局部变量也会有本地链接器符号，编译器还要确保它们拥有唯一的名字。</p>
+<p>不过，对全局符号的引用解析就棘手得多。当编译器遇到一个不是在当前模块中定义的符号(变量或函数名)时，会假设该符号是在其他某个模块中定义的，生成一个链接器符号表条目，并把它交给链接器处理。如果链接器在它的任何输入模块中都找不到这个被引用符号的定义，就输出一条(通常很难阅读的)错误信息并终止。</p>
+<h3 id="7-6-1-链接器如何解析多重定义的全局符号"><a href="#7-6-1-链接器如何解析多重定义的全局符号" class="headerlink" title="7.6.1 链接器如何解析多重定义的全局符号"></a>7.6.1 链接器如何解析多重定义的全局符号</h3><p>链接器的输人是一组可重定位目标模块。每个模块定义一组符号，有些是局部的（只对定义该符号的模块可见），有些是全局的（对其他模块也可见)。如果多个模块定义同名的全局符号，会发生什么呢？下面是 Linux 编译系统采用的方法。</p>
+<p>在编译时，编译器向汇编器输出每个全局符号，或者是强(strong)或者是弱(weak)，汇编器把这个信息隐含地编码在可重定位目标文件的符号表里。函数和已初始化的全局变量是强符号，未初始化的全局变量是弱符号。根据强弱符号的定义，Linux 链接器使用下面的规则来处理多重定义的符号名</p>
+<ul>
+<li>规则 1: 不允许有多个同名的强符号。</li>
+<li>规则 2: 如果有一个强符号和多个弱符号同名，那么选择强符号。</li>
+<li>规则 3: 如果有多个弱符号同名，那么从这些弱符号中任意选择一个。</li>
+</ul>
+<h3 id="7-6-2-与静态库链接"><a href="#7-6-2-与静态库链接" class="headerlink" title="7.6.2 与静态库链接"></a>7.6.2 与静态库链接</h3><p>迄今为止，我们都是假设链接器读取一组可重定位目标文件，并把它们链接起来，形成一个输出的可执行文件。实际上，所有的编译系统都提供一种机制，将所有相关的目标模块打包成为一个单独的文件，称为 静态库(static library), 它可以用做链接器的输人。当链接器构造一个输出的可执行文件时，它只复制静态库里被应用程序引用的目标模块。</p>
+<p><img src="/image/caspp/chapter7/7-8.jpg"><br>图 7-8 与静态库链接</p>
+<h3 id="7-6-3-链接器如何使用静态库来解析引用"><a href="#7-6-3-链接器如何使用静态库来解析引用" class="headerlink" title="7.6.3 链接器如何使用静态库来解析引用"></a>7.6.3 链接器如何使用静态库来解析引用</h3><p>虽然静态库很有用，但是它们同时也是一个程序员迷惑的源头，原因在于 Linux 链接器使用它们解析外部引用的方式。在符号解析阶段，链接器从左到右按照它们在编译器驱动程序命令行上出现的顺序来扫描可重定位目标文件和存档文件。（驱动程序自动将命令行中所有的.c 文件翻译为 .o文件。）在这次扫描中，链接器维护一个可重定位目标文件的集合 E(这个集合中的文件会被合并起来形成可执行文件）， 一个未解析的符号（即引用了但是尚未定义的符号)集合 U, 以及一个在前面输人文件中已定义的符号集合 D，初始时，E、U 和 D 均为空。</p>
+<ul>
+<li>对于命令行上的每个输人文件 f，链接器会判断 f 是一个目标文件还是一个存档文件。如果 f 是一个目标文件，那么链接器把 f 添加到 E ， 修改 U 和 D 来反映 f 中的符号定义和引用，并继续下一个输入文件。</li>
+<li>如果 f 是一个存档文件，那么链接器就尝试匹配 U 中未解析的符号和由存档文件成员定义的符号。如果某个存档文件成员 m, 定义了一个符号来解析 U 中的一个引用，那么就<br>将 m 加到 E 中，并且链接器修改 U 和 D 来反映 m 中的符号定义和引用。对存档文件中所有的成员目标文件都依次进行这个过程，直到 U 和 D都不再发生变化。此时，任何不包含在 E中的成员目标文件都简单地被丢弃，而链接器将继续处理下一个输入文件。</li>
+<li>如果当链接器完成对命令行上输人文件的扫描后，U 是非空的，那么链接器就会输出一个错误并终止。否则，它会合并和重定位 E 中的目标文件，构建输出的可执行文件。</li>
+</ul>
+<p>不幸的是，这种算法会导致一些令人困扰的链接时错误，因为命令行上的库和目标文件的顺序非常重要。在命令行中，如果定义一个符号的库出现在引用这个符号的目标文件之前，那么引用就不能被解析，链接会失败。</p>
+<h2 id="7-7-重定位"><a href="#7-7-重定位" class="headerlink" title="7.7 重定位"></a>7.7 重定位</h2><p>一旦链接器完成了符号解析这一步，就把代码中的每个符号引用和正好一个符号定义（即它的一个输入目标模块中的一个符号表条目）关联起来。此时，链接器就知道它的输人目标模块中的代码节和数据节的确切大小。现在就可以开始重定位步骤了，在这个步骤中，将合并输人模块，并为每个符号分配运行时地址。重定位由两步组成：</p>
+<ul>
+<li>重定位节和符号定义。</li>
+<li>重定位节中的符号引用。</li>
+</ul>
+<h3 id="7-7-1-重定位条目"><a href="#7-7-1-重定位条目" class="headerlink" title="7.7.1 重定位条目"></a>7.7.1 重定位条目</h3><p>当汇编器生成一个目标模块时，它并不知道数据和代码最终将放在内存中的什么位置。它也不知道这个模块引用的任何外部定义的函数或者全局变量的位置。所以，无论何时汇编器遇到对最终位置未知的目标引用，它就会生成一个重定位条目 ，告诉链接器在将目标文件合并成可执行文件时如何修改这个引用。代码的重定位条目放在 .rel.text 中。已初始化数据的重定位条目放在 .rel.data 中。</p>
+<p>图 7-9 展示了 ELF 重定位条目的格式。offset 是需要被修改的引用的节偏移。symbol标识被修改引用应该指向的符号。type 告知链接器如何修改新的引用。addend 是一个有符号常数，一些类型的重定位要使用它对被修改引用的值做偏移调整。</p>
+<p><img src="/image/caspp/chapter7/7-9.jpg"><br>图 7-9 ELF 重定位条目。每个条目表示一个必须被重定位的引用，并指明如何计算被修改的引用</p>
+<h3 id="7-7-2-重定位符号引用"><a href="#7-7-2-重定位符号引用" class="headerlink" title="7.7.2 重定位符号引用"></a>7.7.2 重定位符号引用</h3><p>图 7-10 展示了链接器的重定位算法的伪代码。</p>
+<p><img src="/image/caspp/chapter7/7-10.jpg"><br>图 7-10 重定位算法</p>
+<h3 id="7-8-可执行目标文件"><a href="#7-8-可执行目标文件" class="headerlink" title="7.8 可执行目标文件"></a>7.8 可执行目标文件</h3><p>我们已经看到链接器如何将多个目标文件合并成一个可执行目标文件。我们的示例 c程序，开始时是一组 ASCII 文本文件，现在已经被转化为一个二进制文件，且这个二进制文件包含加载程序到内存并运行它所需的所有信息。图 7-13 概括了一个典型的 ELF 可执行文件中的各类信息。</p>
+<p><img src="/image/caspp/chapter7/7-13.jpg"><br>图 7-13 典型的 ELF 可执行目标文件</p>
+<p>可执行目标文件的格式类似于可重定位目标文件的格式。ELF 头描述文件的总体格式。它还包括程序的入口点(entry point), 也就是当程序运行时要执行的第一条指令的地址。.text、.rodata 和.data 节与可重定位目标文件中的节是相似的，除了这些节已经被重定位到它们最终的运行时内存地址以外。.init 节定义了一个小函数，叫做_init, 程序的初始化代码会调用它。因为可执行文件是完全链接的（已被重定位）， 所以它不再需要.rel 节。</p>
+<p>ELF 可执行文件被设计得很容易加载到内存，可执行文件的连续的片(chunk)被映射到连续的内存段。程序头部表(program header table)描述了这种映射关系。图 7-14 展示了可执行文件 prog 的程序头部表，是由 OBJDUMP 显示的。</p>
+<p><img src="/image/caspp/chapter7/7-14.jpg"><br>图 7-14 示例可执行文件 prog 的程序头部表</p>
+<h2 id="7-9-加载可执行目标文件"><a href="#7-9-加载可执行目标文件" class="headerlink" title="7.9 加载可执行目标文件"></a>7.9 加载可执行目标文件</h2><p>要运行可执行目标文件 prog, 我们可以在 Linux shell 的命令行中输入它的名字：</p>
+<blockquote>
+<p>linux&gt; .&#x2F;prog</p>
+</blockquote>
+<p>因为 prog 不是一个内置的 shell 命令，所以 shell 会认为 prog 是一个可执行目标文件，通过调用某个驻留在存储器中称为加载器(loader)的操作系统代码来运行它。任何Linux 程序都可以通过调用 execve 函数来调用加载器，我们将在 8.4.6 节中详细描述这个函数。加载器将可执行目标文件中的代码和数据从磁盘复制到内存中，然后通过跳转到程序的第一条指令或入口点来运行该程序。这个将程序复制到内存并运行的过程叫做加栽。 </p>
+<p>每个 Linux 程序都有一个运行时内存映像，类似于图 7-15 中所示。在 Linux X86-64 系统中，代码段总是从地址 0x40000 处开始，后面是数据段。运行时堆在数据段之后，通过调用 malloc 库往上增长。（我们将在 9.9 节中详细描述 malloc 和堆。）堆后面的区域是为共享模块保留的。用户栈总是从最大的合法用户地址(2<sup>48</sup> —1)开始，向较小内存地址增长。栈上的区域，从地址 2<sup>48</sup> 开始，是为内核(kernel)中的代码和数据保留的，所谓内核就是操作系统驻留在内存的部分。</p>
+<p>为了简洁，我们把堆、数据和代码段画得彼此相邻，并且把栈顶放在了最大的合法用户地址处。实际上，由于 .data 段有对齐要求（见 7.8 节）， 所以代码段和数据段之间是有间隙的。同时，在分配栈、共享库和堆段运行时地址的时候，链接器还会使用地址空间布局随机化（ASLR，参见 3.10.4 节）。 虽然每次程序运行时这些区域的地址都会改变，它们的相对位置是不变的。</p>
+<p>当加载器运行时，它创建类似于图 7-15 所示的内存映像。在程序头部表的引导下,加载器将可执行文件的片(chunk)复制到代码段和数据段。接下来，加载器跳转到程序的人口点，也就是函数 _start 的地址。这个函数是在系统目标文件 Ctrl.o 中定义的，对所有的 C 程序都是一样的。_start 函数调用系统启动函数 __libc_start_main，该函数定义在 libc.so 中。它初始化执行环境，调用用户层的 main 函数，处理 main 函数的返回值，并且在需要的时候把控制返回给内核。</p>
+<p><img src="/image/caspp/chapter7/7-15.jpg"><br>图 7-15 Linux X86-64 运行时内存映像。没有展示出由于段对齐要求和地址空间布局随机化(ASLR)造成的空隙。区域大小不成比例</p>
+<h2 id="7-10-动态链接共享库"><a href="#7-10-动态链接共享库" class="headerlink" title="7.10 动态链接共享库"></a>7.10 动态链接共享库</h2><p>共享库(shared library)是致力于解决静态库缺陷的一个现代创新产物。共享库是一个目标模块，在运行或加载时，可以加载到任意的内存地址，并和一个在内存中的程序链接起来。这个过程称为动态链接(dynamic linking)。 是由一个叫做动态链接器(dynamic linker)的程序来执行的。共享库也称为共享目标(shared object)。 在 Linux 系统中通常用 .so后缀来表示。微软的操作系统大量地使用了共享库，它们称为 DLL（动态链接库）。</p>
+<p>共享库是以两种不同的方式来“共享”的。首先，在任何给定的文件系统中，对于一个库只有一个.so 文件。所有引用该库的可执行目标文件共享这个.so文件中的代码和数据，而不是像静态库的内容那样被复制和嵌人到引用它们的可执行的文件中。其次，在内存中，一个共享库的 .text 节的一个副本可以被不同的正在运行的进程共享。在第 9章我们学习虚拟内存时将更加详细地讨论这个问题。</p>
+<p>图 7-16 概括了图 7-7 中示例程序的动态链接过程。为了构造图 7-6 中示例向量例程的共享库 libvector.so 我们调用编译器驱动程序，给编译器和链接器如下特殊指令：</p>
+<blockquote>
+<p>linux&gt; gcc -shared -fpic libvector.so addvec.c &#x2F;nultvec.c  </p>
+</blockquote>
+<p>-fpic 选项指示编译器生成与位置无关的代码（下一节将详细讨论这个问题）。-shared选项指示链接器创建一个共享的目标文件。一旦创建了这个库，随后就要将它链接到图 7-7 的示例程序中：</p>
+<blockquote>
+<p>linux&gt; gcc -o prog21 main2.c .&#x2F;libvector.so  </p>
+</blockquote>
+<p><img src="/image/caspp/chapter7/7-16.jpg"><br>图 7-16 动态链接共享库</p>
+<p>这样就创建了一个可执行目标文件 prog21, 而此文件的形式使得它在运行时可以和 libvector.so 链接。基本的思路是当创建可执行文件时，静态执行一些链接，然后在程序加载时，动态完成链接过程。认识到这一点是很重要的：此时，没有任何 libvector.so的代码和数据节真的被复制到可执行文件 prog21 中。反之，链接器复制了一些重定位和符号表信息，它们使得运行时可以解析对 libvector.so 中代码和数据的引用。</p>
+<p>当加载器加载和运行可执行文件 Prog21 时，它利用 7.9 节中讨论过的技术，加载部分链接的可执行文件 prog21, 接着，它注意到 prog21 包含一个.interp 节，这一节包含动态链接器的路径名，动态链接器本身就是一个共享目标（如在 Linux 系统上的 ld-linux.so）。加载器不会像它通常所做地那样将控制传递给应用，而是加载和运行这个动态链接器。然后，动态链接器通过执行下面的重定位完成链接任务：</p>
+<ul>
+<li>重定位 libc.so 的文本和数据到某个内存段。</li>
+<li>重定位 libvector.so 的文本和数据到另一个内存段。</li>
+<li>重定位 prog21 中所有对由 libc.so 和 libvector.so 定义的符号的引用。</li>
+</ul>
+<p>最后，动态链接器将控制传递给应用程序。从这个时刻开始，共享库的位置就固定了，并且在程序执行的过程中都不会改变。</p>
+<h2 id="7-11-从应用程序中加载和链接共享库"><a href="#7-11-从应用程序中加载和链接共享库" class="headerlink" title="7.11 从应用程序中加载和链接共享库"></a>7.11 从应用程序中加载和链接共享库</h2><p>到目前为止，我们已经讨论了在应用程序被加载后执行前时，动态链接器加载和链接共享库的情景。然而，应用程序还可能在它运行时要求动态链接器加载和链接某个共享库，盲无需在编译时将那些库链接到应用中。</p>
+<p>动态链接是一项强大有用的技术。下面是一些现实世界中的例子：</p>
+<ul>
+<li>分发软件。</li>
+<li>构建高性能 Web 服务器。</li>
+</ul>
+<p>其思路是将每个生成动态内容的函数打包在共享库中，当一个来自 Web 浏览器的请求到达时，服务器动态地加载和链接适当的函数，然廣直接调用它t 而不是使用 fork 和 execve在子进程的上下文中运行函数。函数会一直缓存在服务器的地址空间中，所以只要一个简单的函数调用的开销就可以处理随后的请求了。这对一个繁忙的网站来说是有很大影响的。更进一步地说，在运行时无需停止服务器，就可以更新已存在的函数，以及添加新的函数。</p>
+<p>Linux 系统为动态链接器提供了一个简单的接口，允许应用程序在运行时加载和链接共享库。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;dlfcn.h&gt;</span></span></span><br><span class="line"><span class="type">void</span> *<span class="title function_">dlopen</span><span class="params">(<span class="type">const</span> <span class="type">char</span> <span class="type">int</span> flag)</span>;</span><br><span class="line"><span class="comment">//返回：若成功则为指向句柄的指针，若出错则为 NULL。</span></span><br></pre></td></tr></table></figure>
+
+<p>dlopen 函数加载和链接共享库 filename。用已用带 RTLD_GLOBAL 选项打开了的库解析 filename 中的外部符号。如果当前可执行文件是带-rdynamic 选项编译的，那么对符号解析而言， 它的全局符号也是可用的。flag 参数必须要么包括 RTLD_NOW, 该标志告诉链接器立即解析对外部符号的引用，要么包括 RTLD_LAZY 标志，该标志指示链接器推迟符号解析直到执行来自库中的代码。这两个值中的任意一个都可以和 RTLD_GLOBAL 标志取或。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;dlfcn.h&gt;</span></span></span><br><span class="line"><span class="type">void</span> *<span class="title function_">dlsym</span><span class="params">(<span class="type">void</span> *handle, chax ;</span></span><br><span class="line"><span class="params"><span class="comment">// 返回：若成功则为指向符号的指针，若出错则为 NULL。</span></span></span><br></pre></td></tr></table></figure>
+
+<p>dlsym 函数的输人是一个指向前面已经打开了的共享库的句柄和一个 symbol 名字,如果该符号存在，就返回符号的地址，否则返回 NULL。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;dlfcn.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">dlclose</span> <span class="params">(<span class="type">void</span> ;</span></span><br><span class="line"><span class="params"><span class="comment">// 返回：若成功则为 0, 若出错则为 -1。</span></span></span><br></pre></td></tr></table></figure>
+
+<p>如果没有其他共享库还在使用这个共享库，dlclose 函数就卸载该共享库。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;dlfcn.h&gt;</span></span></span><br><span class="line"><span class="type">const</span> <span class="type">char</span> *<span class="title function_">dlerror</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"><span class="comment">// 返回：如果前面对 dlopen、dlsym 或 dlclose 的调用失败，</span></span><br><span class="line"><span class="comment">// 则为错误消息，如果前面的调用成功，则为 NULL。</span></span><br><span class="line">```c</span><br><span class="line"></span><br><span class="line">下面展示了如何利用这个接口动态链接我们的 libvector.so 共享库，然后调用它的 addvec 例程。要编译这个程序，我们将以下面的方式调用 GCC:</span><br><span class="line"></span><br><span class="line">&gt; linux&gt; gcc -rdynamic -o prog2r dll.c -Idl</span><br><span class="line"></span><br><span class="line">```c</span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;dlfcn.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> x[<span class="number">2</span>] = &#123; <span class="number">1</span>, <span class="number">2</span> &#125;;</span><br><span class="line"><span class="type">int</span> y[<span class="number">2</span>] = &#123; <span class="number">3</span>, <span class="number">4</span> &#125;;</span><br><span class="line"><span class="type">int</span> z[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">void</span>* handle;</span><br><span class="line">    <span class="type">void</span> (*addvec)(<span class="type">int</span>*, <span class="type">int</span>*, <span class="type">int</span>*, <span class="type">int</span>);</span><br><span class="line">    <span class="type">char</span>* error;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* dynamically load the shared library that contains addvec() */</span></span><br><span class="line">    handle = dlopen(<span class="string">&quot;./libvector.so&quot;</span>, RTLD_LAZY);</span><br><span class="line">    <span class="keyword">if</span> (!handle)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;%s\n&quot;</span>, dlerror());</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* get a pointer to the addvec() function we just loaded */</span></span><br><span class="line">    addvec = dlsym(handle, <span class="string">&quot;addvec&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> ((error = dlerror()) != <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;%s\n&quot;</span>, error);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Now we can call addvec() it just like any other function */</span></span><br><span class="line">    addvec(x, y, z, <span class="number">2</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;z = [%d %d]\n&quot;</span>, z[<span class="number">0</span>], z[<span class="number">1</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* unload the shared library */</span></span><br><span class="line">    <span class="keyword">if</span> (dlclose(handle) &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;%s\n&quot;</span>, dlerror());</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="7-12-位置无关代码"><a href="#7-12-位置无关代码" class="headerlink" title="7.12 位置无关代码"></a>7.12 位置无关代码</h2><p>共享库的一个主要目的就是允许多个正在运行的进程共享内存中相同的库代码，因而节约宝贵的内存资源。那么，多个进程是如何共享程序的一个副本的呢？一种方法是给每个共享库分配一个事先预备的专用的地址空间片，然后要求加载器总是在这个地址加载共享库。虽然这种方法很简单，但是它也造成了一些严重的问题。它对地址空间的使用效率不高，因为即使一个进程不使用这个库，那部分空间还是会被分配出来。它也难以管理。我们必须保证没有片会重叠。每次当一个库修改了之后，我们必须确认已分配给它的片还适合它的大小。如果不适合了，必须找一个新的片。并且，如果创建了一个新的库，我们还必须为它寻找空间。随着时间的进展，假设在一个系统中有了成百个库和库的各个版本库，就很难避免地址空间分裂成大量小的、未使用而又不再能使用的小洞。更糟的是，对每个系统而言，库在内存中的分配都是不同的，这就引起了更多令人头痛的管理问题。</p>
+<p>要避免这些问题，现代系统以这样一种方式编译共享模块的代码段，使得可以把它们加载到内存的任何位置而无需链接器修改。使用这种方法，无限多个进程可以共享一个共享模块的代码段的单一副本。（当然，每个进程仍然会有它自己的读&#x2F;写数据块。）</p>
+<p>可以加载而无需重定位的代码称为位置无关代码(Position-Independent Code, PIC)。用户对 GCC 使用-fpic 选项指示 GNU 编译系统生成 PIC 代码。共享库的编译必须总是使用该选项。</p>
+<p>在一个 x86_64 系统中，对同一个目标模块中符号的引用是不需要特殊处理使之成为PIC。可以用 PC 相对寻址来编译这些引用，构造目标文件时由静态链接器重定位。然而，对共享模块定义的外部过程和对全局变量的引用需要一些特殊的技巧，接下来我们会谈到。</p>
+<p><strong>1. PIC 数据引用</strong></p>
+<p>编译器通过运用以下这个有趣的事实来生成对全局变量的 PIC 引用：无论我们在内存中的何处加载一个目标模块（包括共享目标模块）， 数据段与代码段的距离总是保持不变。因此，代码段中任何指令和数据段中任何变量之间的距离都是一个运行时常量，与代码段和数据段的绝对内存位置是无关的。</p>
+<p>想要生成对全局变量 PIC 引用的编译器利用了这个事实，它在数据段开始的地方创建了一个表，叫做全局偏移量表(Global Offset Table, GOT)。在 GOT 中，每个被这个目标模块引用的全局数据目标（过程或全局变量）都有一个 8 字节条目。编译器还为 GOT 中每个条目生成一个重定位记录。在加载时，动态链接器会重定位 GOT 中的每个条目，使得它包含目标的正确的绝对地址。每个引用全局目标的目标模块都有自己的 GOT。</p>
+<p>图 7-18 展示了示例 libvector.so 共享模块的 GOT。addvec 例程通过 G0T[3]间接地加载全局变量 addcnt 的地址，然后把 addcnt 在内存中加 1。这里的关键思想是对G0T[3]的 PC 相对引用中的偏移量是一个运行时常量。</p>
+<p><img src="/image/caspp/chapter7/7-18.jpg"><br>图 7-18 用 GOT引用全局变量。libvector.so中的 addvec 例程通过 libvector.so 的GOT间接引用了 addcnt</p>
+<p>因为 addcnt 是由 libvector.so 模块定义的，编译器可以利用代码段和数据段之间不变的距离，产生对 addcnt 的直接 PC 相对引用，并增加一个重定位，让链接器在构造这个共享模块时解析它。不过，如果 addcnt 是由另一个共享模块定义的，那么就需要通过 GOT 进行间接访问。在这里，编译器选择采用最通用的解决方案，为所有的引用使用 GOT。</p>
+<p><strong>2. PIC 函数调用</strong></p>
+<p>假设程序调用一个由共享库定义的函数。编译器没有办法预测这个函数的运行时地址,因为定义它的共享模块在运行时可以加载到任意位置。正常的方法是为该引用生成一条重定位记录，然后动态链接器在程序加载的时候再解析它。不过，这种方法并不是 PIC。 因为它需要链接器修改调用模块的代码段，GNU 编译系统使用了一种很有趣的技术来解决这个问题，称为延迟绑定(lazy binding)。将过程地址的绑定推迟到第一次调用该过程时。</p>
+<p>使用延迟绑定的动机是对于一个像 libc.so 这样的共享库输出的成百上千个函数中，一个典型的应用程序只会使用其中很少的一部分。把函数地址的解析推迟到它实际被调用的地方，能避免动态链接器在加载时进行成百上千个其实并不需要的重定位。第一次调用过程的运行时开销很大，但是其后的每次调用都只会花费一条指令和一个间接的内存引用。</p>
+<p>延迟绑定是通过两个数据结构之间简洁但又有些复杂的交互来实现的，这两个数据结构是：GOT 和过程链接表(Procedure Linkage Table, PLT)。如果一个目标模块调用定义在共享库中的任何函数，那么它就有自己的 GOT 和 PLT。GOT 是数据段的一部分，而PLT 是代码段的一部分。</p>
+<p>图 7-19 展示的是 PLT 和 GOT 如何协作在运行时解析函数的地址。首先，让我们检査一下这两个表的内容。</p>
+<ul>
+<li>过程链接表(PLT)</li>
+<li>全局偏移量表(GOT)</li>
+</ul>
+<p><img src="/image/caspp/chapter7/7-19.jpg"><br>图 7-19 用 PLT 和 GOT 调用外部函数。在第一次调用 addvec 时，动态链接器解析它的地址</p>
+<h2 id="7-13-库打桩机制"><a href="#7-13-库打桩机制" class="headerlink" title="7.13 库打桩机制"></a>7.13 库打桩机制</h2><p>Linux 链接器支持一个很强大的技术，称为库打桩(library interpositioning), 它允许你截获对共享库函数的调用，取而代之执行自己的代码。使用打桩机制，你可以追踪对某个特殊库函数的调用次数，验证和追踪它的输人和输出值，或者甚至把它替换成一个完全不同的实现。</p>
+<p>下面是它的基本思想：给定一个需要打桩的目标函数，创建一个包装函数，它的原型与目标函数完全一样。使用某种特殊的打桩机制，你就可以欺骗系统调用包装函数而不是目标函数了。包装函数通常会执行它自己的逻辑，然后调用目标函数，再将目标函数的返回值传递给调用者。</p>
+<p>打桩可以发生在编译时、链接时或当程序被加载和执行的运行时。要研究这些不同的机制，我们以图 7-20a 中的示例程序作为运行例子。它调用 C 标准库(libc.so)中的 malloc 和 free 函数。对 malloc 的调用从堆中分配一个 32 字节的块，并返回指向该块的指针。对 free 的调用把块还回到堆，供后续的 malloc 调用使用。我们的目:标是用打桩来追踪程序运行时对 和 free 的调用。</p>
+<p><img src="/image/caspp/chapter7/7-20.jpg"><br>图 7-20 用 C 预处理器进行编译时打粧</p>
+<h3 id="7-13-1-编译时打桩"><a href="#7-13-1-编译时打桩" class="headerlink" title="7.13.1 编译时打桩"></a>7.13.1 编译时打桩</h3><p>图 7-20 展示了如何使用 C 预处理器在编译时打桩。mymalloc.c 中的包装函数(图 7-20c)调用目标函数，打印追踪记录，并返回。本地的 mlloc.h头文件(图 7-20b)指示预处理器用对相应包装函数的调用替换掉对目标函数的调用。像下面这样编译和链接这个程序：</p>
+<blockquote>
+<p>linux&gt; gcc -l -c mymalloc.c</p>
+</blockquote>
+<p>由于有-i.参数，所以会进行打桩，它告诉 c 预处理器在搜索通常的系统目录之前，先在当前目录中查找 mallo.c 注意，mymalloc.c 中的包装函数是使用标准 malloc.h头文件编译的。</p>
+<p>运行这个程序会得到如下的追踪信息：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">linux&gt; </span><span class="language-bash">./intc</span></span><br><span class="line">malloc(32)=0x9ee010</span><br><span class="line">free(0x9ee010)</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-13-2-链接时打桩"><a href="#7-13-2-链接时打桩" class="headerlink" title="7.13.2 链接时打桩"></a>7.13.2 链接时打桩</h3><p>Linux 静态链接器支持用–wrap f 标志进行链接时打桩。这个标志告诉链接器，把对符号 f 的引用解析成__wrap_f（前缀是两个下划线）， 还要把对符号_ real_f（前缀是两个下划线）的引用解析为 f。图 7-21 给出我们示例程序的包装函数。</p>
+<p><img src="/image/caspp/chapter7/7-21.jpg"><br>图 7-21 用–wrap 标志进行链接时打桩</p>
+<p>用下述方法把这些源文件编译成可重定位目标文件:</p>
+<blockquote>
+<p>linux&gt; gcc -DLINKTIME -c mymalloc.c<br>linux&gt; gcc -c int.c </p>
+</blockquote>
+<p>然后把目标文件链接成可执行文件:</p>
+<blockquote>
+<p>linux&gt; gcc -W1, –wrap,malloc -W1,–wrap,free -o inti int.o mymalloc.o</p>
+</blockquote>
+<p>-Wl,option 标志把 option 传递给链接器。option 中的每个逗号都要替换为一个空格。所以-m:,–wrap,malloc 就把–wrap malloc 传递给链接器，以类似的方式传递 -Wl,-wrap,free。</p>
+<p>运行该程序会得到如下追踪信息:</p>
+<blockquote>
+<p>linux&gt; .&#x2F;inti<br>malloc(32) &#x3D; 0xl8cf010<br>free(0xl8cf010)</p>
+</blockquote>
+<h3 id="7-13-3-运行时打桩"><a href="#7-13-3-运行时打桩" class="headerlink" title="7.13.3 运行时打桩"></a>7.13.3 运行时打桩</h3><p>编译时打桩需要能够访问程序的源代码，链接时打桩需要能够访问程序的可重定位对象文件。不过，有一种机制能够在运行时打桩，它只需要能够访问可执行目标文件。这个很厉害的机制基于动态链接器的 LD_PRELOAD 环境变量。</p>
+<p>如果 LD_PRELOAD 环境变量被设置为一个共享库路径名的列表（以空格或分号分隔），那么当你加载和执行一个程序，需要解析未定义的引用时，动态链接器(LD-LINUX.SO)会先搜索 LD_PRELOAD 库，然后才搜索任何其他的库。有了这个机制，当你加载和执行任意可执行文件时，可以对任何共享库中的任何函数打桩，包括 libc.so。</p>
+<p>图 7-22 展示了 rtaliad 和 free 的包装函数。每个包装函数中，对 dlsym 的调用返回.指向目标 lifcc 函数的指针。然后包装函数调用目标函数，打印追踪记录，再返回。</p>
+<p><img src="/image/caspp/chapter7/7-22.jpg"><br>图 7-22 用 LD PRELOAD 进行运行时打桩</p>
+<p>下面是如何构建包含这些包装函数的共享库的方法：</p>
+<blockquote>
+<p>linux&gt; gcc -DRUNTIME -shared -fpic ~o mymalloc.so mymalloc.c -ldl</p>
+</blockquote>
+<p>这是如何编译主程序：</p>
+<blockquote>
+<p>linux&gt; gcc -o intr int.c</p>
+</blockquote>
+<p>下面是如何从 bash shell 中运行这个程序:</p>
+<blockquote>
+<p>linux&gt; LD_PRELOAD&#x3D;”.&#x2F;mymalloc.so” .&#x2F;intr<br>malloc(32) &#x3D; 0xlbf7010<br>free(Oxlbf7010)</p>
+</blockquote>
+<p>下面是如何在 csh 或 tcsh 中运行这个程序：</p>
+<blockquote>
+<p>linux&gt; (setenv LD_PRELOAD “.&#x2F;mymalloc.so”; .&#x2F;intr; unsetenv LD_PRELOAD)<br>malloc(32) &#x3D; 0x2157010<br>free(0x2157010)</p>
+</blockquote>
+<p>请注意，你可以用 LD PRELOAD 对任何可执行程序的库函数调用打桩!</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">liiiux&gt; </span><span class="language-bash">LDJPRELOAD=<span class="string">&quot;./mymalloc.so11 /usr/bin/uptime</span></span></span><br><span class="line">malloc(568) = 0x21bb010</span><br><span class="line">free(0x21bb010)</span><br><span class="line">malloc(15) = 0x21bb010</span><br><span class="line">malloc(568) = 0x21bb030</span><br><span class="line">malloc(2255) = 0x21bb270</span><br><span class="line">free(0x21bb030)</span><br><span class="line">malloc(20) = 0x21bb030</span><br><span class="line">malloc(20) = 0x21bb050</span><br><span class="line">malloc(20) = 0x21bb070</span><br><span class="line">malloc(20) = 0x21bb090</span><br><span class="line">malloc(20) = 0x21bb0b0</span><br><span class="line">malloc(384) = 0x21bb0d0</span><br><span class="line">20:47:36 up 85 days, 6:04, 1 user, load average: 0.10, 0.04, 0.05</span><br></pre></td></tr></table></figure>
+
+<h2 id="7-14-处理目标文件的工具"><a href="#7-14-处理目标文件的工具" class="headerlink" title="7.14 处理目标文件的工具"></a>7.14 处理目标文件的工具</h2><p>在 Linux 系统中有大量可用的工具可以帮助你理解和处理目标文件。特别地，GNU</p>
+<ul>
+<li>binutils 包尤其有帮助，而且可以运行在每个 Linux 平台上。</li>
+<li>AR: 创建静态库，插人、删除、列出和提取成员。</li>
+<li>STRINGS: 列出一个目标文件中所有可打印的字符串。</li>
+<li>STRIP: 从目标文件中删除符号表信息。</li>
+<li>NM: 列出一个目标文件的符号表中定义的符号。</li>
+<li>SIZE: 列出目标文件中节的名字和大小。</li>
+<li>READELF: 显示一个目标文件的完整结构，包括 ELF 头中编码的所有信息。包含</li>
+<li>SIZE 和 NM 的功能。</li>
+<li>OBJDUMP: 所有二进制工具之母。能够显示一个目标文件中所有的信息。它最大的作用是反汇编 .text 节中的二进制指令。</li>
+</ul>
+<p>Linux 系统为操作共享库还提供了 LDD 程序：</p>
+<ul>
+<li>LDD: 列出一个可执行文件在运行时所需要的共享库。</li>
+</ul>
+
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont">&#xe6b7; </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont">&#xe61a; </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+  </body>
+</html>
