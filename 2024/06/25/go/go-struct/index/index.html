@@ -89,8 +89,7 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">struct1   大小 24 对齐系数 8</span><br><span class="line">struct1.a 大小 1 对齐系数 1 偏移量 0</span><br><span class="line">struct1.b 大小 8 对齐系数 8 偏移量 8</span><br><span class="line">struct1.c 大小 1 对齐系数 1 偏移量 16</span><br><span class="line"></span><br><span class="line">struct2   大小 16 对齐系数 8</span><br><span class="line">struct2.x 大小 1 对齐系数 1 偏移量 0</span><br><span class="line">struct2.y 大小 1 对齐系数 1 偏移量 1</span><br><span class="line">struct2.z 大小 8 对齐系数 8 偏移量 8</span><br></pre></td></tr></table></figure>
 
 <p>内存布局示例图：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">addr	    0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23</span><br><span class="line">struct1     a  - - - - - -  b - -  -  -  -  -  -  c  -  -  -  -  -  -  -   </span><br><span class="line">struct2     x y - - - - - - z - -  -  -  -  -  -                    </span><br></pre></td></tr></table></figure>
-
+<p><img src="/image/go/go-struct-align.png"></p>
 <h3 id="先说下为什么要内存对齐"><a href="#先说下为什么要内存对齐" class="headerlink" title="先说下为什么要内存对齐"></a>先说下为什么要内存对齐</h3><p>许多计算机系统对基本数据类型的合法地址做出了一些限制，要求某种类型对象的地址必须是某个值 K(通常是 2、4 或 8)的倍数。这种对齐限制简化了形成处理器和内存系统之间接口的硬件设计。例如，假设一个处理器总是从内存中取 8 个字节，则地址必须为 8 的倍数。如果我们能保证将所有的 int64 类型数据的地址对齐成 8 的倍数，那么就可以用一个内存操作来读或者写值了。否则，我们可能需要执行两次内存访问，因为对象可能被分放在两个 8 字节内存块中。</p>
 <p>无论数据是否对齐，X86-64 硬件都能正确工作。不过，Intel 还是建议要对齐数据以提高内存系统的性能。</p>
 <p>上面这段来自于 csapp 3.9.3 章节 ，通俗点说就是 cpu 读取一般是读取固定位数，CPU访问非对齐的内存时为何需要多次读取。</p>
