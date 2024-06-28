@@ -95,8 +95,8 @@
 
 <p><code>if_max_lol()</code> runs in half the time of <code>if_max()</code>. What on Earth?!</p>
 <p>Time to look at the disassembly. I generate a cpu profile by rerunning the benchmarks with an extra arg: <code>-test.cpuprofile cpu.out</code>. I feed the profile into <code>go tool pprof -http=”:” max.test cpu.out</code> and click on <code>View</code> &gt; <code>Source</code> in my browser with great haste. Screenshots of the two functions of interest below:</p>
-<p><img src="/image/doubledthespeed/1.webp"></p>
-<p><img src="/image/doubledthespeed/2.webp"></p>
+<p><img src="/images/doubledthespeed/1.webp"></p>
+<p><img src="/images/doubledthespeed/2.webp"></p>
 <p>This view highlights that the comparison in <code>if_max_lol()</code> spends CPU time executing a branch instruction (Branch if Less Than): <code>BLT -6(PC)</code>.</p>
 <p>So, the compiler saw the <code>print(“lol”)</code> statement in the source code, and generated an extra conditional branch instruction. This, in turn, invokes the branch predictor. What’s that? Here is ChatGPT’s explanation:</p>
 <hr>
