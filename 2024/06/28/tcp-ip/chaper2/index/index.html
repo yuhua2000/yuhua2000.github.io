@@ -81,10 +81,65 @@
       <i class="blogfont">&#xe6c1;</i>
     </a>
   </div>
-  
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E9%93%BE%E8%B7%AF%E5%B1%82"><span class="post__toc-text">链路层</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%92%8CIEEE-802%E5%B0%81%E8%A3%85"><span class="post__toc-text">以太网和IEEE 802封装</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#SLIP%EF%BC%9A%E4%B8%B2%E8%A1%8C%E7%BA%BF%E8%B7%AFIP"><span class="post__toc-text">SLIP：串行线路IP</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%8E%8B%E7%BC%A9%E7%9A%84SLIP"><span class="post__toc-text">压缩的SLIP</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#PPP%EF%BC%9A%E7%82%B9%E5%AF%B9%E7%82%B9%E5%8D%8F%E8%AE%AE"><span class="post__toc-text">PPP：点对点协议</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E7%8E%AF%E5%9B%9E%E6%8E%A5%E5%8F%A3"><span class="post__toc-text">环回接口</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E6%9C%80%E5%A4%A7%E4%BC%A0%E8%BE%93%E5%8D%95%E5%85%83MTU"><span class="post__toc-text">最大传输单元MTU</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E8%B7%AF%E5%BE%84MTU"><span class="post__toc-text">路径MTU</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E4%B8%B2%E8%A1%8C%E7%BA%BF%E8%B7%AF%E5%90%9E%E5%90%90%E9%87%8F%E8%AE%A1%E7%AE%97"><span class="post__toc-text">串行线路吞吐量计算</span></a></li></ol></li></ol>
 </aside>
   <div class="post__content" itemprop="articleBody">
-    
+    <h1 id="链路层"><a href="#链路层" class="headerlink" title="链路层"></a>链路层</h1><h2 id="以太网和IEEE-802封装"><a href="#以太网和IEEE-802封装" class="headerlink" title="以太网和IEEE 802封装"></a>以太网和IEEE 802封装</h2><p>在TCP&#x2F;IP世界中，以太网I P数据报的封装是在RFC 894[Hornig 1984]中定义的，IEEE 802网络的IP数据报封装是在RFC 1042[Postel and Reynolds 1988]中定义的。主机需求RFC要求每台Internet主机都与一个10 Mb&#x2F;s的以太网电缆相连接：</p>
+<ol>
+<li>必须能发送和接收采用RFC 894（以太网）封装格式的分组。</li>
+<li>应该能接收与RFC 894混合的RFC 1042（IEEE 802）封装格式的分组。</li>
+<li>也许能够发送采用RFC 1042格式封装的分组。如果主机能同时发送两种类型的分组数据，那么发送的分组必须是可以设置的，而且默认条件下必须是 RFC 894分组。</li>
+</ol>
+<p>最常使用的封装格式是 RFC 894定义的格式。图 2-1显示了两种不同形式的封装格式。图中每个方框下面的数字是它们的字节长度。</p>
+<p><img src="/images/tcp-ip/2-1.jpg"><br>图2-1 IEEE 802.2&#x2F;802.3（RFC 1042）和以太网的封装格式（RFC 894）</p>
+<h2 id="SLIP：串行线路IP"><a href="#SLIP：串行线路IP" class="headerlink" title="SLIP：串行线路IP"></a>SLIP：串行线路IP</h2><p>SLIP的全称是Serial Line IP。它是一种在串行线路上对 IP 数据报进行封装的简单形式，在RFC 1055[Romkey 1988]中有详细描述。SLIP适用于家庭中每台计算机几乎都有的RS-232串行端口和高速调制解调器接入 Internet。下面的规则描述了SLIP协议定义的帧格式：</p>
+<ol>
+<li>IP数据报以一个称作 E N D（0 x c 0）的特殊字符结束。同时，为了防止数据报到来之前的线路噪声被当成数据报内容，大多数实现在数据报的开始处也传一个 END字符（如果有线路噪声，那么END字符将结束这份错误的报文。这样当前的报文得以正确地传输，而前一个错误报文交给上层后，会发现其内容毫无意义而被丢弃）。</li>
+<li>如果IP报文中某个字符为 END，那么就要连续传输两个字节 0xdb和0xdc来取代它。0xdb这个特殊字符被称作SLIP的ESC字符，但是它的值与ASCII码的ESC字符（0x1b）不同。</li>
+<li>如果IP报文中某个字符为SLIP的ESC字符，那么就要连续传输两个字节 0xdb和0xdd来取代它。</li>
+</ol>
+<p>图2-2中的例子就是含有一个END字符和一个ESC字符的I P报文。在这个例子中，在串行线路上传输的总字节数是原 I P报文长度再加4个字节。</p>
+<p><img src="/images/tcp-ip/2-2.jpg"><br>图2-2 SLIP报文的封装</p>
+<p>SLIP是一种简单的帧封装方法，还有一些值得一提的缺陷：</p>
+<ol>
+<li>每一端必须知道对方的I P地址。没有办法把本端的I P地址通知给另一端。</li>
+<li>数据帧中没有类型字段（类似于以太网中的类型字段）。如果一条串行线路用于 SLIP，那么它不能同时使用其他协议。</li>
+<li>SLIP没有在数据帧中加上检验和（类似于以太网中的 CRC字段）。如果SLIP传输的报文被线路噪声影响而发生错误，只能通过上层协议来发现（另一种方法是，新型的调制解调器可以检测并纠正错误报文）。这样，上层协议提供某种形式的 CRC就显得很重要。</li>
+</ol>
+<p>尽管存在这些缺点，SLIP仍然是一种广泛使用的协议。</p>
+<h2 id="压缩的SLIP"><a href="#压缩的SLIP" class="headerlink" title="压缩的SLIP"></a>压缩的SLIP</h2><p>由于串行线路的速率通常较低（19200 b&#x2F;s或更低），而且通信经常是交互式的（如 Telnet和Rlogin，二者都使用TCP），因此在SLIP线路上有许多小的TCP分组进行交换。为了传送 1个字节的数据需要20个字节的IP首部和20个字节的TCP首部，总数超过40个字节。</p>
+<p>既然承认这些性能上的缺陷，于是人们提出一个被称作 CSLIP（即压缩SLIP）的新协议，它在RFC 1144[Jacobson 1990a]中被详细描述。CSLIP一般能把上面的40个字节压缩到3或5个字节。它能在CSLIP的每一端维持多达 16 个TCP连接，并且知道其中每个连接的首部中的某些字段一般不会发生变化。对于那些发生变化的字段，大多数只是一些小的数字和的改变。这些被压缩的首部大大地缩短了交互响应时间。</p>
+<h2 id="PPP：点对点协议"><a href="#PPP：点对点协议" class="headerlink" title="PPP：点对点协议"></a>PPP：点对点协议</h2><p>PPP，点对点协议修改了SLIP协议中的所有缺陷，PPP包括以下三个部分：</p>
+<ol>
+<li>在串行链路上封装 IP数据报的方法。 PPP既支持数据为 8 位和无奇偶检验的异步模式（如大多数计算机上都普遍存在的串行接口），还支持面向比特的同步链接。</li>
+<li>建立、配置及测试数据链路的链路控制协议（ LCP：Link Control Protocol）。它允许通信双方进行协商，以确定不同的选项。</li>
+<li>针对不同网络层协议的网络控制协议（ NCP：Network Control Protocol）体系。当前RFC定义的网络层有IP、OSI网络层、DECnet以及Apple Talk。例如，IP NCP允许双方商定是否对报文首部进行压缩，类似于 CSLIP（缩写词N C P也可用在T C P的前面）。</li>
+</ol>
+<p>RFC 1548[Simpson 1993]描述了报文封装的方法和链路控制协议。 RFC 1332[McGregor 1992]描述了针对I P的网络控制协议。</p>
+<p>PPP数据帧的格式看上去很像 ISO的HDLC（高层数据链路控制）标准。图 2-3是PPP数据帧的格式。</p>
+<p>每一帧都以标志字符0x7e开始和结束。紧接着是一个地址字节，值始终是 0xff，然后是一个值为0x03的控制字节。</p>
+<p><img src="/images/tcp-ip/2-3.jpg"><br>图2-3 PPP数据帧的格式</p>
+<p>接下来是协议字段，类似于以太网中类型字段的功能。当它的值为0x0021时，表示信息字段是一个IP数据报；值为0xc021时，表示信息字段是链路控制数据；值为 0x8021时，表示信息字段是网络控制数据。</p>
+<p>总的来说，PPP比SLIP具有下面这些优点：(1) PPP支持在单根串行线路上运行多种协议，不只是IP协议；(2) 每一帧都有循环冗余检验； (3) 通信双方可以进行 IP地址的动态协商(使用IP网络控制协议)； (4) 与CSLIP类似，对TCP和IP报文首部进行压缩； (5) 链路控制协议可以对多个数据链路选项进行设置。为这些优点付出的代价是在每一帧的首部增加 3个字节，当建立链路时要发送几帧协商数据，以及更为复杂的实现。</p>
+<h2 id="环回接口"><a href="#环回接口" class="headerlink" title="环回接口"></a>环回接口</h2><p>大多数的产品都支持环回接口（ Loopback Interface），以允许运行在同一台主机上的客户程序和服务器程序通过 TCP&#x2F;IP进行通信。A类网络号127就是为环回接口预留的。根据惯例，大多数系统把IP地址127.0.0.1分配给这个接口，并命名为 localhost。一个传给环回接口的 IP数据报不能在任何网络上出现。</p>
+<p>我们想象，一旦传输层检测到目的端地址是环回地址时，应该可以省略部分传输层和所有网络层的逻辑操作。但是大多数的产品还是照样完成传输层和网络层的所有过程，只是当IP数据报离开网络层时把它返回给自己。</p>
+<p>图2-4是环回接口处理I P数据报的简单过程。</p>
+<p><img src="/images/tcp-ip/2-4.jpg"><br>图2-4 环回接口处理IP数据报的过程</p>
+<p>图中需要指出的关键点是：</p>
+<ol>
+<li>传给环回地址（一般是127.0.0.1）的任何数据均作为IP输入。</li>
+<li>传给广播地址或多播地址的数据报复制一份传给环回接口，然后送到以太网上。这是因为广播传送和多播传送的定义包含主机本身。</li>
+<li>任何传给该主机IP地址的数据均送到环回接口。</li>
+</ol>
+<p>看上去用传输层和 I P层的方法来处理环回数据似乎效率不高，但它简化了设计，因为环回接口可以被看作是网络层下面的另一个链路层。网络层把一份数据报传送给环回接口，就像传给其他链路层一样，只不过环回接口把它返回到 I P的输入队列中。</p>
+<p>在图2-4中，另一个隐含的意思是送给主机本身 IP地址的IP数据报一般不出现在相应的网络上。例如，在一个以太网上，分组一般不被传出去然后读回来。某些 BSD以太网的设备驱动程序的注释说明，许多以太网接口卡不能读回它们自己发送出去的数据。由于一台主机必须处理发送给自己的IP数据报，因此图2-4所示的过程是最为简单的处理办法。</p>
+<h2 id="最大传输单元MTU"><a href="#最大传输单元MTU" class="headerlink" title="最大传输单元MTU"></a>最大传输单元MTU</h2><p>正如在图2-1看到的那样，以太网和802.3对数据帧的长度都有一个限制，其最大值分别是1500和1492字节。链路层的这个特性称作MTU，最大传输单元。不同类型的网络大多数都有一个上限。</p>
+<p>如果 IP层有一个数据报要传，而且数据的长度比链路层的MTU还大，那么 IP层就需要进行分片（ fragmentation），把数据报分成若干片，这样每一片都小于MTU。。图2-5列出了一些典型的 MTU值，它们摘自RFC 1191[Mogul and Deering 1990]。点到点的链路层（如SLIP和PPP）的MTU并非指的是网络媒体的物理特性。相反，它是一个逻辑限制，目的是为交互使用提供足够快的响应时间。</p>
+<p><img src="/images/tcp-ip/2-5.jpg"><br>图2-5 几种常见的最大传输单元（MTU）</p>
+<h2 id="路径MTU"><a href="#路径MTU" class="headerlink" title="路径MTU"></a>路径MTU</h2><p>当在同一个网络上的两台主机互相进行通信时，该网络的 MTU是非常重要的。但是如果两台主机之间的通信要通过多个网络，那么每个网络的链路层就可能有不同的 MTU。重要的不是两台主机所在网络的 MTU的值，重要的是两台通信主机路径中的最小 MTU。它被称作路径MTU。</p>
+<p>两台主机之间的路径 MTU不一定是个常数。它取决于当时所选择的路由。而选路不一定是对称的（从A到B的路由可能与从B到A的路由不同），因此路径M T U在两个方向上不一定是一致的。</p>
+<h2 id="串行线路吞吐量计算"><a href="#串行线路吞吐量计算" class="headerlink" title="串行线路吞吐量计算"></a>串行线路吞吐量计算</h2><p>如果线路速率是9600 b&#x2F;s，而一个字节有8 bit，加上一个起始比特和一个停止比特，那么线路的速率就是960 B&#x2F;s（字节&#x2F;秒）。以这个速率传输一个1024字节的分组需要1066 ms。如果用SLIP链接运行一个交互式应用程序，同时还运行另一个应用程序如 FTP发送或接收1024字节的数据，那么一般来说就必须等待一半的时间（ 533 ms）才能把交互式应用程序的分组数据发送出去。</p>
+
   </div>
   </br>
   </br>
