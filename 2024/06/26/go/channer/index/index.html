@@ -96,8 +96,8 @@
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//scase 结构体用于描述 select 语句中的每个 case 条件，包括通道和相关的数据元素</span></span><br><span class="line"><span class="keyword">type</span> scase <span class="keyword">struct</span> &#123;</span><br><span class="line">   c           *hchan         <span class="comment">// chan</span></span><br><span class="line">   elem        unsafe.Pointer <span class="comment">// data element</span></span><br><span class="line">   kind        <span class="type">uint16</span>  <span class="comment">// Current case type, nil recv send or default</span></span><br><span class="line">   pc          <span class="type">uintptr</span> <span class="comment">// race pc (for race detector / msan)</span></span><br><span class="line">   releasetime <span class="type">int64</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>From the above structure, we can see that the internal essence of channel is a buffer pool + two queues (send recv). So how does the data interact? There is a sketch map on the internet, which shows a more vivid image.</p>
 <p>中文：<br>从上面的结构可以看出，通道的内部本质是一个缓冲池加上两个队列（发送队列和接收队列）。那么数据是如何进行交互的呢？网络上有一张示意图，可以更形象地展示这个过程。</p>
-<h2 id="Illustration"><a href="#Illustration" class="headerlink" title="Illustration"></a>Illustration</h2><h3 id="Buffer-free-synchronization"><a href="#Buffer-free-synchronization" class="headerlink" title="Buffer-free (synchronization)"></a>Buffer-free (synchronization)</h3><p><img src="/image/go/chan/synchronization.jpg" alt="synchronization"></p>
-<h3 id="Buffered-asynchronous"><a href="#Buffered-asynchronous" class="headerlink" title="Buffered (asynchronous)"></a>Buffered (asynchronous)</h3><p><img src="/image/go/chan/asynchronous.jpg" alt="synchronization"></p>
+<h2 id="Illustration"><a href="#Illustration" class="headerlink" title="Illustration"></a>Illustration</h2><h3 id="Buffer-free-synchronization"><a href="#Buffer-free-synchronization" class="headerlink" title="Buffer-free (synchronization)"></a>Buffer-free (synchronization)</h3><p><img src="/images/go/chan/synchronization.jpg" alt="synchronization"></p>
+<h3 id="Buffered-asynchronous"><a href="#Buffered-asynchronous" class="headerlink" title="Buffered (asynchronous)"></a>Buffered (asynchronous)</h3><p><img src="/images/go/chan/asynchronous.jpg" alt="synchronization"></p>
 <p>Combining the above structure and illustration, we can probably infer the channel’s send recv process.</p>
 <ol>
 <li>If it’s a recv (&lt;-channel) request, first determine if someone in a sendq queue is waiting for the data to be placed.<ol>
@@ -180,9 +180,9 @@
 <p>After waking up all g, g will continue to execute the remaining logic in chansend or chanrecv, that is, to release sudog (which is why closechan does not need to release sudog)</p>
 <h3 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h3><p>Language expression is always pale. When looking for information on the Internet, I saw two flow charts, which can be seen in combination.</p>
 <p>send process</p>
-<p><img src="/image/go/chan/send.jpg"></p>
+<p><img src="/images/go/chan/send.jpg"></p>
 <p>Receiving process (recv)</p>
-<p><img src="/image/go/chan/recv.jpg"></p>
+<p><img src="/images/go/chan/recv.jpg"></p>
 <p>转载于 <a target="_blank" rel="noopener" href="https://programming.vip/docs/deeply-understanding-the-principles-of-go-channel-and-select.html">Programming VIP</a></p>
 <p>添加了部分注释，翻译了一些英文解释，有问题大家可以添加评论讨论，我会及时更正</p>
 
