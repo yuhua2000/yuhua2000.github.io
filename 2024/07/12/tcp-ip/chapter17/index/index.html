@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog 第17章 TCP：传输控制协议 </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">第17章 TCP：传输控制协议</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2024-07-12T11:51:08.000Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2024-07-12 19:51:08
+</time>
+
+    
+<div class="post__category">
+  <i class="blogfont">&#xe62d;</i>
+  <a class="category-link" href="/categories/TCP-IP%E8%AF%A6%E8%A7%A3-%E5%8D%B71/">TCP/IP详解 卷1</a>
+</div>
+  
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag">操作系统</a>, <a class="tag-link-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a>
+</div>
+
+
+    <div id="/2024/07/12/tcp-ip/chapter17/index/" class="leancloud_visitors post__stat" data-flag-title="第17章 TCP：传输控制协议">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#TCP%EF%BC%9A%E4%BC%A0%E8%BE%93%E6%8E%A7%E5%88%B6%E5%8D%8F%E8%AE%AE"><span class="post__toc-text">TCP：传输控制协议</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#TCP%E7%9A%84%E6%9C%8D%E5%8A%A1"><span class="post__toc-text">TCP的服务</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#TCP%E7%9A%84%E9%A6%96%E9%83%A8"><span class="post__toc-text">TCP的首部</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%BB%BA%E7%AB%8B%E4%B8%8E%E7%BB%88%E6%AD%A2"><span class="post__toc-text">连接的建立与终止</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B%E7%9A%84%E8%B6%85%E6%97%B6"><span class="post__toc-text">连接建立的超时</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AC%A1%E8%B6%85%E6%97%B6%E6%97%B6%E9%97%B4"><span class="post__toc-text">第一次超时时间</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E6%9C%80%E5%A4%A7%E6%8A%A5%E6%96%87%E6%AE%B5%E9%95%BF%E5%BA%A6"><span class="post__toc-text">最大报文段长度</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#TCP%E7%9A%84%E5%8D%8A%E5%85%B3%E9%97%AD"><span class="post__toc-text">TCP的半关闭</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#TCP%E7%9A%84%E7%8A%B6%E6%80%81%E5%8F%98%E8%BF%81%E5%9B%BE"><span class="post__toc-text">TCP的状态变迁图</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#2MSL%E7%AD%89%E5%BE%85%E7%8A%B6%E6%80%81"><span class="post__toc-text">2MSL等待状态</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E5%B9%B3%E9%9D%99%E6%97%B6%E9%97%B4%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="post__toc-text">平静时间的概念</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#FIN-WAIT-2-%E7%8A%B6%E6%80%81"><span class="post__toc-text">FIN_WAIT_2 状态</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%A4%8D%E4%BD%8D%E6%8A%A5%E6%96%87%E6%AE%B5"><span class="post__toc-text">复位报文段</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E5%88%B0%E4%B8%8D%E5%AD%98%E5%9C%A8%E7%9A%84%E7%AB%AF%E5%8F%A3%E7%9A%84%E8%BF%9E%E6%8E%A5%E8%AF%B7%E6%B1%82"><span class="post__toc-text">到不存在的端口的连接请求</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E5%BC%82%E5%B8%B8%E7%BB%88%E6%AD%A2%E4%B8%80%E4%B8%AA%E8%BF%9E%E6%8E%A5"><span class="post__toc-text">异常终止一个连接</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E6%A3%80%E6%B5%8B%E5%8D%8A%E6%89%93%E5%BC%80%E8%BF%9E%E6%8E%A5"><span class="post__toc-text">检测半打开连接</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%90%8C%E6%97%B6%E6%89%93%E5%BC%80"><span class="post__toc-text">同时打开</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%90%8C%E6%97%B6%E5%85%B3%E9%97%AD"><span class="post__toc-text">同时关闭</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#TCP-%E9%80%89%E9%A1%B9"><span class="post__toc-text">TCP 选项</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#TCP-%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="post__toc-text">TCP 服务器的设计</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#TCP%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%8F%A3%E5%8F%B7"><span class="post__toc-text">TCP服务器端口号</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3"><span class="post__toc-text">滑动窗口</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E7%AA%97%E5%8F%A3%E5%A4%A7%E5%B0%8F"><span class="post__toc-text">窗口大小</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E6%85%A2%E5%90%AF%E5%8A%A8"><span class="post__toc-text">慢启动</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%BF%AB%E9%80%9F%E9%87%8D%E4%BC%A0%E4%B8%8E%E5%BF%AB%E9%80%9F%E6%81%A2%E5%A4%8D%E7%AE%97%E6%B3%95"><span class="post__toc-text">快速重传与快速恢复算法</span></a></li></ol></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h1 id="TCP：传输控制协议"><a href="#TCP：传输控制协议" class="headerlink" title="TCP：传输控制协议"></a>TCP：传输控制协议</h1><h2 id="TCP的服务"><a href="#TCP的服务" class="headerlink" title="TCP的服务"></a>TCP的服务</h2><p>尽管TCP和UDP都使用相同的网络层（IP），TCP却向应用层提供与UDP完全不同的服务。TCP提供一种面向连接的、可靠的字节流服务。面向连接意味着两个使用 TCP的应用（通常是一个客户和一个服务器）在彼此交换数据之前必须先建立一个TCP连接。这一过程与打电话很相似，先拨号振铃，等待对方摘机说“喂”，然后才说明是谁。</p>
+<h2 id="TCP的首部"><a href="#TCP的首部" class="headerlink" title="TCP的首部"></a>TCP的首部</h2><p>图17-2显示TCP首部的数据格式。如果不计任选字段，它通常是 20个字节。</p>
+<p><img src="/images/tcp-ip/17-2.jpg"><br>图17-2 TCP包首部</p>
+<h2 id="连接的建立与终止"><a href="#连接的建立与终止" class="headerlink" title="连接的建立与终止"></a>连接的建立与终止</h2><ol>
+<li>请求端（通常称为客户）发送一个 SYN段指明客户打算连接的服务器的端口，以及初始序号（ISN）。这个SYN段为报文段1。</li>
+<li>服务器发回包含服务器的初始序号的 SYN报文段（报文段2）作为应答。同时，将确认序号设置为客户的ISN加1以对客户的SYN报文段进行确认。一个SYN将占用一个序号。</li>
+<li>客户必须将确认序号设置为服务器的 ISN加1以对服务器的SYN报文段进行确认（报文段3）。</li>
+</ol>
+<p>这三个报文段完成连接的建立。这个过程也称为三次握手（three-way handshake）。</p>
+<p>建立一个连接需要三次握手，而终止一个连接要经过 4次握手。这由TCP的半关闭（half-close）造成的。既然一个TCP连接是全双工（即数据在两个方向上能同时传递），因此每个方向必须单独地进行关闭。这原则就是当一方完成它的数据发送任务后就能发送一个 FIN来终止这个方向连接。当一端收到一个 FIN，它必须通知应用层另一端几经终止了那个方向的数据传送。发送FIN通常是应用层进行关闭的结果。</p>
+<p>收到一个FIN只意味着在这一方向上没有数据流动。一个 TCP连接在收到一个 FIN后仍能发送数据。而这对利用半关闭的应用来说是可能的，尽管在实际应用中只有很少的 TCP应用程序这样做。</p>
+<p>首先进行关闭的一方（即发送第一个 FIN）将执行主动关闭，而另一方（收到这个 FIN）执行被动关闭。通常一方完成主动关闭而另一方完成被动关闭。</p>
+<p>图18-4显示了终止一个连接的典型握手顺序。我们省略了序号。在这个图中，发送FIN将导致应用程序关闭它们的连接，这些FIN的ACK是由TCP软件自动产生的。</p>
+<p>连接通常是由客户端发起的，这样第一个 SYN从客户传到服务器。每一端都能主动关闭这个连接（即首先发送 FIN）。然而，一般由客户端决定何时终止连接，因为客户进程通常由用户交互控制，用户会键入诸如“quit”一样的命令来终止进程。在图 18-4中，我们能改变上边的标识，将左方定为服务器，右方定为客户，一切仍将像显示的一样工作。</p>
+<p><img src="/images/tcp-ip/18-4.jpg"><br>图18-4 连接终止期间报文段的正常交换</p>
+<h2 id="连接建立的超时"><a href="#连接建立的超时" class="headerlink" title="连接建立的超时"></a>连接建立的超时</h2><p>有很多情况导致无法建立连接。一种情况是服务器主机没有处于正常状态。为了模拟这种情况，我们断开服务器主机的电缆线，然后向它发出telnet命令。图18-6显示了tcpdump的输出。</p>
+<p><img src="/images/tcp-ip/18-6.jpg"><br>图18-6 建立连接超时的tcpdump输出</p>
+<p>在这个输出中有趣的一点是客户间隔多长时间发送一个 SYN，试图建立连接。第2个SYN与第1个的间隔是5.8秒，而第3个与第2个的间隔是24秒。</p>
+<p>图18-6中没有显示客户端在放弃建立连接尝试前进行 SYN重传的时间。为了了解它我们必须对telnet命令进行计时<br><img src="/images/tcp-ip/18-6-1.jpg"><br>时间差值是 76秒。大多数伯克利系统将建立一个新连接的最长时间限制为 75秒。</p>
+<h3 id="第一次超时时间"><a href="#第一次超时时间" class="headerlink" title="第一次超时时间"></a>第一次超时时间</h3><p>在图18-6中一个令人困惑的问题是第一次超时时间为 5.8秒，接近6秒，但不准确，相比之下第二个超时时间几乎准确地为 24秒。运行十多次测试，发现第一次超时时间在 5.59秒~5.93秒之间变化。然而，第二次超时时间则总是 24.00秒（精确到小数点后面两位）。</p>
+<p>这是因为B S D版的TCP软件采用一种500 ms的定时器。这种500 ms的定时器用于确定本章中所有的各种各样的TCP超时。当我们键入telnet命令，将建立一个6秒的定时器（12个时钟滴答（tick）），但它可能在之后的 5.5秒<del>6秒内的任意时刻超时。图 18-7显示了这一发生过程。尽管定时器初始化为 1 2个时钟滴答，但定时计数器会在设置后的第一个 0</del>500 ms中的任意时刻减1。从那以后，定时计数器大约每隔 500 ms减1，但在第1个500 ms内是可变的（我们使用限定词“大约”是因为在 TCP每隔500 ms获得系统控制的瞬间，系统内核可能会优先处理其他中断）。</p>
+<p><img src="/images/tcp-ip/18-7.jpg"><br>图18-7 TCP的500 ms定时器</p>
+<p>当滴答计数器为 0时，6秒的定时器便会超时（见图 18-7），这个定时器会在以后的 24秒（48个滴答）重新复位。之后的下一个定时器将更接近 24秒，因为当TCP的500ms定时器被内核调用时，它就会被修改一次。</p>
+<h2 id="最大报文段长度"><a href="#最大报文段长度" class="headerlink" title="最大报文段长度"></a>最大报文段长度</h2><p>最大报文段长度（MSS）表示TCP传往另一端的最大块数据的长度。当一个连接建立时，连接的双方都要通告各自的 MSS。我们已经见过 MSS都是1024。这导致I P数据报通常是40字节长：20字节的TCP首部和20字节的IP首部。</p>
+<h2 id="TCP的半关闭"><a href="#TCP的半关闭" class="headerlink" title="TCP的半关闭"></a>TCP的半关闭</h2><p>TCP提供了连接的一端在结束它的发送后还能接收来自另一端数据的能力。这就是所谓的半关闭。正如我们早些时候提到的只有很少的应用程序使用它。</p>
+<p>为了使用这个特性，编程接口必须为应用程序提供一种方式来说明“我已经完成了数据传送，因此发送一个文件结束（FIN）给另一端，但我还想接收另一端发来的数据，直到它给我发来文件结束（FIN）”。</p>
+<p>如果应用程序不调用close而调用shutdown，且第2个参数值为1，则插口的API支持半关闭。然而，大多数的应用程序通过调用close终止两个方向的连接。</p>
+<p>图18-10显示了一个半关闭的典型例子。让左方的客户端开始半关闭，当然也可以由另一端开始。开始的两个报文段和图18-4是相同的：初始端发出的 FIN，接着是另一端对这个 FIN的ACK报文段。但后面就和图18-4不同，因为接收半关闭的一方仍能发送数据。我们只显示一个数据报文段和一个ACK报文段，但可能发送了许多数据报文段。当收到半关闭的一端在完成它的数据传送后，将发送一个FIN关闭这个方向的连接，这将传送一个文件结束符给发起这个半关闭的应用进程。当对第二个 FIN进行确认后，这个连接便彻底关闭了。</p>
+<p><img src="/images/tcp-ip/18-10.jpg"><br>图18-10 TCP半关闭的例子</p>
+<h2 id="TCP的状态变迁图"><a href="#TCP的状态变迁图" class="headerlink" title="TCP的状态变迁图"></a>TCP的状态变迁图</h2><p>我们已经介绍了许多有关发起和终止 TCP连接的规则。这些规则都能从图 18-12所示的状态变迁图中得出。</p>
+<p><img src="/images/tcp-ip/18-12.jpg"><br>图18-12 TCP的状态变迁图</p>
+<p>在这个图中要注意的第一点是一个状态变迁的子集是“典型的”。我们用粗的实线箭头表示正常的客户端状态变迁，用粗的虚线箭头表示正常的服务器状态变迁。</p>
+<p>第二点是两个导致进入ESTABLISH-ED状态的变迁对应打开一个连接，而两个导致从ESTABLISHED状态离开的变迁对应关闭一个连接。ESTABLISHED状态是连接双方能够进行双向数据传递的状态。以后的章节将介绍这个状态。</p>
+<p>将图中左下角 4个状态放在一个虚线框内，并标为“主动关闭”。其他两个状态（CLOSE_WAIT和LAST_ACK）也用虚线框住，并标为“被动关闭”。</p>
+<p>在这个图中 11 个状态的名称（CLOSED, LISTEN, SYN_SENT等）是有意与netstat命令显示的状态名称一致。netstat对状态的命名几乎与 在 RFC 793 中的最初描述 一致。CLOSED状态不是一个真正的状态，而是这个状态图的假想起点和终点。</p>
+<p>从LISTEN到SYN_SENT的变迁是正确的，但伯克利版的TCP软件并不支持它。</p>
+<p>只有当SYN_RCVD状态是从LISTEN状态（正常情况）进入，而不是从 SYN_SENT状态（同时打开）进入时，从 SYN_RCVD回到LISTEN的状态变迁才是有效的。这意味着如果我们执行被动关闭（进入LISTEN），收到一个SYN，发送一个带ACK的SYN（进入SYN_RCVD），然后收到一个RST，而不是一个ACK，便又回到LISTEN状态并等待另一个连接请求的到来。图18-13显示了在正常的TCP连接的建立与终止过程中，客户与服务器所经历的不同状态。</p>
+<p>假定在图18-13中左边的客户执行主动打开，而右边的服务器执行被动打开。尽管图中显示出由客户端执行主动关闭，但和早前我们提到的一样，另一端也能执行主动关闭。</p>
+<p>可以使用图18-12的状态图来跟踪图18-13的状态变化过程，以便明白每个状态的变化。</p>
+<p><img src="/images/tcp-ip/18-13.jpg"><br>图18-13 TCP正常连接建立和终止所对应的状态</p>
+<h3 id="2MSL等待状态"><a href="#2MSL等待状态" class="headerlink" title="2MSL等待状态"></a>2MSL等待状态</h3><p>TIME_WAIT状态也称为2MSL等待状态。每个具体 TCP实现必须选择一个报文段最大生存时间MSL（Maximum Segment Lifetime）。它是任何报文段被丢弃前在网络内的最长时间。我们知道这个时间是有限的，因为 TCP报文段以IP数据报在网络内传输，而IP数据报则有限制其生存时间的TTL字段。</p>
+<h3 id="平静时间的概念"><a href="#平静时间的概念" class="headerlink" title="平静时间的概念"></a>平静时间的概念</h3><p>对于来自某个连接的较早替身的迟到报文段， 2MSL等待可防止将它解释成使用相同插口对的新连接的一部分。但这只有在处于 2MSL等待连接中的主机处于正常工作状态时才有效。</p>
+<p>如果使用处于2MSL等待端口的主机出现故障，它会在 MSL秒内重新启动，并立即使用故障前仍处于2MSL的插口对来建立一个新的连接吗？如果是这样，在故障前从这个连接发出而迟到的报文段会被错误地当作属于重启后新连接的报文段。无论如何选择重启后新连接的初始序号，都会发生这种情况。</p>
+<p>为了防止这种情况，RFC 793指出TCP在重启动后的MSL秒内不能建立任何连接。这就称为平静时间(quiet time)。</p>
+<p>只有极少的实现版遵守这一原则，因为大多数主机重启动的时间都比MSL秒要长。</p>
+<h3 id="FIN-WAIT-2-状态"><a href="#FIN-WAIT-2-状态" class="headerlink" title="FIN_WAIT_2 状态"></a>FIN_WAIT_2 状态</h3><p>在FIN_WAIT_2状态我们已经发出了 FIN，并且另一端也已对它进行确认。除非我们在实行半关闭，否则将等待另一端的应用层意识到它已收到一个文件结束符说明，并向我们发一个FIN来关闭另一方向的连接。只有当另一端的进程完成这个关闭，我们这端才会从FIN_WAIT_2状态进入TIME_WAIT状态。这意味着我们这端可能永远保持这个状态。另一端也将处于 CLOSE_WAIT状态，并一直保持这个状态直到应用层决定进行关闭。</p>
+<p>许多伯克利实现采用如下方式来防止这种在FIN_WAIT_2状态的无限等待。如果执行主动关闭的应用层将进行全关闭，而不是半关闭来说明它还想接收数据，就设置一个定时器。如果这个连接空闲10分钟75秒，TCP将进入CLOSED状态。在实现代码的注释中确认这个实现代码违背协议的规范。</p>
+<h2 id="复位报文段"><a href="#复位报文段" class="headerlink" title="复位报文段"></a>复位报文段</h2><p>我们已经介绍了TCP首部中的RST比特是用于“复位”的。一般说来，无论何时一个报文段发往基准的连接（ referenced connection）出现错误，TCP都会发出一个复位报文段（这里提到的“基准的连接”是指由目的 IP地址和目的端口号以及源 IP地址和源端口号指明的连接。这就是为什么RFC 793称之为插口）。</p>
+<h3 id="到不存在的端口的连接请求"><a href="#到不存在的端口的连接请求" class="headerlink" title="到不存在的端口的连接请求"></a>到不存在的端口的连接请求</h3><p>产生复位的一种常见情况是当连接请求到达时，目的端口没有进程正在听。对于 UDP，当一个数据报到达目的端口时，该端口没在使用，它将产生一个ICMP端口不可达的信息。而TCP则使用复位。</p>
+<h3 id="异常终止一个连接"><a href="#异常终止一个连接" class="headerlink" title="异常终止一个连接"></a>异常终止一个连接</h3><p>终止一个连接的正常方式是一方发送 FIN。有时这也称为有序释放（orderly release），因为在所有排队数据都已发送之后才发送 FIN，正常情况下没有任何数据丢失。但也有可能发送一个复位报文段而不是 FIN来中途释放一个连接。有时称这为异常释放（abortive release）。</p>
+<p>异常终止一个连接对应用程序来说有两个优点：（1）丢弃任何待发数据并立即发送复位报文段；（2）RST的接收方会区分另一端执行的是异常关闭还是正常关闭。应用程序使用的API必须提供产生异常关闭而不是正常关闭的手段。使用sock程序能够观察这种异常关闭的过程。 Socket API通过“linger on close”选项（SO_LINGER）提供了这种异常关闭的能力。我们加上 -L选项并将停留时间设为 0。这将导致连接关闭时进行复位而不是正常的 FIN。</p>
+<h3 id="检测半打开连接"><a href="#检测半打开连接" class="headerlink" title="检测半打开连接"></a>检测半打开连接</h3><p>如果一方已经关闭或异常终止连接而另一方却还不知道，我们将这样的 TCP 连接称为半打开（Half-Open）的。任何一端的主机异常都可能导致发生这种情况。只要不打算在半打开连接上传输数据，仍处于连接状态的一方就不会检测另一方已经出现异常。</p>
+<p>半打开连接的另一个常见原因是当客户主机突然掉电而不是正常的结束客户应用程序后再关机。这可能发生在使用 PC机作为Telnet的客户主机上，例如，用户在一天工作结束时关闭PC机的电源。当关闭PC机电源时，如果已不再有要向服务器发送的数据，服务器将永远不知道客户程序已经消失了。当用户在第二天到来时，打开PC机，并启动新的Telnet客户程序，在服务器主机上会启动一个新的服务器程序。这样会导致服务器主机中产生许多半打开的TCP连接</p>
+<h2 id="同时打开"><a href="#同时打开" class="headerlink" title="同时打开"></a>同时打开</h2><p>两个应用程序同时彼此执行主动打开的情况是可能的，尽管发生的可能性极小。每一方必须发送一个 SYN，且这些SYN必须传递给对方。这需要每一方使用一个对方熟知的端口作为本地端口。这又称为同时打开（simultaneous open）。</p>
+<p><img src="/images/tcp-ip/18-17.jpg"><br>图18-17 同时打开期间报文段的交换</p>
+<p>一个同时打开的连接需要交换 4个报文段，比正常的三次握手多一个。此外，要注意的是我们没有将任何一端称为客户或服务器，因为每一端既是客户又是服务器。</p>
+<h2 id="同时关闭"><a href="#同时关闭" class="headerlink" title="同时关闭"></a>同时关闭</h2><p>在图18-12中，当应用层发出关闭命令时，两端均从 ESTABLISHED变为FIN_WAIT_1。这将导致双方各发送一个FIN，两个FIN经过网络传送后分别到达另一端。收到 FIN后，状态由FIN_WAIT_1变迁到CLOSING，并发送最后的 ACK。当收到最后的 ACK时，状态变化为TIME_WAIT。图18-19总结了这些状态的变化。</p>
+<p><img src="/images/tcp-ip/18-19.jpg"><br>图18-19 同时关闭期间的报文段交换</p>
+<p>同时关闭与正常关闭使用的段交换数目相同。</p>
+<h2 id="TCP-选项"><a href="#TCP-选项" class="headerlink" title="TCP 选项"></a>TCP 选项</h2><p>TCP首部可以包含选项部分）。仅在最初的TCP规范中定义的选项是选项表结束、无操作和最大报文段长度。在我们的例子中，几乎每个 SYN报文段中我们都遇到过MSS选项。</p>
+<p>新的RFC，主要是RFC 1323 [Jacobson, Braden和Borman 1992]，定义了新的TCP选项，这些选项的大多数只在最新的 TCP实现中才能见到。图18-20显示了当前TCP选项的格式，这些选项的定义出自于 RFC 793和RFC 1323。</p>
+<p><img src="/images/tcp-ip/18-20.jpg"><br>图18-20 TCP选项</p>
+<p>每个选项的开始是1字节kind字段，说明选项的类型。kind字段为0和1的选项仅占1个字节。其他的选项在kind字节后还有len字节。它说明的长度是指总长度，包括 kind字节和len字节。</p>
+<h2 id="TCP-服务器的设计"><a href="#TCP-服务器的设计" class="headerlink" title="TCP 服务器的设计"></a>TCP 服务器的设计</h2><p>大多数的TCP服务器进程是并发的。当一个新的连接请求到达服务器时，服务器接受这个请求，并调用一个新进程来处理这个新的客户请求。不同的操作系统使用不同的技术来调用新的服务器进程。在 Unix系统下，常用的技术是使用 fork函数来创建新的进程。如果系统支持，也可使用轻型进程，即线程（ thread）。我们感兴趣的是 TCP与若干并发服务器的交互作用。需要回答下面的问题：当一个服务器进程接受一来自客户进程的服务请求时是如何处理端口的？如果多个连接请求几乎同时到达会发生什么情况？</p>
+<h3 id="TCP服务器端口号"><a href="#TCP服务器端口号" class="headerlink" title="TCP服务器端口号"></a>TCP服务器端口号</h3><p>通过观察任何一个 TCP服务器，我们能了解 TCP如何处理端口号。我们使用 netstat命令来观察 Telnet服务器。下面是在没有 Telnet连接时的显示（只留下显示 Telnet服务器的行）。</p>
+<p>TCP使用由本地地址和远端地址组成的 4元组：目的IP地址、目的端口号、源IP地址和源端口号来处理传入的多个连接请求。 TCP仅通过目的端口号无法确定那个进程接收了一个连接请求。另外，在三个使用端口23的进程中，只有处于 LISTEN的进程能够接收新的连接请求。处于 ESTABLISHED的进程将不能接收 SYN报文段，而处于LISTEN的进程将不能接收数据报文段。</p>
+<h2 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h2><p>图20-4用可视化的方法显示了我们在前一节观察到的滑动窗口协议。</p>
+<p><img src="/images/tcp-ip/20-4.jpg"><br>图20-4 TCP滑动窗口的可视化表示</p>
+<p>在这个图中，我们将字节从1至11进行标号。接收方通告的窗口称为提出的窗口（ offered window），它覆盖了从第4字节到第9字节的区域，表明接收方已经确认了包括第 3字节在内的数据，且通告窗口大小为 6。回顾第1 7章，我们知道窗口大小是与确认序号相对应的。发送方计算它的可用窗口，该窗口表明多少数据可以立即被发送。</p>
+<p>当接收方确认数据后，这个滑动窗口不时地向右移动。窗口两个边沿的相对运动增加或减少了窗口的大小。我们使用三个术语来描述窗口左右边沿的运动：</p>
+<ol>
+<li>称窗口左边沿向右边沿靠近为窗口合拢。这种现象发生在数据被发送和确认时。</li>
+<li>当窗口右边沿向右移动时将允许发送更多的数据，我们称之为窗口张开。这种现象发生在另一端的接收进程读取已经确认的数据并释放了 TCP的接收缓存时。</li>
+<li>当右边沿向左移动时，我们称之为窗口收缩。 Host Requirements RFC强烈建议不要使用这种方式。但T C P必须能够在某一端产生这种情况时进行处理。</li>
+</ol>
+<p>图20-5表示了这三种情况。因为窗口的左边沿受另一端发送的确认序号的控制，因此不可能向左边移动。如果接收到一个指示窗口左边沿向左移动的 ACK，则它被认为是一个重复 ACK，并被丢弃。如果左边沿到达右边沿，则称其为一个零窗口，此时发送方不能够发送任何数据。</p>
+<p><img src="/images/tcp-ip/20-5.jpg"><br>图20-5 窗口边沿的移动</p>
+<h2 id="窗口大小"><a href="#窗口大小" class="headerlink" title="窗口大小"></a>窗口大小</h2><p>由接收方提供的窗口的大小通常可以由接收进程控制，这将影响 TCP的性能。</p>
+<h2 id="慢启动"><a href="#慢启动" class="headerlink" title="慢启动"></a>慢启动</h2><p>TCP需要支持一种被称为“慢启动 (slow start)”的算法。该算法通过观察到新分组进入网络的速率应该与另一端返回确认的速率相同而进行工作。</p>
+<p>慢启动为发送方的TCP增加了另一个窗口：拥塞窗口 (congestion window)，记为cwnd。当与另一个网络的主机建立 TCP连接时，拥塞窗口被初始化为 1个报文段（即另一端通告的报文段大小）。每收到一个 ACK，拥塞窗口就增加一个报文段（ cwnd以字节为单位，但是慢启动以报文段大小为单位进行增加）。发送方取拥塞窗口与通告窗口中的最小值作为发送上限。拥塞窗口是发送方使用的流量控制，而通告窗口则是接收方使用的流量控制。</p>
+<p>发送方开始时发送一个报文段，然后等待 ACK。当收到该ACK时，拥塞窗口从1增加为2，即可以发送两个报文段。当收到这两个报文段的 ACK时，拥塞窗口就增加为 4。这是一种指数增加的关系。</p>
+<p>在某些点上可能达到了互联网的容量，于是中间路由器开始丢弃分组。这就通知发送方它的拥塞窗口开得过大。</p>
+<h2 id="快速重传与快速恢复算法"><a href="#快速重传与快速恢复算法" class="headerlink" title="快速重传与快速恢复算法"></a>快速重传与快速恢复算法</h2><p>这个算法通常按如下过程进行实现：</p>
+<ol>
+<li>当收到第3个重复的ACK时，将ssthresh设置为当前拥塞窗口 cwnd的一半。重传丢失的报文段。设置cwnd为ssthresh加上3倍的报文段大小。</li>
+<li>每次收到另一个重复的 ACK时，cwnd增加1个报文段大小并发送 1个分组（如果新的cwnd允许发送）。</li>
+<li>当下一个确认新数据的ACK到达时，设置cwnd为ssthresh（在第1步中设置的值）。这个ACK应该是在进行重传后的一个往返时间内对步骤 1中重传的确认。另外，这个 ACK也应该是对丢失的分组和收到的第 1个重复的ACK之间的所有中间报文段的确认。这一步采用的是拥塞避免，因为当分组丢失时我们将当前的速率减半。</li>
+</ol>
+
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg" alt="GitHub" width="16" height="16"> </i></a>
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://leetcode.cn/u/yu-peng-f"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/leetcode.svg" alt="LeetCode" width="16" height="16"> </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/gmail.svg" alt="Mail" width="16" height="16"> </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+  </body>
+</html>
