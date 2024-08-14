@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog go1.23 新特性 </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">go1.23 新特性</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2024-08-14T07:28:27.000Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2024-08-14 15:28:27
+</time>
+
+    
+<div class="post__category">
+  <i class="blogfont">&#xe62d;</i>
+  <a class="category-link" href="/categories/golang/">golang</a>
+</div>
+  
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" rel="tag">编程语言</a>
+</div>
+
+
+    <div id="/2024/08/14/go/go1-23/index/" class="leancloud_visitors post__stat" data-flag-title="go1.23 新特性">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#go1-23-%E6%96%B0%E7%89%B9%E6%80%A7"><span class="post__toc-text">go1.23 新特性</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#Linker"><span class="post__toc-text">Linker</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#range-over-func"><span class="post__toc-text">range-over-func</span></a></li></ol></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h1 id="go1-23-新特性"><a href="#go1-23-新特性" class="headerlink" title="go1.23 新特性"></a>go1.23 新特性</h1><p>这里面主要记一些语法相关的变化，或者说是我更关注的地方的变化。</p>
+<h2 id="Linker"><a href="#Linker" class="headerlink" title="Linker"></a>Linker</h2><p>链接器现在不允许使用 &#x2F;&#x2F;go:linkname 指令引用标准库（包括运行时）中未在定义中标记有 &#x2F;&#x2F;go:linkname 的内部符号。同样，链接器不允许从汇编代码中引用此类符号。为了向后兼容，现有的 &#x2F;&#x2F;go:linkname 用法仍然受到支持，这些用法在大型开源代码库中发现。但任何对标准库内部符号的新引用将被禁止。</p>
+<p>链接器命令行标志 -checklinkname&#x3D;0 可用于禁用此检查，适用于调试和实验用途。</p>
+<p>当构建动态链接的 ELF 二进制文件（包括 PIE 二进制文件）时，新的 -bindnow 标志可以启用即时函数绑定。</p>
+<p>简单来说就是说不允许直接 linkname 一些标准库符号，从下面的示例来看一下。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	_ <span class="string">&quot;strings&quot;</span></span><br><span class="line">	_ <span class="string">&quot;unsafe&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">//go:linkname explode strings.explode</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">explode</span><span class="params">(s <span class="type">string</span>, n <span class="type">int</span>)</span></span> []<span class="type">string</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(explode(<span class="string">&quot;你好go语言&quot;</span>, <span class="number">-1</span>))</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>go 1.13 之前代码是可以正常输出</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">go run .</span></span><br><span class="line">[你 好 g o 语 言]</span><br></pre></td></tr></table></figure>
+
+<p>尝试使用 go1.23 运行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">go run .</span></span><br><span class="line">go: downloading go1.23.0 (linux/amd64)</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">linkname</span></span><br><span class="line">link: main: invalid reference to strings.explode</span><br></pre></td></tr></table></figure>
+<p>可以看出程序已经无法正常运行</p>
+<p>使用 -checklinkname&#x3D;0 禁用此检查。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">go run -ldflags=-checklinkname=0 .</span></span><br><span class="line">[你 好 g o 语 言]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>至于禁用的原因是 “这种使用内部类型的情况是不可持续的”，是的一般这样就是要link一些内部的私有符号，而标准库将这些符号声明为私有的就是为了避免随意的访问，另外大量的访问就会使得私有符号有了公共符号的作用，使得内部的变更变得困难。</p>
+<h2 id="range-over-func"><a href="#range-over-func" class="headerlink" title="range-over-func"></a>range-over-func</h2><p>Go 1.23 将 (Go 1.22) 的“<a target="_blank" rel="noopener" href="https://go.dev/wiki/RangefuncExperiment">range-over-func</a>”实验正式纳入语言中。现在，“for-range”循环中的“range”子句可以接受以下类型的迭代器函数作为 range 表达式：</p>
+<p>func(func() bool)<br>func(func(K) bool)<br>func(func(K, V) bool)</p>
+<p>这些类型的函数调用迭代器参数函数来生成“for-range”循环的迭代值。有关详细信息，请参阅 <a target="_blank" rel="noopener" href="https://go.dev/pkg/iter">iter</a> 包文档和<a target="_blank" rel="noopener" href="https://go.dev/ref/spec#For_range">语言规范</a>。关于动机，参见 2022 年的“<a target="_blank" rel="noopener" href="https://go.dev/issue/56413">range-over-func</a>”讨论。</p>
+<p>这块主要是看下 这个 range-over-func 如何使用吧</p>
+<p>先看个示例代码吧</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;slices&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Backward</span>[<span class="title">E</span> <span class="title">any</span>]<span class="params">(s []E)</span></span> <span class="function"><span class="keyword">func</span><span class="params">(<span class="keyword">func</span>(<span class="type">int</span>, E)</span></span> <span class="type">bool</span>) &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(yield <span class="keyword">func</span>(<span class="type">int</span>, E)</span></span> <span class="type">bool</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="built_in">len</span>(s) - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i-- &#123;</span><br><span class="line">			<span class="keyword">if</span> !yield(i, s[i]) &#123;</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	s := []<span class="type">string</span>&#123;<span class="string">&quot;hello&quot;</span>, <span class="string">&quot;world&quot;</span>&#125;</span><br><span class="line">	<span class="keyword">for</span> i, x := <span class="keyword">range</span> slices.Backward(s) &#123;</span><br><span class="line">		fmt.Println(i, x)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// fibo generates the Fibonacci sequence</span></span><br><span class="line">	fibo := <span class="function"><span class="keyword">func</span><span class="params">(yield <span class="keyword">func</span>(x <span class="type">int</span>)</span></span> <span class="type">bool</span>) &#123;</span><br><span class="line">		f0, f1 := <span class="number">0</span>, <span class="number">1</span></span><br><span class="line">		<span class="keyword">for</span> yield(f0) &#123;</span><br><span class="line">			f0, f1 = f1, f0+f1</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// print the Fibonacci numbers below 1000:</span></span><br><span class="line">	<span class="keyword">for</span> x := <span class="keyword">range</span> fibo &#123;</span><br><span class="line">		<span class="keyword">if</span> x &gt;= <span class="number">1000</span> &#123;</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		fmt.Printf(<span class="string">&quot;%d &quot;</span>, x)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>输出</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="keyword">go</span> run .</span><br><span class="line"><span class="number">1</span> world</span><br><span class="line"><span class="number">0</span> hello</span><br><span class="line"><span class="number">0</span> <span class="number">1</span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">5</span> <span class="number">8</span> <span class="number">13</span> <span class="number">21</span> <span class="number">34</span> <span class="number">55</span> <span class="number">89</span> <span class="number">144</span> <span class="number">233</span> <span class="number">377</span> <span class="number">610</span> <span class="number">987</span> </span><br></pre></td></tr></table></figure>
+
+
+<p>理解有的晦涩，我写一下我对第二个循环的理解吧 </p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> f0 &gt;= <span class="number">1000</span> &#123;</span><br><span class="line">		<span class="keyword">break</span></span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Printf(<span class="string">&quot;%d &quot;</span>, f0)</span><br><span class="line">	f0, f1 = f1, f0+f1</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有的像其他语言的 forEach 循环, 首先 yield 的入参就是 range 返回的内容，而 for 大括号内的内容就是  yield 的方法体，continue 会变成  return true ,而 break 是 return false</p>
+<p>其他变更和以上变更详细信息参见<a target="_blank" rel="noopener" href="https://go.dev/doc/go1.23">Go 1.23 Release Notes</a></p>
+
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg" alt="GitHub" width="16" height="16"> </i></a>
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://leetcode.cn/u/yu-peng-f"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/leetcode.svg" alt="LeetCode" width="16" height="16"> </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/gmail.svg" alt="Mail" width="16" height="16"> </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+  </body>
+</html>
