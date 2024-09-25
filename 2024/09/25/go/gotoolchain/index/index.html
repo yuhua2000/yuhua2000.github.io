@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog gotoolchain </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">gotoolchain</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2024-09-25T12:29:29.000Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2024-09-25 20:29:29
+</time>
+
+    
+<div class="post__category">
+  <i class="blogfont">&#xe62d;</i>
+  <a class="category-link" href="/categories/golang/">golang</a>
+</div>
+  
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" rel="tag">编程语言</a>
+</div>
+
+
+    <div id="/2024/09/25/go/gotoolchain/index/" class="leancloud_visitors post__stat" data-flag-title="gotoolchain">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#go-toolchain"><span class="post__toc-text">go toolchain</span></a></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h2 id="go-toolchain"><a href="#go-toolchain" class="headerlink" title="go toolchain"></a>go toolchain</h2><p>toolchain 声明了一个建议用于该模块的 Go 工具链。仅当该模块是主模块且默认工具链版本低于建议的工具链版本时才会生效。</p>
+<p>语法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">toolchain toolchain-name</span><br></pre></td></tr></table></figure>
+
+<p>toolchain-name<br>建议使用的 Go 工具链名称。标准工具链名称的形式为 goV，其中 V 是 Go 的版本号，如 go1.21.0 和 go1.18rc1。特殊值 default 会禁用自动工具链切换。</p>
+<p>示例<br>建议使用 Go 1.21.0 或更新版本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">toolchain go1.21.0</span><br></pre></td></tr></table></figure>
+
+<p>当本地的go环境高于建议并这个值没有什么实际作用，而本地的go版本低于这个版本设置则会根据配置、下载新的go版本或者报错等。</p>
+
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg" alt="GitHub" width="16" height="16"> </i></a>
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://leetcode.cn/u/yu-peng-f"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/leetcode.svg" alt="LeetCode" width="16" height="16"> </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/gmail.svg" alt="Mail" width="16" height="16"> </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+  </body>
+</html>
