@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog Windows 端口代理映射到 WSL 端口 </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">Windows 端口代理映射到 WSL 端口</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2025-07-09T01:44:53.000Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2025-07-09 09:44:53
+</time>
+
+    
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/wsl/" rel="tag">wsl</a>
+</div>
+
+
+    <div id="/2025/07/09/wsl/wslproxy/index/" class="leancloud_visitors post__stat" data-flag-title="Windows 端口代理映射到 WSL 端口">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#Windows-%E7%AB%AF%E5%8F%A3%E4%BB%A3%E7%90%86%E6%98%A0%E5%B0%84%E5%88%B0-WSL-%E7%AB%AF%E5%8F%A3%E6%B5%81%E7%A8%8B%EF%BC%88%E9%9C%80%E5%BC%80%E5%90%AF-iphlpsvc%EF%BC%89"><span class="post__toc-text">Windows 端口代理映射到 WSL 端口流程（需开启 iphlpsvc）</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#1-%E5%90%AF%E5%8A%A8-Ip-Helper-%E6%9C%8D%E5%8A%A1"><span class="post__toc-text">1. 启动 Ip Helper 服务</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E6%B7%BB%E5%8A%A0%E7%AB%AF%E5%8F%A3%E4%BB%A3%E7%90%86%E8%A7%84%E5%88%99"><span class="post__toc-text">添加端口代理规则</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%92%8C%E5%88%A0%E9%99%A4%E7%AB%AF%E5%8F%A3%E4%BB%A3%E7%90%86%E8%A7%84%E5%88%99"><span class="post__toc-text">查看和删除端口代理规则</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E6%89%80%E6%9C%89%E4%BB%A3%E7%90%86%E8%A7%84%E5%88%99%EF%BC%9A"><span class="post__toc-text">查看当前所有代理规则：</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E5%88%A0%E9%99%A4%E6%8C%87%E5%AE%9A%E4%BB%A3%E7%90%86%E8%A7%84%E5%88%99%EF%BC%88%E4%BE%8B%E5%A6%82%E7%9B%91%E5%90%AC%E7%AB%AF%E5%8F%A3-8080%EF%BC%89%EF%BC%9A"><span class="post__toc-text">删除指定代理规则（例如监听端口 8080）：</span></a></li></ol></li></ol></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h1 id="Windows-端口代理映射到-WSL-端口流程（需开启-iphlpsvc）"><a href="#Windows-端口代理映射到-WSL-端口流程（需开启-iphlpsvc）" class="headerlink" title="Windows 端口代理映射到 WSL 端口流程（需开启 iphlpsvc）"></a>Windows 端口代理映射到 WSL 端口流程（需开启 iphlpsvc）</h1><p>此流程通过 <code>netsh interface portproxy</code> 实现将 Windows 某端口映射到 WSL 中指定端口，前提是 Windows 的 IP Helper 服务（iphlpsvc）已启动。</p>
+<h2 id="1-启动-Ip-Helper-服务"><a href="#1-启动-Ip-Helper-服务" class="headerlink" title="1. 启动 Ip Helper 服务"></a>1. 启动 Ip Helper 服务</h2><p>执行命令查看 iphlpsvc 运行状态</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$Get</span><span class="literal">-Service</span> iphlpsvc</span><br><span class="line"></span><br><span class="line">Status   Name               DisplayName</span><br><span class="line"><span class="literal">------</span>   <span class="literal">----</span>               <span class="literal">-----------</span></span><br><span class="line">Stopped  iphlpsvc           IP Helper</span><br></pre></td></tr></table></figure>
+
+<p>如果是 Stopped 则启动 iphlpsvc 服务<br><code>Start-Service iphlpsvc</code></p>
+<p>然后可再次查看运行状态</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$Get</span><span class="literal">-Service</span> iphlpsvc</span><br><span class="line"></span><br><span class="line">Status   Name               DisplayName</span><br><span class="line"><span class="literal">------</span>   <span class="literal">----</span>               <span class="literal">-----------</span></span><br><span class="line">Running  iphlpsvc           IP Helper</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="添加端口代理规则"><a href="#添加端口代理规则" class="headerlink" title="添加端口代理规则"></a>添加端口代理规则</h2><p>假设需要将 Windows 的 8080 端口映射到 WSL 的 3000 端口，执行：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$netsh</span> interface portproxy add v4tov4 listenport=<span class="number">8080</span> listenaddress=* connectport=<span class="number">3000</span> connectaddress=&lt;WSL_IP&gt;</span><br></pre></td></tr></table></figure>
+<p>开放防火墙端口（如有必要）<br>允许 Windows 防火墙通过端口 8080：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">New-NetFirewallRule</span> <span class="literal">-DisplayName</span> <span class="string">&quot;WSL Port Forward 8080&quot;</span> <span class="literal">-Direction</span> Inbound <span class="literal">-LocalPort</span> <span class="number">8080</span> <span class="literal">-Protocol</span> TCP <span class="literal">-Action</span> Allow</span><br></pre></td></tr></table></figure>
+<h2 id="查看和删除端口代理规则"><a href="#查看和删除端口代理规则" class="headerlink" title="查看和删除端口代理规则"></a>查看和删除端口代理规则</h2><h3 id="查看当前所有代理规则："><a href="#查看当前所有代理规则：" class="headerlink" title="查看当前所有代理规则："></a>查看当前所有代理规则：</h3><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$netsh</span> interface portproxy show all</span><br><span class="line"></span><br><span class="line">Listen on ipv4:             Connect to ipv4:</span><br><span class="line"></span><br><span class="line">Address         Port        Address         Port</span><br><span class="line"><span class="literal">---------------</span> <span class="literal">----------</span>  <span class="literal">---------------</span> <span class="literal">----------</span></span><br><span class="line">*               <span class="number">8080</span>        <span class="number">172.26</span>.<span class="number">105.197</span>  <span class="number">3000</span></span><br></pre></td></tr></table></figure>
+<h3 id="删除指定代理规则（例如监听端口-8080）："><a href="#删除指定代理规则（例如监听端口-8080）：" class="headerlink" title="删除指定代理规则（例如监听端口 8080）："></a>删除指定代理规则（例如监听端口 8080）：</h3><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netsh interface portproxy delete v4tov4 listenport=<span class="number">8080</span> listenaddress=*</span><br></pre></td></tr></table></figure>
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg" alt="GitHub" width="16" height="16"> </i></a>
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://leetcode.cn/u/yu-peng-f"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/leetcode.svg" alt="LeetCode" width="16" height="16"> </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/gmail.svg" alt="Mail" width="16" height="16"> </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+  </body>
+</html>
