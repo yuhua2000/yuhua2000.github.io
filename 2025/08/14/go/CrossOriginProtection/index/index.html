@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog CrossOriginProtection 使用指南 </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">CrossOriginProtection 使用指南</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2025-08-14T09:59:00.000Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2025-08-14 17:59:00
+</time>
+
+    
+<div class="post__category">
+  <i class="blogfont">&#xe62d;</i>
+  <a class="category-link" href="/categories/golang/">golang</a>
+</div>
+  
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" rel="tag">编程语言</a>
+</div>
+
+
+    <div id="/2025/08/14/go/CrossOriginProtection/index/" class="leancloud_visitors post__stat" data-flag-title="CrossOriginProtection 使用指南">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#Go-1-25-%E6%96%B0%E5%A2%9E-CrossOriginProtection-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97"><span class="post__toc-text">Go 1.25 新增 CrossOriginProtection 使用指南</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-CrossOriginProtection"><span class="post__toc-text">什么是 CrossOriginProtection</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#1-%E5%88%9B%E5%BB%BA%E5%AE%9E%E4%BE%8B"><span class="post__toc-text">1. 创建实例</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#2-%E6%B7%BB%E5%8A%A0%E5%8F%AF%E4%BF%A1%E6%9D%A5%E6%BA%90"><span class="post__toc-text">2. 添加可信来源</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#3-%E6%B7%BB%E5%8A%A0%E4%B8%8D%E5%AE%89%E5%85%A8%E8%B7%AF%E5%BE%84%E7%BB%95%E8%BF%87"><span class="post__toc-text">3. 添加不安全路径绕过</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#4-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8B%92%E7%BB%9D%E9%80%BB%E8%BE%91"><span class="post__toc-text">4. 自定义拒绝逻辑</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#5-Handler-%E7%94%A8%E6%B3%95%EF%BC%88%E6%8E%A8%E8%8D%90%E7%94%A8%E4%BA%8E%E6%95%B4%E6%9D%A1%E8%B7%AF%E5%BE%84%EF%BC%89"><span class="post__toc-text">5. Handler 用法（推荐用于整条路径）</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#6-Check-%E6%96%B9%E6%B3%95%E7%94%A8%E6%B3%95%EF%BC%88%E6%89%8B%E5%8A%A8%E6%A3%80%E6%9F%A5%E5%8D%95%E4%B8%AA%E8%AF%B7%E6%B1%82%EF%BC%89"><span class="post__toc-text">6. Check 方法用法（手动检查单个请求）</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#7-%E7%9B%B4%E6%8E%A5%E5%9C%A8-http-ListenAndServe-%E4%BD%BF%E7%94%A8"><span class="post__toc-text">7. 直接在 http.ListenAndServe 使用</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#8-%E6%80%BB%E7%BB%93"><span class="post__toc-text">8. 总结</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E5%AE%8C%E6%95%B4%E7%A4%BA%E4%BE%8B"><span class="post__toc-text">完整示例</span></a></li></ol></li></ol></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h1 id="Go-1-25-新增-CrossOriginProtection-使用指南"><a href="#Go-1-25-新增-CrossOriginProtection-使用指南" class="headerlink" title="Go 1.25 新增 CrossOriginProtection 使用指南"></a>Go 1.25 新增 CrossOriginProtection 使用指南</h1><p>Go 1.25 引入了 <code>CrossOriginProtection</code>，用于保护 Web 应用免受 CSRF 攻击。本文详细介绍其 API 与常见使用方法。</p>
+<p>具体的接口定义可以参考<a target="_blank" rel="noopener" href="https://pkg.go.dev/net/http#CrossOriginProtection">CrossOriginProtection</a></p>
+<hr>
+<h3 id="什么是-CrossOriginProtection"><a href="#什么是-CrossOriginProtection" class="headerlink" title="什么是 CrossOriginProtection"></a>什么是 CrossOriginProtection</h3><p>CrossOriginProtection 会拒绝不安全的跨源浏览器请求。它的判断依据是：</p>
+<p>Sec-Fetch-Site 请求头（2023 年起所有主流浏览器支持）</p>
+<p>或 Origin 请求头与 Host 对比</p>
+<p>默认允许的安全方法：GET、HEAD、OPTIONS</p>
+<p>具体的逻辑可以阅读源码<a target="_blank" rel="noopener" href="https://cs.opensource.google/go/go/+/refs/tags/go1.25.0:src/net/http/csrf.go;l=122">func (*CrossOriginProtection) Check</a></p>
+<hr>
+<h2 id="1-创建实例"><a href="#1-创建实例" class="headerlink" title="1. 创建实例"></a>1. 创建实例</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cop := http.NewCrossOriginProtection()</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>零值有效，无需初始化参数</li>
+<li>支持并发调用</li>
+</ul>
+<hr>
+<h2 id="2-添加可信来源"><a href="#2-添加可信来源" class="headerlink" title="2. 添加可信来源"></a>2. 添加可信来源</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">err := cop.AddTrustedOrigin(<span class="string">&quot;https://myapp.com&quot;</span>)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatal(err)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>允许来自特定 Origin 的请求</li>
+<li>Origin 格式：<code>scheme://host[:port]</code></li>
+</ul>
+<hr>
+<h2 id="3-添加不安全路径绕过"><a href="#3-添加不安全路径绕过" class="headerlink" title="3. 添加不安全路径绕过"></a>3. 添加不安全路径绕过</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cop.AddInsecureBypassPattern(<span class="string">&quot;/public/&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>/public/</code> 路径将不进行跨源检查</li>
+<li>规则与 <code>http.ServeMux</code> 相同</li>
+<li>可并发调用</li>
+</ul>
+<hr>
+<h2 id="4-自定义拒绝逻辑"><a href="#4-自定义拒绝逻辑" class="headerlink" title="4. 自定义拒绝逻辑"></a>4. 自定义拒绝逻辑</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cop.SetDenyHandler(http.HandlerFunc(<span class="function"><span class="keyword">func</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">    http.Error(w, <span class="string">&quot;Forbidden: CSRF protection&quot;</span>, http.StatusForbidden)</span><br><span class="line">&#125;))</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="5-Handler-用法（推荐用于整条路径）"><a href="#5-Handler-用法（推荐用于整条路径）" class="headerlink" title="5. Handler 用法（推荐用于整条路径）"></a>5. Handler 用法（推荐用于整条路径）</h2><p><code>Handler</code> 方法会在调用实际 handler 前自动执行跨源检查，如果不通过则返回 403 或自定义拒绝逻辑。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http.Handle(<span class="string">&quot;/api/&quot;</span>, cop.Handler(http.HandlerFunc(apiHandler)))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>优点</strong>：简单、自动处理请求拒绝</li>
+<li>场景：整条 API 路径都需要统一保护</li>
+</ul>
+<hr>
+<h2 id="6-Check-方法用法（手动检查单个请求）"><a href="#6-Check-方法用法（手动检查单个请求）" class="headerlink" title="6. Check 方法用法（手动检查单个请求）"></a>6. Check 方法用法（手动检查单个请求）</h2><p><code>Check</code> 方法用于在业务逻辑中手动判断请求是否被允许。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">apiHandler</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> err := cop.Check(r); err != <span class="literal">nil</span> &#123;</span><br><span class="line">        http.Error(w, err.Error(), http.StatusForbidden)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 请求合法，继续业务处理</span></span><br><span class="line">    w.Write([]<span class="type">byte</span>(<span class="string">&quot;API response&quot;</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>优点</strong>：精细控制，可根据条件选择性检查</li>
+<li>场景：单个请求、复杂中间件或特殊逻辑处理</li>
+</ul>
+<hr>
+<h2 id="7-直接在-http-ListenAndServe-使用"><a href="#7-直接在-http-ListenAndServe-使用" class="headerlink" title="7. 直接在 http.ListenAndServe 使用"></a>7. 直接在 http.ListenAndServe 使用</h2><p>也可以直接在主 handler 里使用 <code>Check</code>：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http.ListenAndServe(<span class="string">&quot;:8080&quot;</span>, cop.Handler(mux))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>适合没有复杂路由的简单服务</li>
+<li>不需要额外包装 <code>Handler</code></li>
+</ul>
+<hr>
+<h2 id="8-总结"><a href="#8-总结" class="headerlink" title="8. 总结"></a>8. 总结</h2><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>用途</th>
+<th>场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Handler</code></td>
+<td>自动检查跨源请求，失败返回 403 或自定义</td>
+<td>整条 API 路径统一保护</td>
+</tr>
+<tr>
+<td><code>Check</code></td>
+<td>手动检查请求，返回 error</td>
+<td>单个请求或复杂业务逻辑控制</td>
+</tr>
+<tr>
+<td><code>AddTrustedOrigin</code></td>
+<td>添加可信 Origin</td>
+<td>允许特定来源请求</td>
+</tr>
+<tr>
+<td><code>AddInsecureBypassPattern</code></td>
+<td>添加不安全路径绕过</td>
+<td>静态资源或无需检查的路径</td>
+</tr>
+<tr>
+<td><code>SetDenyHandler</code></td>
+<td>自定义拒绝逻辑</td>
+<td>替代默认 403 返回</td>
+</tr>
+</tbody></table>
+<hr>
+<p>通过 Go 1.25 的 <code>CrossOriginProtection</code>，Web 应用可以更简单地实现 CSRF 防护，同时保留手动检查和自定义拒绝逻辑的灵活性。</p>
+<h3 id="完整示例"><a href="#完整示例" class="headerlink" title="完整示例"></a>完整示例</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;net/http&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    cop := http.NewCrossOriginProtection()</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 添加可信任的跨站来源</span></span><br><span class="line">    _ = cop.AddTrustedOrigin(<span class="string">&quot;https://trusted.com&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 添加无需检查的路径</span></span><br><span class="line">    cop.AddInsecureBypassPattern(<span class="string">&quot;/public&quot;</span>)</span><br><span class="line"></span><br><span class="line">    mux := http.NewServeMux()</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1️⃣ 普通业务接口（全局保护会自动检查）</span></span><br><span class="line">    mux.HandleFunc(<span class="string">&quot;/update&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">        w.Write([]<span class="type">byte</span>(<span class="string">&quot;Data updated&quot;</span>))</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2️⃣ 演示手动调用 cop.Check()</span></span><br><span class="line">    <span class="comment">// 实际是冗余的，因为全局会检查，但可定制失败处理</span></span><br><span class="line">    mux.HandleFunc(<span class="string">&quot;/login&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">        <span class="keyword">if</span> err := cop.Check(r); err != <span class="literal">nil</span> &#123;</span><br><span class="line">            http.Error(w, <span class="string">&quot;Forbidden&quot;</span>, http.StatusForbidden)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">        w.Write([]<span class="type">byte</span>(<span class="string">&quot;Login success&quot;</span>))</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3️⃣ 直接在单个路由上使用 cop.Handler 包裹 Handler</span></span><br><span class="line">    <span class="comment">// 即使全局没用 cop.Handler，这个路径依然会被保护</span></span><br><span class="line">    mux.Handle(<span class="string">&quot;/secure-data&quot;</span>, cop.Handler(http.HandlerFunc(<span class="function"><span class="keyword">func</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">        w.Write([]<span class="type">byte</span>(<span class="string">&quot;Secure data accessed&quot;</span>))</span><br><span class="line">    &#125;)))</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 全局保护（这里会让 /update 和 /login 再次被检查一次）</span></span><br><span class="line">    http.ListenAndServe(<span class="string">&quot;:8080&quot;</span>, cop.Handler(mux))</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这样，你可以灵活地选择某些路径使用全局保护，某些路径手动调用 Check 方法。</p>
+
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg" alt="GitHub" width="16" height="16"> </i></a>
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://leetcode.cn/u/yu-peng-f"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/leetcode.svg" alt="LeetCode" width="16" height="16"> </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/gmail.svg" alt="Mail" width="16" height="16"> </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+  </body>
+</html>
