@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog Union-Find 算法 </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">Union-Find 算法</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2025-08-15T08:02:00.000Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2025-08-15 16:02:00
+</time>
+
+    
+<div class="post__category">
+  <i class="blogfont">&#xe62d;</i>
+  <a class="category-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a>
+</div>
+  
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a>
+</div>
+
+
+    <div id="/2025/08/15/algorithm/Union-Find/index/" class="leancloud_visitors post__stat" data-flag-title="Union-Find 算法">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%88Union-Find%EF%BC%89%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3"><span class="post__toc-text">并查集（Union-Find）算法详解</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E4%B8%80%E3%80%81%E6%A6%82%E5%BF%B5%E4%BB%8B%E7%BB%8D"><span class="post__toc-text">一、概念介绍</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E4%BA%8C%E3%80%81%E6%A0%B8%E5%BF%83%E6%93%8D%E4%BD%9C"><span class="post__toc-text">二、核心操作</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#1-Find%EF%BC%88%E6%9F%A5%E6%89%BE%E6%A0%B9%E8%8A%82%E7%82%B9%EF%BC%89"><span class="post__toc-text">1. Find（查找根节点）</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#2-Union%EF%BC%88%E5%90%88%E5%B9%B6%E9%9B%86%E5%90%88%EF%BC%89"><span class="post__toc-text">2. Union（合并集合）</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E4%B8%89%E3%80%81%E5%B9%B6%E6%9F%A5%E9%9B%86%E5%AE%9E%E7%8E%B0%E8%A6%81%E7%82%B9"><span class="post__toc-text">三、并查集实现要点</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%9B%9B%E3%80%81Go-%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0%E7%A4%BA%E4%BE%8B"><span class="post__toc-text">四、Go 语言实现示例</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E4%BA%94%E3%80%81%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="post__toc-text">五、应用场景</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%85%AD%E3%80%81%E7%AE%97%E6%B3%95%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="post__toc-text">六、算法复杂度</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E4%B8%83%E3%80%81%E6%80%BB%E7%BB%93"><span class="post__toc-text">七、总结</span></a></li></ol></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h1 id="并查集（Union-Find）算法详解"><a href="#并查集（Union-Find）算法详解" class="headerlink" title="并查集（Union-Find）算法详解"></a>并查集（Union-Find）算法详解</h1><h2 id="一、概念介绍"><a href="#一、概念介绍" class="headerlink" title="一、概念介绍"></a>一、概念介绍</h2><p>并查集（Union-Find）是一种用于管理不相交集合（Disjoint Set）的数据结构，主要用于高效解决以下问题：</p>
+<ul>
+<li>判断两个元素是否属于同一集合</li>
+<li>合并两个集合</li>
+<li>统计集合数量</li>
+</ul>
+<p>其核心思想是将每个集合表示为一棵树，每个节点指向父节点，根节点作为集合的代表。</p>
+<hr>
+<h2 id="二、核心操作"><a href="#二、核心操作" class="headerlink" title="二、核心操作"></a>二、核心操作</h2><h3 id="1-Find（查找根节点）"><a href="#1-Find（查找根节点）" class="headerlink" title="1. Find（查找根节点）"></a>1. Find（查找根节点）</h3><p><code>Find(x)</code> 用于找到元素 <code>x</code> 所在集合的根节点。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function Find(x):</span><br><span class="line">    if parent[x] != x:</span><br><span class="line">        parent[x] = Find(parent[x])  // 路径压缩</span><br><span class="line">    return parent[x]</span><br></pre></td></tr></table></figure>
+
+<p><strong>路径压缩</strong>：查找过程中将节点直接指向根节点，使树扁平化，从而加快后续操作。</p>
+<hr>
+<h3 id="2-Union（合并集合）"><a href="#2-Union（合并集合）" class="headerlink" title="2. Union（合并集合）"></a>2. Union（合并集合）</h3><p><code>Union(x, y)</code> 将元素 <code>x</code> 和 <code>y</code> 所在集合合并。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function Union(x, y):</span><br><span class="line">    rootX = Find(x)</span><br><span class="line">    rootY = Find(y)</span><br><span class="line">    if rootX != rootY:</span><br><span class="line">        parent[rootX] = rootY</span><br></pre></td></tr></table></figure>
+
+<p>可使用**按秩合并（Union by Rank）**优化，将高度较小的树挂到高度较大的树下，进一步减少树的高度。</p>
+<hr>
+<h2 id="三、并查集实现要点"><a href="#三、并查集实现要点" class="headerlink" title="三、并查集实现要点"></a>三、并查集实现要点</h2><ul>
+<li><strong>初始化</strong>：每个元素自成一棵树，父节点指向自己。</li>
+<li><strong>Find</strong>：带路径压缩。</li>
+<li><strong>Union</strong>：可选按秩合并，降低时间复杂度。</li>
+<li><strong>查询集合数量</strong>：通过统计不同根节点个数实现。</li>
+</ul>
+<hr>
+<h2 id="四、Go-语言实现示例"><a href="#四、Go-语言实现示例" class="headerlink" title="四、Go 语言实现示例"></a>四、Go 语言实现示例</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// UnionFind 定义</span></span><br><span class="line"><span class="keyword">type</span> UnionFind <span class="keyword">struct</span> &#123;</span><br><span class="line">    parent []<span class="type">int</span></span><br><span class="line">    rank   []<span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewUnionFind</span><span class="params">(n <span class="type">int</span>)</span></span> *UnionFind &#123;</span><br><span class="line">    uf := &amp;UnionFind&#123;</span><br><span class="line">        parent: <span class="built_in">make</span>([]<span class="type">int</span>, n),</span><br><span class="line">        rank:   <span class="built_in">make</span>([]<span class="type">int</span>, n),</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; n; i++ &#123;</span><br><span class="line">        uf.parent[i] = i</span><br><span class="line">        uf.rank[i] = <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> uf</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Find 操作 + 路径压缩</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(uf *UnionFind)</span></span> Find(x <span class="type">int</span>) <span class="type">int</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> uf.parent[x] != x &#123;</span><br><span class="line">        uf.parent[x] = uf.Find(uf.parent[x])</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> uf.parent[x]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Union 操作 + 按秩合并</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(uf *UnionFind)</span></span> Union(x, y <span class="type">int</span>) &#123;</span><br><span class="line">    rootX := uf.Find(x)</span><br><span class="line">    rootY := uf.Find(y)</span><br><span class="line">    <span class="keyword">if</span> rootX == rootY &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> uf.rank[rootX] &lt; uf.rank[rootY] &#123;</span><br><span class="line">        uf.parent[rootX] = rootY</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> uf.rank[rootX] &gt; uf.rank[rootY] &#123;</span><br><span class="line">        uf.parent[rootY] = rootX</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        uf.parent[rootY] = rootX</span><br><span class="line">        uf.rank[rootX]++</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断是否在同一个集合</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(uf *UnionFind)</span></span> Connected(x, y <span class="type">int</span>) <span class="type">bool</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> uf.Find(x) == uf.Find(y)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    uf := NewUnionFind(<span class="number">5</span>)</span><br><span class="line">    uf.Union(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    uf.Union(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">    fmt.Println(uf.Connected(<span class="number">0</span>, <span class="number">2</span>)) <span class="comment">// true</span></span><br><span class="line">    fmt.Println(uf.Connected(<span class="number">0</span>, <span class="number">3</span>)) <span class="comment">// false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、应用场景"><a href="#五、应用场景" class="headerlink" title="五、应用场景"></a>五、应用场景</h2><ol>
+<li><strong>社交网络</strong>：计算朋友圈或互相认识的人群数量。</li>
+<li><strong>图论问题</strong>：判断图中连通分量、最小生成树（Kruskal算法）等。</li>
+<li><strong>动态连通性</strong>：处理在线合并和查询集合问题。</li>
+</ol>
+<hr>
+<h2 id="六、算法复杂度"><a href="#六、算法复杂度" class="headerlink" title="六、算法复杂度"></a>六、算法复杂度</h2><ul>
+<li><strong>初始化</strong>：O(n)</li>
+<li><strong>单次 Find&#x2F;Union</strong>（带路径压缩 + 按秩）：近似 O(1)</li>
+<li><strong>总复杂度</strong>：O(α(n))，其中 α(n) 是阿克曼函数的反函数，几乎可视为常数。</li>
+</ul>
+<hr>
+<h2 id="七、总结"><a href="#七、总结" class="headerlink" title="七、总结"></a>七、总结</h2><ul>
+<li>并查集是解决不相交集合问题的利器。</li>
+<li>核心优化策略是<strong>路径压缩 + 按秩合并</strong>，保证操作高效。</li>
+</ul>
+
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg" alt="GitHub" width="16" height="16"> </i></a>
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://leetcode.cn/u/yu-peng-f"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/leetcode.svg" alt="LeetCode" width="16" height="16"> </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/gmail.svg" alt="Mail" width="16" height="16"> </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+  </body>
+</html>
