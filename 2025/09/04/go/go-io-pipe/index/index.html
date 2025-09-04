@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog Go 流失上传文件 </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">Go 流失上传文件</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2025-09-04T01:22:27.000Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2025-09-04 09:22:27
+</time>
+
+    
+<div class="post__category">
+  <i class="blogfont">&#xe62d;</i>
+  <a class="category-link" href="/categories/golang/">golang</a>
+</div>
+  
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" rel="tag">编程语言</a>
+</div>
+
+
+    <div id="/2025/09/04/go/go-io-pipe/index/" class="leancloud_visitors post__stat" data-flag-title="Go 流失上传文件">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E7%94%A8-Go-%E5%AE%9E%E7%8E%B0%E6%B5%81%E5%BC%8F%E6%8F%90%E4%BA%A4%EF%BC%9Aio-Pipe-%E7%9A%84%E5%A6%99%E7%94%A8"><span class="post__toc-text">用 Go 实现流式提交：io.Pipe 的妙用</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E8%83%8C%E6%99%AF%E6%95%85%E4%BA%8B"><span class="post__toc-text">背景故事</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E6%99%AE%E9%80%9A%E6%8F%90%E4%BA%A4%E6%96%B9%E5%BC%8F"><span class="post__toc-text">普通提交方式</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-io-Pipe%EF%BC%9F"><span class="post__toc-text">什么是 io.Pipe？</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%B5%81%E5%BC%8F%E6%8F%90%E4%BA%A4"><span class="post__toc-text">实现流式提交</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E6%95%88%E6%9E%9C%E5%AF%B9%E6%AF%94"><span class="post__toc-text">效果对比</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="post__toc-text">适用场景</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E6%80%BB%E7%BB%93"><span class="post__toc-text">总结</span></a></li></ol></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h1 id="用-Go-实现流式提交：io-Pipe-的妙用"><a href="#用-Go-实现流式提交：io-Pipe-的妙用" class="headerlink" title="用 Go 实现流式提交：io.Pipe 的妙用"></a>用 Go 实现流式提交：io.Pipe 的妙用</h1><h2 id="背景故事"><a href="#背景故事" class="headerlink" title="背景故事"></a>背景故事</h2><p>我遇到一个需求：<strong>上传超大日志文件到远端服务</strong>。最初的思路很直白：先把文件完整读入内存，再一次性提交。结果不用想，直接崩溃：</p>
+<ul>
+<li>文件太大，内存爆掉。</li>
+<li>传统方式需要先把文件完整读完才能开始上传，大文件时这一段等待让用户感觉卡住了。</li>
+<li>更大的文件直接让进程挂掉。🙃</li>
+</ul>
+<p>显然，这种方式行不通。我开始琢磨有没有办法 <strong>边读边传</strong>。在查阅文档时，我发现了 Go 的 <code>io.Pipe</code>，它完美解决了我的问题。</p>
+<hr>
+<h2 id="普通提交方式"><a href="#普通提交方式" class="headerlink" title="普通提交方式"></a>普通提交方式</h2><p>先来看一下“传统做法”，即把整个文件读入内存再提交：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;bytes&quot;</span></span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;io&quot;</span></span><br><span class="line">	<span class="string">&quot;net/http&quot;</span></span><br><span class="line">	<span class="string">&quot;os&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	file, err := os.Open(<span class="string">&quot;bigfile.txt&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> file.Close()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 一次性读入内存</span></span><br><span class="line">	data, err := io.ReadAll(file)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	resp, err := http.Post(<span class="string">&quot;http://localhost:8080/upload&quot;</span>, <span class="string">&quot;text/plain&quot;</span>, </span><br><span class="line">				   io.NopCloser(bytes.NewReader(data)))</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> resp.Body.Close()</span><br><span class="line"></span><br><span class="line">	result, _ := io.ReadAll(resp.Body)</span><br><span class="line">	fmt.Printf(<span class="string">&quot;上传结果: %s\n&quot;</span>, result)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种方式的问题是显而易见的：大文件会直接占满内存，上传也必须等待读取完毕才能开始。</p>
+<hr>
+<h2 id="什么是-io-Pipe？"><a href="#什么是-io-Pipe？" class="headerlink" title="什么是 io.Pipe？"></a>什么是 io.Pipe？</h2><p><a target="_blank" rel="noopener" href="https://pkg.go.dev/io#Pipe"><code>io.Pipe</code></a> 提供了一对 <strong>互相关联的 Reader 和 Writer</strong>：</p>
+<ul>
+<li>往 <code>Writer</code> 写的数据会立即流向 <code>Reader</code>。</li>
+<li>不需要中间缓冲或落盘，数据可以在生产和消费间直接传输。</li>
+</ul>
+<p>这让我们能轻松实现“生产者-消费者”模式，非常适合流式上传。</p>
+<hr>
+<h2 id="实现流式提交"><a href="#实现流式提交" class="headerlink" title="实现流式提交"></a>实现流式提交</h2><p>下面是一个完整的流式上传示例：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;io&quot;</span></span><br><span class="line">	<span class="string">&quot;net/http&quot;</span></span><br><span class="line">	<span class="string">&quot;os&quot;</span></span><br><span class="line">	<span class="string">&quot;time&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 模拟远程服务（流式读取请求体）</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">startServer</span><span class="params">()</span></span> &#123;</span><br><span class="line">	http.HandleFunc(<span class="string">&quot;/upload&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">		<span class="comment">// 流式读取并输出</span></span><br><span class="line">		_, err := io.Copy(os.Stdout, r.Body)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			http.Error(w, <span class="string">&quot;read error&quot;</span>, http.StatusInternalServerError)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">		w.Write([]<span class="type">byte</span>(<span class="string">&quot;ok&quot;</span>))</span><br><span class="line">	&#125;)</span><br><span class="line">	<span class="keyword">go</span> http.ListenAndServe(<span class="string">&quot;:8080&quot;</span>, <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	startServer()</span><br><span class="line">	time.Sleep(<span class="number">500</span> * time.Millisecond) <span class="comment">// 等待服务启动</span></span><br><span class="line"></span><br><span class="line">	pr, pw := io.Pipe()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 生产者：读文件并写入 Pipe</span></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		file, err := os.Open(<span class="string">&quot;bigfile.txt&quot;</span>)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			pw.CloseWithError(err)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">defer</span> file.Close()</span><br><span class="line">		_, err = io.Copy(pw, file)</span><br><span class="line">		pw.CloseWithError(err)</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 消费者：直接用 PipeReader 作为请求体</span></span><br><span class="line">	resp, err := http.Post(<span class="string">&quot;http://localhost:8080/upload&quot;</span>, <span class="string">&quot;text/plain&quot;</span>, pr)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> resp.Body.Close()</span><br><span class="line"></span><br><span class="line">	result, _ := io.ReadAll(resp.Body)</span><br><span class="line">	fmt.Printf(<span class="string">&quot;上传结果: %s\n&quot;</span>, result)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="效果对比"><a href="#效果对比" class="headerlink" title="效果对比"></a>效果对比</h2><table>
+<thead>
+<tr>
+<th>方式</th>
+<th>内存占用</th>
+<th>上传开始时间</th>
+<th>适合场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>普通提交</td>
+<td>高（读完整文件）</td>
+<td>文件读完后才开始</td>
+<td>小文件、简单场景</td>
+</tr>
+<tr>
+<td>流式提交</td>
+<td>低（按块传输）</td>
+<td>立即边读边传</td>
+<td>大文件、实时传输</td>
+</tr>
+</tbody></table>
+<p>流式提交相比传统方式，内存占用小，上传可以即时开始，用户体验显著提升。</p>
+<hr>
+<h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><ul>
+<li><strong>大文件上传</strong>：无需内存撑爆，流式上传轻松搞定。</li>
+<li><strong>实时日志传输</strong>：生产日志直接通过 <code>Pipe</code> 输送到消费方。</li>
+<li><strong>数据处理流水线</strong>：<code>io.Pipe</code> 可以作为不同处理阶段的桥梁。</li>
+</ul>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>对比之后可以发现：</p>
+<ul>
+<li><strong>普通提交</strong>简单但性能差，不适合大文件。</li>
+<li><strong>流式提交</strong>充分发挥 Go 的优势，既节省内存又提升体验。</li>
+</ul>
+<p><code>io.Pipe</code> 就像 Go 世界里的 <strong>数据传送带</strong>：一端生产，一端消费，数据自然流动。它特别适合需要流式提交的场景。</p>
+<blockquote>
+<p><code>io.Pipe</code>，一次性解决了我对流式提交的所有想象。</p>
+</blockquote>
+
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg" alt="GitHub" width="16" height="16"> </i></a>
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://leetcode.cn/u/yu-peng-f"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/leetcode.svg" alt="LeetCode" width="16" height="16"> </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/gmail.svg" alt="Mail" width="16" height="16"> </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+  </body>
+</html>
