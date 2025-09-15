@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog Bellman-Ford 算法 </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">Bellman-Ford 算法</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2025-09-15T12:19:34.000Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2025-09-15 20:19:34
+</time>
+
+    
+<div class="post__category">
+  <i class="blogfont">&#xe62d;</i>
+  <a class="category-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a>, <a class="category-link" href="/categories/%E7%AE%97%E6%B3%95/%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84/">最短路径</a>
+</div>
+  
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a>
+</div>
+
+
+    <div id="/2025/09/15/algorithm/Bellman-Ford/index/" class="leancloud_visitors post__stat" data-flag-title="Bellman-Ford 算法">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#Bellman-Ford-%E7%AE%97%E6%B3%95%E8%A7%A3%E6%9E%90"><span class="post__toc-text">Bellman-Ford 算法解析</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#1-%E7%AE%97%E6%B3%95%E7%AE%80%E4%BB%8B"><span class="post__toc-text">1. 算法简介</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#2-%E7%AE%97%E6%B3%95%E6%AD%A5%E9%AA%A4"><span class="post__toc-text">2. 算法步骤</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#3-%E4%B8%BA%E4%BB%80%E4%B9%88-Bellman-Ford-%E9%9C%80%E8%A6%81%E8%BF%9B%E8%A1%8C-n-1-%E6%AC%A1%E6%9D%BE%E5%BC%9B%E6%93%8D%E4%BD%9C%EF%BC%9F"><span class="post__toc-text">3. 为什么 Bellman-Ford 需要进行 n-1 次松弛操作？</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#3-1-%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%9A%84%E6%80%A7%E8%B4%A8"><span class="post__toc-text">3.1 最短路径的性质</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#3-2-%E9%80%90%E6%AD%A5%E6%9D%BE%E5%BC%9B%E8%BF%87%E7%A8%8B"><span class="post__toc-text">3.2 逐步松弛过程</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#3-3-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E6%98%AF-n-%E6%AC%A1%EF%BC%9F"><span class="post__toc-text">3.3 为什么不是 n 次？</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#3-4-%E6%9D%BE%E5%BC%9B%E6%93%8D%E4%BD%9C%E7%9A%84%E6%A0%B8%E5%BF%83"><span class="post__toc-text">3.4 松弛操作的核心</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#4-%E8%B4%9F%E6%9D%83%E7%8E%AF%E7%9A%84%E6%A3%80%E6%B5%8B"><span class="post__toc-text">4. 负权环的检测</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#5-%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="post__toc-text">5. 示例代码</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#6-%E6%80%BB%E7%BB%93"><span class="post__toc-text">6. 总结</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#7-Bellman-Ford-%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="post__toc-text">7 Bellman-Ford 使用示例</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-4"><a class="post__toc-link" href="#LeetCode-743-%E7%BD%91%E7%BB%9C%E5%BB%B6%E8%BF%9F%E6%97%B6%E9%97%B4"><span class="post__toc-text">LeetCode 743: 网络延迟时间</span></a></li><li class="post__toc-item post__toc-level-4"><a class="post__toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="post__toc-text">题目描述</span></a></li></ol></li></ol></li></ol></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h1 id="Bellman-Ford-算法解析"><a href="#Bellman-Ford-算法解析" class="headerlink" title="Bellman-Ford 算法解析"></a>Bellman-Ford 算法解析</h1><p>Bellman-Ford 算法是一种用于计算单源最短路径的算法，适用于图中存在负权边的情况。它能够解决存在负权环的图，并且在处理时较为简单。本文将详细介绍 Bellman-Ford 算法的原理、步骤及为什么需要进行 <code>n-1</code> 次松弛操作。</p>
+<h2 id="1-算法简介"><a href="#1-算法简介" class="headerlink" title="1. 算法简介"></a>1. 算法简介</h2><p>Bellman-Ford 算法基于松弛操作（Relaxation）来找到最短路径。松弛操作是指通过一条边更新节点的最短路径估计值，只有当新的路径更短时才更新。算法通过对每一条边进行 <code>n-1</code> 次松弛操作，最终得到图中所有节点的最短路径。</p>
+<h2 id="2-算法步骤"><a href="#2-算法步骤" class="headerlink" title="2. 算法步骤"></a>2. 算法步骤</h2><ol>
+<li><p><strong>初始化</strong>：<br>将源节点到源节点的距离设为 0，其他节点到源节点的距离设为无穷大。</p>
+</li>
+<li><p><strong>松弛操作</strong>：<br>对图中的每一条边进行松弛操作 <code>n-1</code> 次。在每次松弛时，如果当前路径通过某条边可以提供更短的路径，则更新目标节点的距离。</p>
+</li>
+<li><p><strong>检查负权环</strong>：<br>再次进行一次松弛操作，如果有边的松弛操作仍然可以更新距离，说明图中存在负权环。</p>
+</li>
+</ol>
+<br/>
+
+<hr>
+<h2 id="3-为什么-Bellman-Ford-需要进行-n-1-次松弛操作？"><a href="#3-为什么-Bellman-Ford-需要进行-n-1-次松弛操作？" class="headerlink" title="3. 为什么 Bellman-Ford 需要进行 n-1 次松弛操作？"></a>3. 为什么 Bellman-Ford 需要进行 <code>n-1</code> 次松弛操作？</h2><h3 id="3-1-最短路径的性质"><a href="#3-1-最短路径的性质" class="headerlink" title="3.1 最短路径的性质"></a>3.1 最短路径的性质</h3><p>在图中，最短路径是由一系列的边组成的。对于一个包含 <code>n</code> 个节点的图，最短路径最多只会包含 <code>n-1</code> 条边。<strong>为什么是 <code>n-1</code> 条边</strong>？这是因为最短路径不会包含环，且在最短路径的计算中，最多需要经过图中的 <code>n-1</code> 条边。</p>
+<h3 id="3-2-逐步松弛过程"><a href="#3-2-逐步松弛过程" class="headerlink" title="3.2 逐步松弛过程"></a>3.2 逐步松弛过程</h3><ul>
+<li><strong>第一次松弛操作</strong>：每个节点只能通过一条边连接到源节点。</li>
+<li><strong>第二次松弛操作</strong>：每个节点可以通过两条边连接到源节点，依此类推，最多 <code>n-1</code> 次松弛操作，每次都能够计算并更新通过更多边的最短路径。</li>
+</ul>
+<h3 id="3-3-为什么不是-n-次？"><a href="#3-3-为什么不是-n-次？" class="headerlink" title="3.3 为什么不是 n 次？"></a>3.3 为什么不是 <code>n</code> 次？</h3><p>如果你进行了 <code>n</code> 次松弛操作，实际上不再有意义。原因是，最短路径最多只有 <code>n-1</code> 条边。如果在第 <code>n</code> 次松弛操作时，仍然能够更新某个节点的最短路径，说明图中存在负权环。负权环的存在使得最短路径可以不断缩短，因此无法计算出正确的最短路径。</p>
+<h3 id="3-4-松弛操作的核心"><a href="#3-4-松弛操作的核心" class="headerlink" title="3.4 松弛操作的核心"></a>3.4 松弛操作的核心</h3><p>在 Bellman-Ford 算法中，<strong>每一次松弛操作都会将当前路径更新为最短路径</strong>。经过 <code>n-1</code> 次松弛操作后，我们能够保证所有节点的最短路径已经被正确计算。如果图中没有负权环，所有节点的最短路径已经找出，不需要继续松弛。</p>
+<br/>
+
+<hr>
+<h2 id="4-负权环的检测"><a href="#4-负权环的检测" class="headerlink" title="4. 负权环的检测"></a>4. 负权环的检测</h2><p>Bellman-Ford 算法的一个重要特性是能够检测图中的负权环。在进行 <code>n-1</code> 次松弛操作之后，如果再进行一次松弛操作，并且某条边的最短路径仍然可以被更新，说明图中存在负权环。负权环导致最短路径无法稳定，因此 Bellman-Ford 算法通过这种方式来检测图中是否存在负权环。</p>
+<br/>
+
+<hr>
+<h2 id="5-示例代码"><a href="#5-示例代码" class="headerlink" title="5. 示例代码"></a>5. 示例代码</h2><p>下面是 Bellman-Ford 算法的 Go 语言实现：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">    <span class="string">&quot;math&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Edge <span class="keyword">struct</span> &#123;</span><br><span class="line">    u, v, weight <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">bellmanFord</span><span class="params">(n, start <span class="type">int</span>, edges []Edge)</span></span> ([]<span class="type">int</span>, <span class="type">error</span>) &#123;</span><br><span class="line">    dist := <span class="built_in">make</span>([]<span class="type">int</span>, n)</span><br><span class="line">    <span class="keyword">for</span> i := <span class="keyword">range</span> dist &#123;</span><br><span class="line">        dist[i] = math.MaxInt32</span><br><span class="line">    &#125;</span><br><span class="line">    dist[start] = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; n<span class="number">-1</span>; i++ &#123;</span><br><span class="line">        <span class="keyword">for</span> _, edge := <span class="keyword">range</span> edges &#123;</span><br><span class="line">            <span class="keyword">if</span> dist[edge.u] != math.MaxInt32 &amp;&amp; dist[edge.u]+edge.weight &lt; dist[edge.v] &#123;</span><br><span class="line">                dist[edge.v] = dist[edge.u] + edge.weight</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check for negative-weight cycles</span></span><br><span class="line">    <span class="keyword">for</span> _, edge := <span class="keyword">range</span> edges &#123;</span><br><span class="line">        <span class="keyword">if</span> dist[edge.u] != math.MaxInt32 &amp;&amp; dist[edge.u]+edge.weight &lt; dist[edge.v] &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">nil</span>, fmt.Errorf(<span class="string">&quot;graph contains a negative-weight cycle&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> dist, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    edges := []Edge&#123;</span><br><span class="line">        &#123;<span class="number">0</span>, <span class="number">1</span>, <span class="number">-1</span>&#125;,</span><br><span class="line">        &#123;<span class="number">0</span>, <span class="number">2</span>, <span class="number">4</span>&#125;,</span><br><span class="line">        &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;,</span><br><span class="line">        &#123;<span class="number">1</span>, <span class="number">3</span>, <span class="number">2</span>&#125;,</span><br><span class="line">        &#123;<span class="number">1</span>, <span class="number">4</span>, <span class="number">2</span>&#125;,</span><br><span class="line">        &#123;<span class="number">3</span>, <span class="number">2</span>, <span class="number">5</span>&#125;,</span><br><span class="line">        &#123;<span class="number">3</span>, <span class="number">1</span>, <span class="number">1</span>&#125;,</span><br><span class="line">        &#123;<span class="number">4</span>, <span class="number">3</span>, <span class="number">-3</span>&#125;,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    dist, err := bellmanFord(<span class="number">5</span>, <span class="number">0</span>, edges)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Println(err)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;Shortest distances from source:&quot;</span>)</span><br><span class="line">        <span class="keyword">for</span> i, d := <span class="keyword">range</span> dist &#123;</span><br><span class="line">            fmt.Printf(<span class="string">&quot;Node %d: %d\n&quot;</span>, i, d)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<br/>
+
+<h2 id="6-总结"><a href="#6-总结" class="headerlink" title="6. 总结"></a>6. 总结</h2><p>Bellman-Ford 算法是一种用于单源最短路径的经典算法，能够处理带有负权边的图，并且可以检测负权环。我们需要进行 n-1 次松弛操作来确保最短路径的正确计算，超过 n-1 次松弛操作可能会暴露负权环的存在，从而帮助我们进一步分析图的结构。</p>
+<hr>
+<br/>
+
+<h2 id="7-Bellman-Ford-使用示例"><a href="#7-Bellman-Ford-使用示例" class="headerlink" title="7 Bellman-Ford 使用示例"></a>7 Bellman-Ford 使用示例</h2><h4 id="LeetCode-743-网络延迟时间"><a href="#LeetCode-743-网络延迟时间" class="headerlink" title="LeetCode 743: 网络延迟时间"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/network-delay-time">LeetCode 743: 网络延迟时间</a></h4><p>题目要求的是：从某个节点 K 发出信号，计算信号到达所有节点的最短时间。如果某些节点无法接收到信号，返回 -1。</p>
+<h4 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h4><p>给定一个图，图中的节点标号为 1 到 n，且图中的每条边都有一个信号传递时间。我们需要从源节点 K 开始，计算其他所有节点接收到信号的时间。信号从源节点传递到其他节点的时间由边的权重给定。如果有任何一个节点无法接收到信号，返回 -1。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;math&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Edge 结构体表示一条有向边</span></span><br><span class="line"><span class="keyword">type</span> Edge <span class="keyword">struct</span> &#123;</span><br><span class="line">	u, v, weight <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">networkDelayTime</span><span class="params">(times [][]<span class="type">int</span>, n, k <span class="type">int</span>)</span></span> <span class="type">int</span> &#123;</span><br><span class="line">	<span class="comment">// 初始化图的边</span></span><br><span class="line">	<span class="keyword">var</span> edges []Edge</span><br><span class="line">	<span class="keyword">for</span> _, time := <span class="keyword">range</span> times &#123;</span><br><span class="line">		edges = <span class="built_in">append</span>(edges, Edge&#123;u: time[<span class="number">0</span>] - <span class="number">1</span>, v: time[<span class="number">1</span>] - <span class="number">1</span>, weight: time[<span class="number">2</span>]&#125;)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Bellman-Ford 算法</span></span><br><span class="line">	dist := <span class="built_in">make</span>([]<span class="type">int</span>, n)</span><br><span class="line">	<span class="keyword">for</span> i := <span class="keyword">range</span> dist &#123;</span><br><span class="line">		dist[i] = math.MaxInt32</span><br><span class="line">	&#125;</span><br><span class="line">	dist[k<span class="number">-1</span>] = <span class="number">0</span> <span class="comment">// 源节点的距离设为 0</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 进行 n-1 次松弛操作</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; n<span class="number">-1</span>; i++ &#123;</span><br><span class="line">		<span class="keyword">for</span> _, edge := <span class="keyword">range</span> edges &#123;</span><br><span class="line">			<span class="keyword">if</span> dist[edge.u] != math.MaxInt32 &amp;&amp; dist[edge.u]+edge.weight &lt; dist[edge.v] &#123;</span><br><span class="line">				dist[edge.v] = dist[edge.u] + edge.weight</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 检查最短路径</span></span><br><span class="line">	maxDist := <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> _, d := <span class="keyword">range</span> dist &#123;</span><br><span class="line">		<span class="keyword">if</span> d == math.MaxInt32 &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">-1</span> <span class="comment">// 如果某个节点不可达，返回 -1</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> d &gt; maxDist &#123;</span><br><span class="line">			maxDist = d</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> maxDist</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 示例：times 表示图中的边，n 是节点数，k 是源节点</span></span><br><span class="line">	times := [][]<span class="type">int</span>&#123;</span><br><span class="line">		&#123;<span class="number">2</span>, <span class="number">1</span>, <span class="number">1</span>&#125;,</span><br><span class="line">		&#123;<span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>&#125;,</span><br><span class="line">		&#123;<span class="number">3</span>, <span class="number">4</span>, <span class="number">1</span>&#125;,</span><br><span class="line">	&#125;</span><br><span class="line">	n := <span class="number">4</span></span><br><span class="line">	k := <span class="number">2</span></span><br><span class="line"></span><br><span class="line">	result := networkDelayTime(times, n, k)</span><br><span class="line">	fmt.Println(result) <span class="comment">// 输出 2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg" alt="GitHub" width="16" height="16"> </i></a>
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://leetcode.cn/u/yu-peng-f"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/leetcode.svg" alt="LeetCode" width="16" height="16"> </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/gmail.svg" alt="Mail" width="16" height="16"> </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+  </body>
+</html>
