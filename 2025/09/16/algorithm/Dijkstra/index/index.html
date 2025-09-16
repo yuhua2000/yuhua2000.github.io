@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog Dijkstra 算法解析 </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">Dijkstra 算法解析</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2025-09-16T11:34:23.000Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2025-09-16 19:34:23
+</time>
+
+    
+<div class="post__category">
+  <i class="blogfont">&#xe62d;</i>
+  <a class="category-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a>, <a class="category-link" href="/categories/%E7%AE%97%E6%B3%95/%E8%B4%AA%E5%BF%83/">贪心</a>
+</div>
+  
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a>
+</div>
+
+
+    <div id="/2025/09/16/algorithm/Dijkstra/index/" class="leancloud_visitors post__stat" data-flag-title="Dijkstra 算法解析">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#Dijkstra-%E7%AE%97%E6%B3%95%E8%A7%A3%E6%9E%90"><span class="post__toc-text">Dijkstra 算法解析</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="post__toc-text">简介</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#1-Dijkstra-%E7%AE%97%E6%B3%95%E6%A6%82%E8%BF%B0"><span class="post__toc-text">1. Dijkstra 算法概述</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#2-%E7%AE%97%E6%B3%95%E6%AD%A5%E9%AA%A4"><span class="post__toc-text">2. 算法步骤</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="post__toc-text">初始化</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E9%80%89%E5%8F%96%E5%BD%93%E5%89%8D%E8%8A%82%E7%82%B9"><span class="post__toc-text">选取当前节点</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E6%9B%B4%E6%96%B0%E9%82%BB%E6%8E%A5%E8%8A%82%E7%82%B9"><span class="post__toc-text">更新邻接节点</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E9%87%8D%E5%A4%8D%E6%AD%A5%E9%AA%A4-2-%E5%92%8C-3"><span class="post__toc-text">重复步骤 2 和 3</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E7%BB%88%E6%AD%A2%E6%9D%A1%E4%BB%B6"><span class="post__toc-text">终止条件</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#3-%E7%AE%97%E6%B3%95%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B%E8%AF%A6%E8%A7%A3"><span class="post__toc-text">3. 算法执行过程详解</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E9%98%B6%E6%AE%B5%EF%BC%9A"><span class="post__toc-text">初始化阶段：</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#4-%E7%AE%97%E6%B3%95%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="post__toc-text">4. 算法时间复杂度</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#5-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="post__toc-text">5. 代码实现</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#6-%E6%80%BB%E7%BB%93"><span class="post__toc-text">6. 总结</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#7-%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="post__toc-text">7. 使用示例</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-4"><a class="post__toc-link" href="#LeetCode-743-%E7%BD%91%E7%BB%9C%E5%BB%B6%E8%BF%9F%E6%97%B6%E9%97%B4"><span class="post__toc-text">LeetCode 743: 网络延迟时间</span></a></li><li class="post__toc-item post__toc-level-4"><a class="post__toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="post__toc-text">题目描述</span></a></li><li class="post__toc-item post__toc-level-4"><a class="post__toc-link" href="#%E9%A2%98%E8%A7%A3"><span class="post__toc-text">题解</span></a></li><li class="post__toc-item post__toc-level-4"><a class="post__toc-link" href="#%E5%9B%BE%E7%9A%84%E6%9E%84%E5%BB%BA"><span class="post__toc-text">图的构建</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-5"><a class="post__toc-link" href="#Dijkstra-%E7%AE%97%E6%B3%95"><span class="post__toc-text">Dijkstra 算法</span></a></li><li class="post__toc-item post__toc-level-5"><a class="post__toc-link" href="#%E7%BB%93%E6%9E%9C%E5%88%A4%E5%AE%9A"><span class="post__toc-text">结果判定</span></a></li></ol></li><li class="post__toc-item post__toc-level-4"><a class="post__toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="post__toc-text">代码实现</span></a></li></ol></li></ol></li></ol></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h1 id="Dijkstra-算法解析"><a href="#Dijkstra-算法解析" class="headerlink" title="Dijkstra 算法解析"></a>Dijkstra 算法解析</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Dijkstra 算法是一种用于计算单源最短路径的经典算法，由计算机科学家 Edsger Dijkstra 提出。它能够解决带权有向图中的最短路径问题，广泛应用于网络路由、地图导航等领域。本文将详细解析 Dijkstra 算法的工作原理、实现步骤以及如何在实际中使用该算法。</p>
+<hr>
+<br/>
+
+<h2 id="1-Dijkstra-算法概述"><a href="#1-Dijkstra-算法概述" class="headerlink" title="1. Dijkstra 算法概述"></a>1. Dijkstra 算法概述</h2><p>Dijkstra 算法的核心思想是逐步确定从起点到其他节点的最短路径，直到所有节点的最短路径都被确定。它是一种贪心算法，每次选择距离起点最近的节点来更新其他节点的路径。</p>
+<hr>
+<br/>
+
+<h2 id="2-算法步骤"><a href="#2-算法步骤" class="headerlink" title="2. 算法步骤"></a>2. 算法步骤</h2><p>假设我们有一个图 G，包含若干个节点和边。每条边都有一个权重，表示从一个节点到另一个节点的代价。Dijkstra 算法的步骤如下：</p>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p>设定源点 s 的最短路径为 0，其他所有节点的最短路径为无穷大。<br>将所有节点标记为未访问。</p>
+<h3 id="选取当前节点"><a href="#选取当前节点" class="headerlink" title="选取当前节点"></a>选取当前节点</h3><p>从未访问的节点中选择一个距离源点最近的节点 u，将其标记为已访问。</p>
+<h3 id="更新邻接节点"><a href="#更新邻接节点" class="headerlink" title="更新邻接节点"></a>更新邻接节点</h3><p>对于当前节点 u 的每一个邻接节点 v，检查通过 u 到达 v 是否能够得到更短的路径。如果能，更新 v 的最短路径。</p>
+<h3 id="重复步骤-2-和-3"><a href="#重复步骤-2-和-3" class="headerlink" title="重复步骤 2 和 3"></a>重复步骤 2 和 3</h3><p>重复选取最短路径节点并更新邻接节点的过程，直到所有节点的最短路径都确定。</p>
+<h3 id="终止条件"><a href="#终止条件" class="headerlink" title="终止条件"></a>终止条件</h3><p>所有节点都已访问或者没有可达节点。</p>
+<hr>
+<br/>
+
+<h2 id="3-算法执行过程详解"><a href="#3-算法执行过程详解" class="headerlink" title="3. 算法执行过程详解"></a>3. 算法执行过程详解</h2><p>下面通过一个具体例子详细说明 Dijkstra 算法的执行过程。考虑以下带权有向图：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">text</span><br><span class="line">    A --2--&gt; B</span><br><span class="line">    |       </span><br><span class="line">   1|      </span><br><span class="line">    |     </span><br><span class="line">    v    </span><br><span class="line">    C --1--&gt; D</span><br></pre></td></tr></table></figure>
+<p>假设源点为节点 A，我们需要计算从 A 到所有其他节点的最短路径。</p>
+<h3 id="初始化阶段："><a href="#初始化阶段：" class="headerlink" title="初始化阶段："></a>初始化阶段：</h3><p>设置 A 的距离为 0</p>
+<p>设置 B、C、D 的距离为无穷大 (∞)</p>
+<p>所有节点标记为未访问</p>
+<p>执行过程：</p>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>当前节点</th>
+<th>更新过程</th>
+<th>距离数组</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>初始</td>
+<td>-</td>
+<td>-</td>
+<td>(0, ∞, ∞, ∞)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>A</td>
+<td>通过 A 更新 B 和 C</td>
+<td>(0, 2, 1, ∞)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>C</td>
+<td>通过 C 更新 D</td>
+<td>(0, 2, 1, 2)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>B</td>
+<td>无更新</td>
+<td>(0, 2, 1, 2)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>D</td>
+<td>无更新</td>
+<td>(0, 2, 1, 2)</td>
+</tr>
+</tbody></table>
+<hr>
+<br/>
+
+<h2 id="4-算法时间复杂度"><a href="#4-算法时间复杂度" class="headerlink" title="4. 算法时间复杂度"></a>4. 算法时间复杂度</h2><p>Dijkstra 算法的时间复杂度取决于实现方式。使用邻接矩阵和普通数组实现时，时间复杂度为 O(V²)，其中 V 是图中的节点数。使用优先队列（如二叉堆）优化后，时间复杂度可以降为 O((V + E) log V)，其中 E 是图中的边数。</p>
+<hr>
+<br/>
+
+<h2 id="5-代码实现"><a href="#5-代码实现" class="headerlink" title="5. 代码实现"></a>5. 代码实现</h2><p>以下是 Dijkstra 算法的 Go 语言实现：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;container/heap&quot;</span></span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;math&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义图的节点和边结构</span></span><br><span class="line"><span class="keyword">type</span> Edge <span class="keyword">struct</span> &#123;</span><br><span class="line">	to     <span class="type">int</span></span><br><span class="line">	weight <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义图结构</span></span><br><span class="line"><span class="keyword">type</span> Graph <span class="keyword">struct</span> &#123;</span><br><span class="line">	nodes <span class="type">int</span></span><br><span class="line">	edges <span class="keyword">map</span>[<span class="type">int</span>][]Edge</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 优先队列相关定义</span></span><br><span class="line"><span class="keyword">type</span> Item <span class="keyword">struct</span> &#123;</span><br><span class="line">	node     <span class="type">int</span></span><br><span class="line">	priority <span class="type">int</span></span><br><span class="line">	index    <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> PriorityQueue []*Item</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pq PriorityQueue)</span></span> Len() <span class="type">int</span> &#123; <span class="keyword">return</span> <span class="built_in">len</span>(pq) &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pq PriorityQueue)</span></span> Less(i, j <span class="type">int</span>) <span class="type">bool</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> pq[i].priority &lt; pq[j].priority</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pq PriorityQueue)</span></span> Swap(i, j <span class="type">int</span>) &#123;</span><br><span class="line">	pq[i], pq[j] = pq[j], pq[i]</span><br><span class="line">	pq[i].index = i</span><br><span class="line">	pq[j].index = j</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pq *PriorityQueue)</span></span> Push(x <span class="keyword">interface</span>&#123;&#125;) &#123;</span><br><span class="line">	n := <span class="built_in">len</span>(*pq)</span><br><span class="line">	item := x.(*Item)</span><br><span class="line">	item.index = n</span><br><span class="line">	*pq = <span class="built_in">append</span>(*pq, item)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pq *PriorityQueue)</span></span> Pop() <span class="keyword">interface</span>&#123;&#125; &#123;</span><br><span class="line">	n := <span class="built_in">len</span>(*pq)</span><br><span class="line">	item := (*pq)[n<span class="number">-1</span>]</span><br><span class="line">	(*pq)[n<span class="number">-1</span>] = <span class="literal">nil</span>  </span><br><span class="line">	item.index = <span class="number">-1</span></span><br><span class="line">	*pq = (*pq)[:n<span class="number">-1</span>]</span><br><span class="line">	<span class="keyword">return</span> item</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pq *PriorityQueue)</span></span> update(item *Item, priority <span class="type">int</span>) &#123;</span><br><span class="line">	item.priority = priority</span><br><span class="line">	heap.Fix(pq, item.index)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Dijkstra 算法实现（使用优先队列优化）</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Dijkstra</span><span class="params">(graph Graph, start <span class="type">int</span>)</span></span> ([]<span class="type">int</span>, []<span class="type">int</span>) &#123;</span><br><span class="line">	dist := <span class="built_in">make</span>([]<span class="type">int</span>, graph.nodes)</span><br><span class="line">	prev := <span class="built_in">make</span>([]<span class="type">int</span>, graph.nodes) <span class="comment">// 用于记录最短路径</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 初始化距离和前驱节点</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; graph.nodes; i++ &#123;</span><br><span class="line">		dist[i] = math.MaxInt32</span><br><span class="line">		prev[i] = <span class="number">-1</span></span><br><span class="line">	&#125;</span><br><span class="line">	dist[start] = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建优先队列</span></span><br><span class="line">	pq := <span class="built_in">make</span>(PriorityQueue, <span class="number">0</span>)</span><br><span class="line">	heap.Push(&amp;pq, &amp;Item&#123;</span><br><span class="line">		node:     start,</span><br><span class="line">		priority: <span class="number">0</span>,</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 主循环</span></span><br><span class="line">	<span class="keyword">for</span> pq.Len() &gt; <span class="number">0</span> &#123;</span><br><span class="line">		item := heap.Pop(&amp;pq).(*Item)</span><br><span class="line">		u := item.node</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 遍历所有邻接边</span></span><br><span class="line">		<span class="keyword">for</span> _, edge := <span class="keyword">range</span> graph.edges[u] &#123;</span><br><span class="line">			v := edge.to</span><br><span class="line">			alt := dist[u] + edge.weight</span><br><span class="line">			<span class="keyword">if</span> alt &lt; dist[v] &#123;</span><br><span class="line">				dist[v] = alt</span><br><span class="line">				prev[v] = u</span><br><span class="line">				heap.Push(&amp;pq, &amp;Item&#123;</span><br><span class="line">					node:     v,</span><br><span class="line">					priority: alt,</span><br><span class="line">				&#125;)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> dist, prev</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 重建最短路径</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">getPath</span><span class="params">(prev []<span class="type">int</span>, target <span class="type">int</span>)</span></span> []<span class="type">int</span> &#123;</span><br><span class="line">	path := <span class="built_in">make</span>([]<span class="type">int</span>, <span class="number">0</span>)</span><br><span class="line">	<span class="keyword">for</span> target != <span class="number">-1</span> &#123;</span><br><span class="line">		path = <span class="built_in">append</span>([]<span class="type">int</span>&#123;target&#125;, path...)</span><br><span class="line">		target = prev[target]</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> path</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 创建示例图</span></span><br><span class="line">	graph := Graph&#123;</span><br><span class="line">		nodes: <span class="number">4</span>,</span><br><span class="line">		edges: <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="type">int</span>][]Edge),</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 添加边</span></span><br><span class="line">	graph.edges[<span class="number">0</span>] = []Edge&#123;&#123;<span class="number">1</span>, <span class="number">2</span>&#125;, &#123;<span class="number">2</span>, <span class="number">1</span>&#125;&#125;</span><br><span class="line">	graph.edges[<span class="number">1</span>] = []Edge&#123;&#123;<span class="number">2</span>, <span class="number">3</span>&#125;&#125;</span><br><span class="line">	graph.edges[<span class="number">2</span>] = []Edge&#123;&#123;<span class="number">3</span>, <span class="number">1</span>&#125;&#125;</span><br><span class="line">	graph.edges[<span class="number">3</span>] = []Edge&#123;&#125;</span><br><span class="line"></span><br><span class="line">	start := <span class="number">0</span></span><br><span class="line">	dist, prev := Dijkstra(graph, start)</span><br><span class="line">	</span><br><span class="line">	fmt.Printf(<span class="string">&quot;从节点 %d 到其他节点的最短距离:\n&quot;</span>, start)</span><br><span class="line">	<span class="keyword">for</span> i, d := <span class="keyword">range</span> dist &#123;</span><br><span class="line">		fmt.Printf(<span class="string">&quot;到节点 %d: %d\n&quot;</span>, i, d)</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	fmt.Printf(<span class="string">&quot;\n最短路径示例:\n&quot;</span>)</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">1</span>; i &lt; graph.nodes; i++ &#123;</span><br><span class="line">		path := getPath(prev, i)</span><br><span class="line">		fmt.Printf(<span class="string">&quot;到节点 %d 的路径: %v\n&quot;</span>, i, path)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<br/>
+
+<h2 id="6-总结"><a href="#6-总结" class="headerlink" title="6. 总结"></a>6. 总结</h2><p>Dijkstra 算法是一种经典的最短路径算法，它能够有效地解决单源最短路径问题。在理解该算法时，注意它的贪心思想和逐步更新路径的方式。通过优化数据结构，Dijkstra 算法可以在大规模图中高效运行。</p>
+<hr>
+<br/>
+
+<h2 id="7-使用示例"><a href="#7-使用示例" class="headerlink" title="7. 使用示例"></a>7. 使用示例</h2><h4 id="LeetCode-743-网络延迟时间"><a href="#LeetCode-743-网络延迟时间" class="headerlink" title="LeetCode 743: 网络延迟时间"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/network-delay-time">LeetCode 743: 网络延迟时间</a></h4><p>题目要求的是：从某个节点 K 发出信号，计算信号到达所有节点的最短时间。如果某些节点无法接收到信号，返回 -1。</p>
+<h4 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h4><p>给定一个图，图中的节点标号为 1 到 n，且图中的每条边都有一个信号传递时间。我们需要从源节点 K 开始，计算其他所有节点接收到信号的时间。信号从源节点传递到其他节点的时间由边的权重给定。如果有任何一个节点无法接收到信号，返回 -1。</p>
+<h4 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h4><h4 id="图的构建"><a href="#图的构建" class="headerlink" title="图的构建"></a>图的构建</h4><ul>
+<li>使用邻接表的形式表示图，构建图的边以及每条边的权重。</li>
+</ul>
+<h5 id="Dijkstra-算法"><a href="#Dijkstra-算法" class="headerlink" title="Dijkstra 算法"></a>Dijkstra 算法</h5><ul>
+<li>初始化源节点 K 的时间为 0，其他节点的时间为无穷大（表示尚未到达）。</li>
+<li>使用优先队列（最小堆）来选取当前最短时间的节点。</li>
+<li>遍历所有节点，更新其邻接节点的最短时间。</li>
+</ul>
+<h5 id="结果判定"><a href="#结果判定" class="headerlink" title="结果判定"></a>结果判定</h5><ul>
+<li>遍历所有节点的最短时间，如果有节点的最短时间为无穷大，说明该节点无法接收到信号，返回 -1。</li>
+<li>否则，返回所有节点的最短时间中的最大值。</li>
+</ul>
+<h4 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;container/heap&quot;</span></span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;math&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 优先队列中的元素</span></span><br><span class="line"><span class="keyword">type</span> Item <span class="keyword">struct</span> &#123;</span><br><span class="line">	node     <span class="type">int</span>     <span class="comment">// 当前节点</span></span><br><span class="line">	dist     <span class="type">float64</span> <span class="comment">// 当前节点的最短距离</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 最小堆实现</span></span><br><span class="line"><span class="keyword">type</span> MinHeap []*Item</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(h MinHeap)</span></span> Len() <span class="type">int</span>           &#123; <span class="keyword">return</span> <span class="built_in">len</span>(h) &#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(h MinHeap)</span></span> Less(i, j <span class="type">int</span>) <span class="type">bool</span> &#123; <span class="keyword">return</span> h[i].dist &lt; h[j].dist &#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(h MinHeap)</span></span> Swap(i, j <span class="type">int</span>)      &#123; h[i], h[j] = h[j], h[i] &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(h *MinHeap)</span></span> Push(x <span class="keyword">interface</span>&#123;&#125;) &#123;</span><br><span class="line">	*h = <span class="built_in">append</span>(*h, x.(*Item))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(h *MinHeap)</span></span> Pop() <span class="keyword">interface</span>&#123;&#125; &#123;</span><br><span class="line">	n := <span class="built_in">len</span>(*h)</span><br><span class="line">	x := (*h)[n<span class="number">-1</span>]</span><br><span class="line">	*h = (*h)[:n<span class="number">-1</span>]</span><br><span class="line">	<span class="keyword">return</span> x</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 网络延迟时间</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">networkDelayTime</span><span class="params">(times [][]<span class="type">int</span>, n, k <span class="type">int</span>)</span></span> <span class="type">int</span> &#123;</span><br><span class="line">	<span class="comment">// 1. 构建图</span></span><br><span class="line">	graph := <span class="built_in">make</span>([][][<span class="number">2</span>]<span class="type">int</span>, n+<span class="number">1</span>) <span class="comment">// 图的邻接表，graph[i] = [(v, w), ...]</span></span><br><span class="line">	<span class="keyword">for</span> _, time := <span class="keyword">range</span> times &#123;</span><br><span class="line">		u, v, w := time[<span class="number">0</span>], time[<span class="number">1</span>], time[<span class="number">2</span>]</span><br><span class="line">		graph[u] = <span class="built_in">append</span>(graph[u], [<span class="number">2</span>]<span class="type">int</span>&#123;v, w&#125;)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 2. Dijkstra 算法</span></span><br><span class="line">	dist := <span class="built_in">make</span>([]<span class="type">float64</span>, n+<span class="number">1</span>)</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">1</span>; i &lt;= n; i++ &#123;</span><br><span class="line">		dist[i] = math.Inf(<span class="number">1</span>) <span class="comment">// 初始化为无穷大</span></span><br><span class="line">	&#125;</span><br><span class="line">	dist[k] = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">	h := &amp;MinHeap&#123;&#125;</span><br><span class="line">	heap.Push(h, &amp;Item&#123;node: k, dist: <span class="number">0</span>&#125;)</span><br><span class="line">	visited := <span class="built_in">make</span>([]<span class="type">bool</span>, n+<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> h.Len() &gt; <span class="number">0</span> &#123;</span><br><span class="line">		<span class="comment">// 取出当前最短的节点</span></span><br><span class="line">		item := heap.Pop(h).(*Item)</span><br><span class="line">		node := item.node</span><br><span class="line">		<span class="keyword">if</span> visited[node] &#123;</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		&#125;</span><br><span class="line">		visited[node] = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">		<span class="comment">// 遍历当前节点的邻接节点</span></span><br><span class="line">		<span class="keyword">for</span> _, neighbor := <span class="keyword">range</span> graph[node] &#123;</span><br><span class="line">			v, w := neighbor[<span class="number">0</span>], neighbor[<span class="number">1</span>]</span><br><span class="line">			<span class="keyword">if</span> dist[node]+<span class="type">float64</span>(w) &lt; dist[v] &#123;</span><br><span class="line">				dist[v] = dist[node] + <span class="type">float64</span>(w)</span><br><span class="line">				heap.Push(h, &amp;Item&#123;node: v, dist: dist[v]&#125;)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 3. 查找最短时间中的最大值</span></span><br><span class="line">	maxTime := <span class="number">0.0</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">1</span>; i &lt;= n; i++ &#123;</span><br><span class="line">		<span class="keyword">if</span> dist[i] == math.Inf(<span class="number">1</span>) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">-1</span> <span class="comment">// 存在无法到达的节点</span></span><br><span class="line">		&#125;</span><br><span class="line">		maxTime = math.Max(maxTime, dist[i])</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="type">int</span>(maxTime)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 示例</span></span><br><span class="line">	times := [][]<span class="type">int</span>&#123;</span><br><span class="line">		&#123;<span class="number">2</span>, <span class="number">1</span>, <span class="number">1</span>&#125;,</span><br><span class="line">		&#123;<span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>&#125;,</span><br><span class="line">		&#123;<span class="number">3</span>, <span class="number">4</span>, <span class="number">1</span>&#125;,</span><br><span class="line">	&#125;</span><br><span class="line">	n := <span class="number">4</span></span><br><span class="line">	k := <span class="number">2</span></span><br><span class="line">	fmt.Println(networkDelayTime(times, n, k)) <span class="comment">// 输出 2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg" alt="GitHub" width="16" height="16"> </i></a>
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://leetcode.cn/u/yu-peng-f"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/leetcode.svg" alt="LeetCode" width="16" height="16"> </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/gmail.svg" alt="Mail" width="16" height="16"> </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+  </body>
+</html>
