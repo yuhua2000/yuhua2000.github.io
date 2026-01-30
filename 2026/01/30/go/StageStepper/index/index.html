@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog Go 实现父子任务进度同步 </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">Go 实现父子任务进度同步</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2026-01-30T07:03:33.000Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2026-01-30 15:03:33
+</time>
+
+    
+<div class="post__category">
+  <i class="blogfont">&#xe62d;</i>
+  <a class="category-link" href="/categories/golang/">golang</a>
+</div>
+  
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" rel="tag">编程语言</a>
+</div>
+
+
+    <div id="/2026/01/30/go/StageStepper/index/" class="leancloud_visitors post__stat" data-flag-title="Go 实现父子任务进度同步">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%9C%BA%E6%99%AF%E8%83%8C%E6%99%AF"><span class="post__toc-text">场景背景</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%9B%9E%E8%B0%83%E6%9C%BA%E5%88%B6%EF%BC%9A%E7%88%B6%E5%AD%90%E4%BB%BB%E5%8A%A1%E8%BF%9B%E5%BA%A6%E5%90%8C%E6%AD%A5"><span class="post__toc-text">回调机制：父子任务进度同步</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E8%B7%AF"><span class="post__toc-text">核心思路</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E6%AD%A5%E9%AA%A4%E6%A6%82%E8%BF%B0"><span class="post__toc-text">步骤概述</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="post__toc-text">代码实现</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-4"><a class="post__toc-link" href="#StageStepper-%E7%BB%93%E6%9E%84%E4%BD%93"><span class="post__toc-text">StageStepper 结构体</span></a></li><li class="post__toc-item post__toc-level-4"><a class="post__toc-link" href="#%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="post__toc-text">使用示例</span></a></li></ol></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E8%BF%9B%E5%BA%A6%E5%90%8C%E6%AD%A5%E7%BB%86%E8%8A%82"><span class="post__toc-text">进度同步细节</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-4"><a class="post__toc-link" href="#1-%E7%88%B6%E4%BB%BB%E5%8A%A1%E6%80%BB%E6%AD%A5%E6%95%B0%E8%AE%BE%E7%BD%AE%E4%B8%BA-150-%E6%AD%A5%EF%BC%9A"><span class="post__toc-text">1.父任务总步数设置为 150 步：</span></a></li><li class="post__toc-item post__toc-level-4"><a class="post__toc-link" href="#2-%E8%BF%9B%E5%BA%A6%E8%AE%A1%E7%AE%97%EF%BC%9A"><span class="post__toc-text">2. 进度计算：</span></a></li><li class="post__toc-item post__toc-level-4"><a class="post__toc-link" href="#3-%E5%9B%9E%E8%B0%83%E6%9C%BA%E5%88%B6%EF%BC%9A"><span class="post__toc-text">3. 回调机制：</span></a></li></ol></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E8%BE%93%E5%87%BA%E7%A4%BA%E4%BE%8B"><span class="post__toc-text">输出示例</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="post__toc-text">适用场景</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E4%BB%BB%E5%8A%A1%E6%80%BB%E9%87%8F%E6%AD%A5%E8%BF%9B%E5%8F%AF%E7%9F%A5%E7%9A%84%E6%83%85%E5%86%B5"><span class="post__toc-text">任务总量步进可知的情况</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E7%88%B6%E5%AD%90%E4%BB%BB%E5%8A%A1%E8%BF%9B%E5%BA%A6%E6%B1%87%E6%80%BB"><span class="post__toc-text">父子任务进度汇总</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E6%80%BB%E7%BB%93"><span class="post__toc-text">总结</span></a></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h2 id="场景背景"><a href="#场景背景" class="headerlink" title="场景背景"></a>场景背景</h2><p>在很多实际应用中，我们会遇到需要同时追踪多个子任务进度的情况，常见场景包括：</p>
+<ul>
+<li><strong>分布式任务处理</strong>：一个大的任务被分解为多个子任务，每个子任务执行不同的工作单元。父任务的进度应当基于所有子任务的进度。</li>
+<li><strong>多阶段工作流</strong>：任务被拆分成多个阶段，父任务的进度依赖于各个阶段的执行情况。</li>
+<li><strong>并行处理</strong>：多个子任务并行执行，最终汇总父任务的进度。</li>
+</ul>
+<p>为了同步这些任务的进度，我们通常需要通过某种方式将子任务的进度反馈给父任务。回调机制便是解决这一问题的有效方式。</p>
+<h2 id="回调机制：父子任务进度同步"><a href="#回调机制：父子任务进度同步" class="headerlink" title="回调机制：父子任务进度同步"></a>回调机制：父子任务进度同步</h2><h3 id="核心思路"><a href="#核心思路" class="headerlink" title="核心思路"></a>核心思路</h3><p>我们通过回调函数将父任务的进度更新传递给子任务。每当子任务执行进度更新时，它会通过回调通知父任务更新其进度。</p>
+<h3 id="步骤概述"><a href="#步骤概述" class="headerlink" title="步骤概述"></a>步骤概述</h3><ol>
+<li><strong>父任务进度回调</strong>：父任务会在初始化时传入回调函数，每次进度更新时会调用该回调。</li>
+<li><strong>子任务进度回调</strong>：子任务在更新自己进度时，调用父任务的回调函数，从而更新父任务的进度。</li>
+<li><strong>进度同步</strong>：通过这种回调机制，父任务的进度能够随着子任务的完成而动态变化。</li>
+</ol>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><p>我们定义了一个 <code>StageStepper</code> 结构来表示任务的进度管理器。该结构提供了进度步进、进度更新、以及完成任务的功能。</p>
+<h4 id="StageStepper-结构体"><a href="#StageStepper-结构体" class="headerlink" title="StageStepper 结构体"></a><code>StageStepper</code> 结构体</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// StageProgress 接口定义了任务的基本操作</span></span><br><span class="line"><span class="keyword">type</span> StageProgress <span class="keyword">interface</span> &#123;</span><br><span class="line">	Step()         <span class="comment">// 按默认步长推进</span></span><br><span class="line">	StepBy(n <span class="type">int</span>)  <span class="comment">// 按自定义步长推进</span></span><br><span class="line">	Finish()       <span class="comment">// 完成任务</span></span><br><span class="line">	Percent() <span class="type">int</span>  <span class="comment">// 获取当前进度的百分比</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// StageStepper 结构体实现了 StageProgress 接口</span></span><br><span class="line"><span class="keyword">type</span> StageStepper <span class="keyword">struct</span> &#123;</span><br><span class="line">	total       <span class="type">int</span>               <span class="comment">// 总步数</span></span><br><span class="line">	current     <span class="type">int</span>               <span class="comment">// 当前步数</span></span><br><span class="line">	defaultStep <span class="type">int</span>               <span class="comment">// 默认步长</span></span><br><span class="line">	onUpdate    <span class="function"><span class="keyword">func</span><span class="params">(delta, percent <span class="type">int</span>)</span></span> <span class="comment">// 进度更新回调函数</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建 StageStepper 实例</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewStageStepper</span><span class="params">(total <span class="type">int</span>, defaultStep <span class="type">int</span>, onUpdate <span class="keyword">func</span>(delta, percent <span class="type">int</span>)</span></span>) StageProgress &#123;</span><br><span class="line">	<span class="keyword">if</span> total &lt;= <span class="number">0</span> &#123;</span><br><span class="line">		total = <span class="number">1</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> defaultStep &lt;= <span class="number">0</span> &#123;</span><br><span class="line">		defaultStep = <span class="number">1</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> onUpdate == <span class="literal">nil</span> &#123;</span><br><span class="line">		onUpdate = <span class="function"><span class="keyword">func</span><span class="params">(delta, percent <span class="type">int</span>)</span></span> &#123;&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> &amp;StageStepper&#123;</span><br><span class="line">		total:       total,</span><br><span class="line">		current:     <span class="number">0</span>,</span><br><span class="line">		defaultStep: defaultStep,</span><br><span class="line">		onUpdate:    onUpdate,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 步进</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *StageStepper)</span></span> Step() &#123;</span><br><span class="line">	s.StepBy(s.defaultStep)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 按自定义步长推进</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *StageStepper)</span></span> StepBy(n <span class="type">int</span>) &#123;</span><br><span class="line">	<span class="keyword">if</span> n &lt;= <span class="number">0</span> || s.current &gt;= s.total &#123;</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	remain := s.total - s.current</span><br><span class="line">	<span class="keyword">if</span> n &gt; remain &#123;</span><br><span class="line">		n = remain</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	s.current += n</span><br><span class="line">	s.emit(n)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 完成任务</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *StageStepper)</span></span> Finish() &#123;</span><br><span class="line">	remain := s.total - s.current</span><br><span class="line">	<span class="keyword">if</span> remain &gt; <span class="number">0</span> &#123;</span><br><span class="line">		s.current = s.total</span><br><span class="line">		s.emit(remain)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 发出进度更新</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *StageStepper)</span></span> emit(delta <span class="type">int</span>) &#123;</span><br><span class="line">	<span class="keyword">if</span> delta &lt;= <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	s.onUpdate(delta, s.Percent())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 计算进度百分比</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *StageStepper)</span></span> Percent() <span class="type">int</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> s.total &lt;= <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">100</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> s.current &lt;= <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> s.current &gt;= s.total &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">100</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> (s.current*<span class="number">100</span> + s.total/<span class="number">2</span>) / s.total</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h4><p>在父任务和子任务之间同步进度时，我们需要为每个任务设置回调。子任务在执行时，会通过回调更新父任务的进度。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 使用 WaitGroup 来同步父任务和子任务</span></span><br><span class="line">	<span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 父任务进度更新的回调</span></span><br><span class="line">	parentTask := NewStageStepper(<span class="number">150</span>, <span class="number">10</span>, <span class="function"><span class="keyword">func</span><span class="params">(delta, percent <span class="type">int</span>)</span></span> &#123;</span><br><span class="line">		fmt.Printf(<span class="string">&quot;Parent Task Progress: %d%% (Step: %d)\n&quot;</span>, percent, delta)</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 子任务进度更新的回调</span></span><br><span class="line">	subTask := NewStageStepper(<span class="number">50</span>, <span class="number">5</span>, <span class="function"><span class="keyword">func</span><span class="params">(delta, percent <span class="type">int</span>)</span></span> &#123;</span><br><span class="line">		fmt.Printf(<span class="string">&quot;SubTask Progress: %d%% (Step: %d)\n&quot;</span>, percent, delta)</span><br><span class="line">		<span class="comment">// 每次子任务步进时，通知父任务更新进度</span></span><br><span class="line">		parentTask.StepBy(delta)</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 执行父任务</span></span><br><span class="line">	wg.Add(<span class="number">1</span>)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">defer</span> wg.Done()</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;</span><br><span class="line">			parentTask.Step()</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 执行子任务</span></span><br><span class="line">	wg.Add(<span class="number">1</span>)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">defer</span> wg.Done()</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			subTask.Step()</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 等待所有 goroutine 完成</span></span><br><span class="line">	wg.Wait()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 完成任务</span></span><br><span class="line">	parentTask.Finish()</span><br><span class="line">	subTask.Finish()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="进度同步细节"><a href="#进度同步细节" class="headerlink" title="进度同步细节"></a>进度同步细节</h3><h4 id="1-父任务总步数设置为-150-步："><a href="#1-父任务总步数设置为-150-步：" class="headerlink" title="1.父任务总步数设置为 150 步："></a>1.父任务总步数设置为 150 步：</h4><p>父任务的总步数设置为 150，其中包括了父任务的 100 步和子任务的 50 步。父任务的进度条总进度量综合了父任务和所有子任务的步数。</p>
+<h4 id="2-进度计算："><a href="#2-进度计算：" class="headerlink" title="2. 进度计算："></a>2. 进度计算：</h4><p>父任务的进度计算同时考虑了父任务自身的进度和所有子任务的进度。在子任务完成一定步数时，父任务的进度会按比例更新。具体地，子任务的进度直接影响父任务的进度，确保父任务进度条准确反映出父任务和子任务的整体执行情况。</p>
+<h4 id="3-回调机制："><a href="#3-回调机制：" class="headerlink" title="3. 回调机制："></a>3. 回调机制：</h4><p>通过回调机制，子任务在每次步进时，会通过回调更新父任务的进度。在子任务的进度更新回调函数中，每次子任务步进时，都会通知父任务通过 parentTask.StepBy(delta) 更新父任务的进度。这样，父任务进度条的显示会实时同步到子任务的执行情况。</p>
+<h3 id="输出示例"><a href="#输出示例" class="headerlink" title="输出示例"></a>输出示例</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">SubTask Progress: 10% (Step: 5)</span><br><span class="line">Parent Task Progress: 10% (Step: 5)</span><br><span class="line">SubTask Progress: 20% (Step: 5)</span><br><span class="line">Parent Task Progress: 13% (Step: 5)</span><br><span class="line">SubTask Progress: 30% (Step: 5)</span><br><span class="line">Parent Task Progress: 17% (Step: 5)</span><br><span class="line">SubTask Progress: 40% (Step: 5)</span><br><span class="line">Parent Task Progress: 20% (Step: 5)</span><br><span class="line">SubTask Progress: 50% (Step: 5)</span><br><span class="line">Parent Task Progress: 23% (Step: 5)</span><br><span class="line">SubTask Progress: 60% (Step: 5)</span><br><span class="line">Parent Task Progress: 27% (Step: 5)</span><br><span class="line">SubTask Progress: 70% (Step: 5)</span><br><span class="line">Parent Task Progress: 30% (Step: 5)</span><br><span class="line">SubTask Progress: 80% (Step: 5)</span><br><span class="line">Parent Task Progress: 33% (Step: 5)</span><br><span class="line">SubTask Progress: 90% (Step: 5)</span><br><span class="line">Parent Task Progress: 37% (Step: 5)</span><br><span class="line">SubTask Progress: 100% (Step: 5)</span><br><span class="line">Parent Task Progress: 40% (Step: 5)</span><br><span class="line">Parent Task Progress: 7% (Step: 10)</span><br><span class="line">Parent Task Progress: 47% (Step: 10)</span><br><span class="line">Parent Task Progress: 53% (Step: 10)</span><br><span class="line">Parent Task Progress: 60% (Step: 10)</span><br><span class="line">Parent Task Progress: 67% (Step: 10)</span><br><span class="line">Parent Task Progress: 73% (Step: 10)</span><br><span class="line">Parent Task Progress: 80% (Step: 10)</span><br><span class="line">Parent Task Progress: 87% (Step: 10)</span><br><span class="line">Parent Task Progress: 93% (Step: 10)</span><br><span class="line">Parent Task Progress: 100% (Step: 10)</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><h3 id="任务总量步进可知的情况"><a href="#任务总量步进可知的情况" class="headerlink" title="任务总量步进可知的情况"></a>任务总量步进可知的情况</h3><p>适用于父任务和子任务的进度总量已知的场景，通过综合计算父任务和子任务的总进度，确保父任务进度条平滑更新，避免进度条跳动不流畅。</p>
+<h3 id="父子任务进度汇总"><a href="#父子任务进度汇总" class="headerlink" title="父子任务进度汇总"></a>父子任务进度汇总</h3><p>在多子任务场景下，父任务进度需要动态调整，确保子任务完成时父任务进度准确反映所有子任务的执行情况。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过回调机制，我们可以在不改变现有设计结构的前提下，灵活地实现父子任务的进度同步。每当子任务步进时，它会通过回调函数通知父任务更新进度，确保父任务的进度始终反映子任务的完成情况。</p>
+<p>这种方法在处理多级任务、并行任务及分布式系统中的任务进度管理时尤为有效。希望这篇博客能够帮助你理解如何利用 Go 中的回调机制来实现任务进度同步，从而优化你的任务调度和进度管理。</p>
+
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg" alt="GitHub" width="16" height="16"> </i></a>
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://leetcode.cn/u/yu-peng-f"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/leetcode.svg" alt="LeetCode" width="16" height="16"> </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/gmail.svg" alt="Mail" width="16" height="16"> </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+  </body>
+</html>
