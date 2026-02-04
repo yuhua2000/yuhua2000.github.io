@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog Elasticsearch 批量写入 </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">Elasticsearch 批量写入</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2026-02-04T03:03:50.000Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2026-02-04 11:03:50
+</time>
+
+    
+<div class="post__category">
+  <i class="blogfont">&#xe62d;</i>
+  <a class="category-link" href="/categories/Elasticsearch/">Elasticsearch</a>
+</div>
+  
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/Elasticsearch/" rel="tag">Elasticsearch</a>
+</div>
+
+
+    <div id="/2026/02/04/es/esbulk/index/" class="leancloud_visitors post__stat" data-flag-title="Elasticsearch 批量写入">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#Elasticsearch-%E6%89%B9%E9%87%8F%E5%86%99%E5%85%A5%E7%9A%84%E5%B7%A5%E7%A8%8B%E6%BC%94%E8%BF%9B%EF%BC%9A%E4%BB%8E%E6%89%8B%E5%86%99-HTTP-%E5%88%B0-BulkIndexer%EF%BC%88%E4%BB%A5%E5%8F%8A%E6%88%91%E8%B8%A9%E8%BF%87%E7%9A%84%E5%9D%91%EF%BC%89"><span class="post__toc-text">Elasticsearch 批量写入的工程演进：从手写 HTTP 到 BulkIndexer（以及我踩过的坑）</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E4%B8%80%E3%80%81%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5%EF%BC%9A%E6%89%8B%E5%8A%A8-HTTP-Bulk-%E2%80%94%E2%80%94-%E8%83%BD%E8%B7%91%EF%BC%8C%E4%BD%86%E9%9D%9E%E5%B8%B8%E5%8D%B1%E9%99%A9"><span class="post__toc-text">一、第一阶段：手动 HTTP Bulk —— 能跑，但非常危险</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#1%EF%B8%8F%E2%83%A3-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%80%E5%BC%80%E5%A7%8B%E4%BC%9A%E8%BF%99%E4%B9%88%E5%86%99%EF%BC%9F"><span class="post__toc-text">1️⃣ 为什么一开始会这么写？</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#2%EF%B8%8F%E2%83%A3-%E8%BF%99%E4%B8%AA%E6%96%B9%E6%A1%88%E7%9A%84%E4%BC%98%E7%82%B9"><span class="post__toc-text">2️⃣ 这个方案的优点</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#3%EF%B8%8F%E2%83%A3-%E8%87%B4%E5%91%BD%E9%97%AE%E9%A2%98%EF%BC%9AHTTP-200-%E2%89%A0-%E5%86%99%E5%85%A5%E6%88%90%E5%8A%9F"><span class="post__toc-text">3️⃣ 致命问题：HTTP 200 ≠ 写入成功</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#4%EF%B8%8F%E2%83%A3-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E6%98%AF%E4%B8%80%E4%B8%AA%E2%80%9C%E4%BA%8B%E6%95%85%E7%BA%A7%E2%80%9D%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="post__toc-text">4️⃣ 为什么这是一个“事故级”问题？</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E4%BA%8C%E3%80%81%E7%AC%AC%E4%BA%8C%E9%98%B6%E6%AE%B5%EF%BC%9Aclient-Bulk-%E2%80%94%E2%80%94-%E6%AD%A3%E7%A1%AE%EF%BC%8C%E4%BD%86%E8%BF%98%E4%B8%8D%E5%A4%9F%E5%B7%A5%E7%A8%8B%E5%8C%96"><span class="post__toc-text">二、第二阶段：client.Bulk() —— 正确，但还不够工程化</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#1%EF%B8%8F%E2%83%A3-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%8D%A2%EF%BC%9F"><span class="post__toc-text">1️⃣ 为什么要换？</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#2%EF%B8%8F%E2%83%A3-%E8%BF%99%E4%B8%80%E7%89%88%E8%A7%A3%E5%86%B3%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="post__toc-text">2️⃣ 这一版解决了什么？</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#3%EF%B8%8F%E2%83%A3-%E4%BD%86%E6%96%B0%E7%9A%84%E9%97%AE%E9%A2%98%E4%B9%9F%E5%BE%88%E6%98%8E%E6%98%BE"><span class="post__toc-text">3️⃣ 但新的问题也很明显</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E4%B8%89%E3%80%81%E7%AC%AC%E4%B8%89%E9%98%B6%E6%AE%B5%EF%BC%9Aesutil-BulkIndexer-%E2%80%94%E2%80%94-%E7%94%9F%E4%BA%A7%E7%BA%A7%E6%96%B9%E6%A1%88"><span class="post__toc-text">三、第三阶段：esutil.BulkIndexer —— 生产级方案</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#1%EF%B8%8F%E2%83%A3-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9C%80%E7%BB%88%E9%80%89%E6%8B%A9-BulkIndexer%EF%BC%9F"><span class="post__toc-text">1️⃣ 为什么最终选择 BulkIndexer？</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#2%EF%B8%8F%E2%83%A3-%E6%A0%B8%E5%BF%83%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F"><span class="post__toc-text">2️⃣ 核心使用方式</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#3%EF%B8%8F%E2%83%A3-BulkIndexer-%E5%A6%82%E4%BD%95%E9%81%BF%E5%85%8D%E2%80%9C%E9%9D%99%E9%BB%98%E5%A4%B1%E8%B4%A5%E2%80%9D%EF%BC%9F"><span class="post__toc-text">3️⃣ BulkIndexer 如何避免“静默失败”？</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%9B%9B%E3%80%81%E4%B8%89%E7%A7%8D%E6%96%B9%E6%A1%88%E7%9A%84%E6%9C%AC%E8%B4%A8%E5%AF%B9%E6%AF%94"><span class="post__toc-text">四、三种方案的本质对比</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E4%BA%94%E3%80%81%E6%88%91%E7%9A%84%E6%9C%80%E7%BB%88%E7%BB%93%E8%AE%BA%EF%BC%88%E8%A1%80%E6%B3%AA%E7%89%88%EF%BC%89"><span class="post__toc-text">五、我的最终结论（血泪版）</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%85%AD%E3%80%81%E5%86%99%E5%9C%A8%E6%9C%80%E5%90%8E"><span class="post__toc-text">六、写在最后</span></a></li></ol></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h1 id="Elasticsearch-批量写入的工程演进：从手写-HTTP-到-BulkIndexer（以及我踩过的坑）"><a href="#Elasticsearch-批量写入的工程演进：从手写-HTTP-到-BulkIndexer（以及我踩过的坑）" class="headerlink" title="Elasticsearch 批量写入的工程演进：从手写 HTTP 到 BulkIndexer（以及我踩过的坑）"></a>Elasticsearch 批量写入的工程演进：从手写 HTTP 到 BulkIndexer（以及我踩过的坑）</h1><p>在做 Elasticsearch 大规模数据写入时，我完整经历了三种实现方式：</p>
+<ol>
+<li><strong>手动拼接 HTTP Bulk 请求</strong></li>
+<li><strong>使用官方 <code>client.Bulk()</code> API</strong></li>
+<li><strong>使用 <code>esutil.BulkIndexer</code></strong></li>
+</ol>
+<p>这篇文章不是教程，而是一次<strong>真实工程演进的复盘</strong>：<br>👉 <strong>每一版为什么存在</strong><br>👉 <strong>每一版解决了什么问题</strong><br>👉 <strong>以及它为什么最终会被下一版替代</strong></p>
+<p>如果你现在也在写 ES 批量写入，希望这篇文章能帮你<strong>少踩一次坑</strong>。</p>
+<hr>
+<h2 id="一、第一阶段：手动-HTTP-Bulk-——-能跑，但非常危险"><a href="#一、第一阶段：手动-HTTP-Bulk-——-能跑，但非常危险" class="headerlink" title="一、第一阶段：手动 HTTP Bulk —— 能跑，但非常危险"></a>一、第一阶段：手动 HTTP Bulk —— 能跑，但非常危险</h2><h3 id="1️⃣-为什么一开始会这么写？"><a href="#1️⃣-为什么一开始会这么写？" class="headerlink" title="1️⃣ 为什么一开始会这么写？"></a>1️⃣ 为什么一开始会这么写？</h3><p>最初需求其实很简单：</p>
+<ul>
+<li>批量写入 ES</li>
+<li>控制单次请求大小（避免 OOM）</li>
+<li>快速实现</li>
+</ul>
+<p>于是最直接的方案就是：<br>👉 <strong>直接调用 Elasticsearch 的 <code>_bulk</code> HTTP API</strong></p>
+<p>核心思路：</p>
+<ul>
+<li>用 <code>bytes.Buffer</code> 手动拼接 NDJSON</li>
+<li>超过大小阈值就 POST 一次</li>
+</ul>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123; action &#125;</span><br><span class="line">&#123; document &#125;</span><br><span class="line">&#123; action &#125;</span><br><span class="line">&#123; document &#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="2️⃣-这个方案的优点"><a href="#2️⃣-这个方案的优点" class="headerlink" title="2️⃣ 这个方案的优点"></a>2️⃣ 这个方案的优点</h3><p>说实话，第一版并不是“错误设计”：</p>
+<ul>
+<li>✅ 非常直观</li>
+<li>✅ 不依赖 SDK</li>
+<li>✅ 适合 PoC &#x2F; 验证阶段</li>
+<li>✅ 对 Bulk 协议理解最深入</li>
+</ul>
+<hr>
+<h3 id="3️⃣-致命问题：HTTP-200-≠-写入成功"><a href="#3️⃣-致命问题：HTTP-200-≠-写入成功" class="headerlink" title="3️⃣ 致命问题：HTTP 200 ≠ 写入成功"></a>3️⃣ 致命问题：HTTP 200 ≠ 写入成功</h3><p>真正的问题，出在 <strong>Bulk API 的返回语义</strong>。</p>
+<p>在最初的实现中，我只做了这件事：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> resp.StatusCode != http.StatusOK &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="type">error</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>并简单打印了一点 response body。</p>
+<p><strong>结果是一个非常隐蔽、但极其危险的坑：</strong></p>
+<blockquote>
+<p><strong>Bulk 请求 HTTP 返回 200，但部分文档写入失败</strong></p>
+</blockquote>
+<hr>
+<h3 id="4️⃣-为什么这是一个“事故级”问题？"><a href="#4️⃣-为什么这是一个“事故级”问题？" class="headerlink" title="4️⃣ 为什么这是一个“事故级”问题？"></a>4️⃣ 为什么这是一个“事故级”问题？</h3><p>Bulk API 的真实返回是这样的：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;took&quot;</span><span class="punctuation">:</span> <span class="number">30</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;errors&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;items&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span> <span class="attr">&quot;index&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="number">201</span> <span class="punctuation">&#125;</span> <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span> <span class="attr">&quot;index&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="number">409</span><span class="punctuation">,</span> <span class="attr">&quot;error&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> ... <span class="punctuation">&#125;</span> <span class="punctuation">&#125;</span> <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>关键点只有一个：</p>
+<blockquote>
+<p>❗ <strong>失败信息在 response body，而不在 HTTP status</strong></p>
+</blockquote>
+<p>而我当时：</p>
+<ul>
+<li>❌ 没有完整读取 body</li>
+<li>❌ 没有解析 <code>errors</code></li>
+<li>❌ 没有逐条检查 <code>items</code></li>
+</ul>
+<p>结果就是：</p>
+<blockquote>
+<p><strong>任务“成功结束”，但 ES 里实际数据少了一部分</strong></p>
+</blockquote>
+<p>这是典型的 <strong>静默数据丢失</strong>，比直接报错危险得多。</p>
+<hr>
+<h2 id="二、第二阶段：client-Bulk-——-正确，但还不够工程化"><a href="#二、第二阶段：client-Bulk-——-正确，但还不够工程化" class="headerlink" title="二、第二阶段：client.Bulk() —— 正确，但还不够工程化"></a>二、第二阶段：client.Bulk() —— 正确，但还不够工程化</h2><h3 id="1️⃣-为什么要换？"><a href="#1️⃣-为什么要换？" class="headerlink" title="1️⃣ 为什么要换？"></a>1️⃣ 为什么要换？</h3><p>第一版最大的问题不是性能，而是<strong>可靠性</strong>。<br>于是我转向了 <strong>官方 Go SDK 提供的 Bulk API</strong>：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">bulk := client.Bulk().Index(index)</span><br><span class="line">bulk.IndexOp(op, doc)</span><br><span class="line">bulk.Do(ctx)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="2️⃣-这一版解决了什么？"><a href="#2️⃣-这一版解决了什么？" class="headerlink" title="2️⃣ 这一版解决了什么？"></a>2️⃣ 这一版解决了什么？</h3><p>✅ SDK 自动解析 Bulk 响应<br>✅ 明确暴露 <code>res.Errors</code><br>✅ 不可能再忽略部分失败<br>✅ 不需要手写 NDJSON</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">res, err := bulk.Do(ctx)</span><br><span class="line"><span class="keyword">if</span> res.Errors &#123;</span><br><span class="line">    <span class="keyword">return</span> fmt.Errorf(<span class="string">&quot;bulk response contains errors&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>这是一个非常重要的进步</strong>：<br>👉 <strong>从“可能悄悄丢数据”变成“失败一定能感知”</strong></p>
+<hr>
+<h3 id="3️⃣-但新的问题也很明显"><a href="#3️⃣-但新的问题也很明显" class="headerlink" title="3️⃣ 但新的问题也很明显"></a>3️⃣ 但新的问题也很明显</h3><p>随着数据量继续增长，工程问题开始暴露：</p>
+<p>❌ flush 策略需要自己控制</p>
+<ul>
+<li>按条数？</li>
+<li>按字节？</li>
+<li>按时间？</li>
+</ul>
+<p>❌ 并发写入要自己管理</p>
+<ul>
+<li>goroutine</li>
+<li>channel</li>
+<li>backpressure</li>
+</ul>
+<p>❌ 缺少全局统计信息</p>
+<ul>
+<li>总写入条数</li>
+<li>失败条数</li>
+<li>flush 次数</li>
+</ul>
+<p>这时我意识到：</p>
+<blockquote>
+<p><strong><code>client.Bulk()</code> 更像“底层构件”，而不是生产级工具</strong></p>
+</blockquote>
+<hr>
+<h2 id="三、第三阶段：esutil-BulkIndexer-——-生产级方案"><a href="#三、第三阶段：esutil-BulkIndexer-——-生产级方案" class="headerlink" title="三、第三阶段：esutil.BulkIndexer —— 生产级方案"></a>三、第三阶段：esutil.BulkIndexer —— 生产级方案</h2><h3 id="1️⃣-为什么最终选择-BulkIndexer？"><a href="#1️⃣-为什么最终选择-BulkIndexer？" class="headerlink" title="1️⃣ 为什么最终选择 BulkIndexer？"></a>1️⃣ 为什么最终选择 BulkIndexer？</h3><p><code>esutil.BulkIndexer</code> 本质上是 <strong>官方给出的“Bulk 最终形态”</strong>，它解决的正是前两版遗留的问题：</p>
+<ul>
+<li>自动 batching</li>
+<li>自动 flush</li>
+<li>worker 池并发</li>
+<li>背压控制</li>
+<li>统一统计</li>
+<li>明确的失败回调</li>
+</ul>
+<p>一句话总结：</p>
+<blockquote>
+<p><strong>你只管 Add，剩下的工程问题交给 BulkIndexer</strong></p>
+</blockquote>
+<hr>
+<h3 id="2️⃣-核心使用方式"><a href="#2️⃣-核心使用方式" class="headerlink" title="2️⃣ 核心使用方式"></a>2️⃣ 核心使用方式</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">bi, _ := esutil.NewBulkIndexer(esutil.BulkIndexerConfig&#123;</span><br><span class="line">    Client: client,</span><br><span class="line">    Index:  index,</span><br><span class="line"></span><br><span class="line">    NumWorkers: <span class="number">5</span>,</span><br><span class="line">    FlushBytes:    <span class="number">5</span> &lt;&lt; <span class="number">20</span>,</span><br><span class="line">    FlushInterval: <span class="number">30</span> * time.Second,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>写入时：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bi.Add(ctx, esutil.BulkIndexerItem&#123;</span><br><span class="line">    Action: <span class="string">&quot;index&quot;</span>,</span><br><span class="line">    Body:   bytes.NewReader(body),</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3️⃣-BulkIndexer-如何避免“静默失败”？"><a href="#3️⃣-BulkIndexer-如何避免“静默失败”？" class="headerlink" title="3️⃣ BulkIndexer 如何避免“静默失败”？"></a>3️⃣ BulkIndexer 如何避免“静默失败”？</h3><p>这是它最重要的价值之一：</p>
+<ul>
+<li>每条失败都会进入 <code>OnFailure</code></li>
+<li>全局失败可以通过 <code>Stats()</code> 感知</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stats := bi.Stats()</span><br></pre></td></tr></table></figure>
+
+<p>你可以明确知道：</p>
+<ul>
+<li>加了多少</li>
+<li>成功多少</li>
+<li>失败多少</li>
+<li>flush 了几次</li>
+</ul>
+<p><strong>数据一致性终于变成“可验证的事实”</strong>。</p>
+<hr>
+<h2 id="四、三种方案的本质对比"><a href="#四、三种方案的本质对比" class="headerlink" title="四、三种方案的本质对比"></a>四、三种方案的本质对比</h2><table>
+<thead>
+<tr>
+<th>方案</th>
+<th>本质定位</th>
+<th>最大风险</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>手写 HTTP Bulk</td>
+<td>协议级</td>
+<td>静默数据丢失</td>
+</tr>
+<tr>
+<td>client.Bulk()</td>
+<td>API 级</td>
+<td>工程复杂度</td>
+</tr>
+<tr>
+<td>BulkIndexer</td>
+<td>工具级</td>
+<td>几乎没有</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="五、我的最终结论（血泪版）"><a href="#五、我的最终结论（血泪版）" class="headerlink" title="五、我的最终结论（血泪版）"></a>五、我的最终结论（血泪版）</h2><blockquote>
+<p>❗ <strong>Bulk API 最危险的不是性能，而是“你以为成功了”</strong></p>
+<p>❗ <strong>HTTP 200 在 Bulk 语义下毫无意义</strong></p>
+<p>❗ <strong>如果你没有解析 Bulk Response，你根本不知道自己写没写成功</strong></p>
+</blockquote>
+<p>因此：</p>
+<ul>
+<li><strong>PoC &#x2F; 学习</strong>：可以手写 HTTP</li>
+<li><strong>中等规模任务</strong>：<code>client.Bulk()</code> 勉强可用</li>
+<li><strong>生产环境 &#x2F; 长期任务</strong>：<strong>直接用 <code>esutil.BulkIndexer</code></strong></li>
+</ul>
+<hr>
+<h2 id="六、写在最后"><a href="#六、写在最后" class="headerlink" title="六、写在最后"></a>六、写在最后</h2><p>这次演进给我最大的感受是：</p>
+<blockquote>
+<p><strong>工程问题不是“能不能写进去”，而是“你怎么确认它真的写进去了”</strong></p>
+</blockquote>
+<p>BulkIndexer 并不是为了省代码，<br>而是为了<strong>避免你在凌晨两点对账时，才发现数据少了一截</strong>。</p>
+<p>如果你现在还在：</p>
+<ul>
+<li>手写 NDJSON</li>
+<li>只看 HTTP status</li>
+<li>自己控制 flush</li>
+</ul>
+<p>那你很可能正站在我曾经踩过的那个坑边上。</p>
+<p><strong>早点跳出来，会轻松很多。</strong></p>
+
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg" alt="GitHub" width="16" height="16"> </i></a>
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://leetcode.cn/u/yu-peng-f"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/leetcode.svg" alt="LeetCode" width="16" height="16"> </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/gmail.svg" alt="Mail" width="16" height="16"> </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+  </body>
+</html>
