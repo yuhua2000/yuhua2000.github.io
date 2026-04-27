@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog 代码理解 Agent + API 文档生成（MCP 实践) </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">代码理解 Agent + API 文档生成（MCP 实践)</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2026-04-26T06:23:50.000Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2026-04-26 14:23:50
+</time>
+
+    
+<div class="post__category">
+  <i class="blogfont">&#xe62d;</i>
+  <a class="category-link" href="/categories/AI%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5%E6%89%8B%E8%AE%B0/">AI工程实践手记</a>
+</div>
+  
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/Agent/" rel="tag">Agent</a>, <a class="tag-link-link" href="/tags/MCP/" rel="tag">MCP</a>
+</div>
+
+
+    <div id="/2026/04/26/agent/agent-mcp/index/" class="leancloud_visitors post__stat" data-flag-title="代码理解 Agent + API 文档生成（MCP 实践)">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E7%94%A8-Go-%E5%86%99%E4%BA%86%E4%B8%A4%E4%B8%AA%E5%B0%8F%E5%B7%A5%E5%85%B7%EF%BC%9A%E4%BB%A3%E7%A0%81%E7%90%86%E8%A7%A3-Agent-API-%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90%EF%BC%88MCP-%E5%AE%9E%E8%B7%B5%EF%BC%89"><span class="post__toc-text">用 Go 写了两个小工具：代码理解 Agent + API 文档生成（MCP 实践）</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%F0%9F%93%A6-%E9%A1%B9%E7%9B%AE%E5%9C%B0%E5%9D%80"><span class="post__toc-text">📦 项目地址</span></a></li></ol></li><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E4%B8%80%E3%80%81CodeSense%EF%BC%9A%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E4%BB%A3%E7%A0%81%E7%90%86%E8%A7%A3-Agent"><span class="post__toc-text">一、CodeSense：一个简单的代码理解 Agent</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%F0%9F%A7%A0-%E6%98%AF%E5%B9%B2%E5%98%9B%E7%9A%84%EF%BC%9F"><span class="post__toc-text">🧠 是干嘛的？</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E2%9A%99%EF%B8%8F-%E6%A0%B8%E5%BF%83%E6%80%9D%E8%B7%AF%EF%BC%9AReAct"><span class="post__toc-text">⚙️ 核心思路：ReAct</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%F0%9F%94%A7-%E5%81%9A%E4%BA%86%E5%93%AA%E4%BA%9B%E4%B8%9C%E8%A5%BF%EF%BC%9F"><span class="post__toc-text">🔧 做了哪些东西？</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#1%EF%B8%8F%E2%83%A3-%E5%88%86%E6%9E%90-Agent"><span class="post__toc-text">1️⃣ 分析 Agent</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#2%EF%B8%8F%E2%83%A3-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%8E%8B%E7%BC%A9%EF%BC%88%E5%85%B3%E9%94%AE%EF%BC%89"><span class="post__toc-text">2️⃣ 上下文压缩（关键）</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#3%EF%B8%8F%E2%83%A3-%E6%8A%A5%E5%91%8A%E7%94%9F%E6%88%90"><span class="post__toc-text">3️⃣ 报告生成</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%F0%9F%8F%97%EF%B8%8F-%E6%8A%80%E6%9C%AF%E5%AE%9E%E7%8E%B0"><span class="post__toc-text">🏗️ 技术实现</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%F0%9F%A4%94-%E8%BF%99%E4%B8%AA%E9%A1%B9%E7%9B%AE%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="post__toc-text">🤔 这个项目解决什么问题？</span></a></li></ol></li><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E4%BA%8C%E3%80%81api-registry-mcp%EF%BC%9AAPI-%E6%B3%A8%E5%86%8C%E4%B8%8E%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90%EF%BC%88MCP-%E5%AE%9E%E8%B7%B5%EF%BC%89"><span class="post__toc-text">二、api-registry-mcp：API 注册与文档生成（MCP 实践）</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%F0%9F%A7%A0-%E6%98%AF%E5%B9%B2%E5%98%9B%E7%9A%84%EF%BC%9F-1"><span class="post__toc-text">🧠 是干嘛的？</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E2%9A%99%EF%B8%8F-%E5%AE%9E%E7%8E%B0%E4%BA%86%E4%BB%80%E4%B9%88%E5%8A%9F%E8%83%BD%EF%BC%9F"><span class="post__toc-text">⚙️ 实现了什么功能？</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#1%EF%B8%8F%E2%83%A3-%E6%B3%A8%E5%86%8C-API"><span class="post__toc-text">1️⃣ 注册 API</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#2%EF%B8%8F%E2%83%A3-%E6%9F%A5%E8%AF%A2-API"><span class="post__toc-text">2️⃣ 查询 API</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#3%EF%B8%8F%E2%83%A3-%E7%94%9F%E6%88%90%E6%96%87%E6%A1%A3"><span class="post__toc-text">3️⃣ 生成文档</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%F0%9F%A7%A9-MCP-Tool-%E8%AE%BE%E8%AE%A1"><span class="post__toc-text">🧩 MCP Tool 设计</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%F0%9F%8F%97%EF%B8%8F-%E7%BB%93%E6%9E%84%EF%BC%88%E5%BE%88%E7%AE%80%E5%8D%95%EF%BC%89"><span class="post__toc-text">🏗️ 结构（很简单）</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%F0%9F%93%8C-%E5%AD%A6%E5%88%B0%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="post__toc-text">📌 学到什么？</span></a></li></ol></li><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E4%B8%89%E3%80%81-%E4%B8%80%E4%BA%9B%E5%AE%9E%E9%99%85%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="post__toc-text">三、 一些实际使用场景</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#1%EF%B8%8F%E2%83%A3-%E5%BF%AB%E9%80%9F%E7%90%86%E8%A7%A3%E6%96%B0%E9%A1%B9%E7%9B%AE"><span class="post__toc-text">1️⃣ 快速理解新项目</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#2%EF%B8%8F%E2%83%A3-%E7%BB%99%E8%80%81%E9%A1%B9%E7%9B%AE%E8%A1%A5-API-%E6%96%87%E6%A1%A3"><span class="post__toc-text">2️⃣ 给老项目补 API 文档</span></a></li></ol></li></ol></li><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E5%9B%9B%E3%80%81%E5%BD%93%E5%89%8D%E7%8A%B6%E6%80%81"><span class="post__toc-text">四、当前状态</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#CodeSense"><span class="post__toc-text">CodeSense</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#api-registry-mcp"><span class="post__toc-text">api-registry-mcp</span></a></li></ol></li></ol></li><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E4%BA%94%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E5%81%9A%E8%BF%99%E4%B8%A4%E4%B8%AA%EF%BC%9F"><span class="post__toc-text">五、为什么做这两个？</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#1%EF%B8%8F%E2%83%A3-%E5%A6%82%E4%BD%95%E8%AE%A9-AI-%E7%90%86%E8%A7%A3%E4%BB%A3%E7%A0%81%EF%BC%9F"><span class="post__toc-text">1️⃣ 如何让 AI 理解代码？</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#2%EF%B8%8F%E2%83%A3-%E5%A6%82%E4%BD%95%E7%BB%93%E6%9E%84%E5%8C%96%E6%8E%A5%E5%8F%A3%E4%BF%A1%E6%81%AF%EF%BC%9F"><span class="post__toc-text">2️⃣ 如何结构化接口信息？</span></a></li></ol></li></ol></li><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E5%85%AD%E3%80%81%E6%80%BB%E7%BB%93"><span class="post__toc-text">六、总结</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%F0%9F%93%8C-%E6%9C%80%E5%90%8E"><span class="post__toc-text">📌 最后</span></a></li></ol></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h1 id="用-Go-写了两个小工具：代码理解-Agent-API-文档生成（MCP-实践）"><a href="#用-Go-写了两个小工具：代码理解-Agent-API-文档生成（MCP-实践）" class="headerlink" title="用 Go 写了两个小工具：代码理解 Agent + API 文档生成（MCP 实践）"></a>用 Go 写了两个小工具：代码理解 Agent + API 文档生成（MCP 实践）</h1><p>最近在学习两个东西：</p>
+<ul>
+<li>Agent（尤其是 ReAct 模式）</li>
+<li>MCP（Model Context Protocol）</li>
+</ul>
+<p>顺手做了两个小项目，一个“代码理解”，一个“接口结构化”，记录一下。</p>
+<hr>
+<h2 id="📦-项目地址"><a href="#📦-项目地址" class="headerlink" title="📦 项目地址"></a>📦 项目地址</h2><p>👉 CodeSense（代码理解 Agent）<br><a target="_blank" rel="noopener" href="https://github.com/yuhua2000/codesense">https://github.com/yuhua2000/codesense</a></p>
+<p>👉 api-registry-mcp（API 注册与文档生成）<br><a target="_blank" rel="noopener" href="https://github.com/yuhua2000/api-registry-mcp">https://github.com/yuhua2000/api-registry-mcp</a></p>
+<hr>
+<h1 id="一、CodeSense：一个简单的代码理解-Agent"><a href="#一、CodeSense：一个简单的代码理解-Agent" class="headerlink" title="一、CodeSense：一个简单的代码理解 Agent"></a>一、CodeSense：一个简单的代码理解 Agent</h1><h2 id="🧠-是干嘛的？"><a href="#🧠-是干嘛的？" class="headerlink" title="🧠 是干嘛的？"></a>🧠 是干嘛的？</h2><p>一句话：</p>
+<blockquote>
+<p>用 AI 自动分析代码仓库，并生成结构化总结报告</p>
+</blockquote>
+<p>输入一个代码路径，它会自动：</p>
+<ul>
+<li>分析项目结构</li>
+<li>识别核心模块</li>
+<li>提取关键方法</li>
+<li>输出 Markdown 报告</li>
+</ul>
+<hr>
+<h2 id="⚙️-核心思路：ReAct"><a href="#⚙️-核心思路：ReAct" class="headerlink" title="⚙️ 核心思路：ReAct"></a>⚙️ 核心思路：ReAct</h2><p>核心不是“分析代码”，而是这个循环：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">思考（Reasoning） → 执行（Acting） → 再思考 → 再执行</span><br></pre></td></tr></table></figure>
+
+<p>具体就是：</p>
+<ol>
+<li>AI 决定下一步做什么（看 README？看 main？）</li>
+<li>调用本地工具（读文件 &#x2F; 列目录）</li>
+<li>再分析</li>
+<li>循环，直到能输出结果</li>
+</ol>
+<hr>
+<h2 id="🔧-做了哪些东西？"><a href="#🔧-做了哪些东西？" class="headerlink" title="🔧 做了哪些东西？"></a>🔧 做了哪些东西？</h2><h3 id="1️⃣-分析-Agent"><a href="#1️⃣-分析-Agent" class="headerlink" title="1️⃣ 分析 Agent"></a>1️⃣ 分析 Agent</h3><ul>
+<li><p>不全量扫描代码（控制成本）</p>
+</li>
+<li><p>优先读关键文件：</p>
+<ul>
+<li>README</li>
+<li>依赖文件</li>
+<li>入口代码</li>
+</ul>
+</li>
+<li><p>动态决定分析路径</p>
+</li>
+</ul>
+<hr>
+<h3 id="2️⃣-上下文压缩（关键）"><a href="#2️⃣-上下文压缩（关键）" class="headerlink" title="2️⃣ 上下文压缩（关键）"></a>2️⃣ 上下文压缩（关键）</h3><ul>
+<li>多轮分析 → 压缩 → 再分析</li>
+<li>避免上下文爆炸</li>
+<li>保证最终输出稳定</li>
+</ul>
+<hr>
+<h3 id="3️⃣-报告生成"><a href="#3️⃣-报告生成" class="headerlink" title="3️⃣ 报告生成"></a>3️⃣ 报告生成</h3><p>输出 Markdown，包含：</p>
+<ul>
+<li>项目概述</li>
+<li>模块划分</li>
+<li>包职责</li>
+<li>技术架构</li>
+<li>关键方法调用关系</li>
+</ul>
+<hr>
+<h2 id="🏗️-技术实现"><a href="#🏗️-技术实现" class="headerlink" title="🏗️ 技术实现"></a>🏗️ 技术实现</h2><ul>
+<li>Go</li>
+<li>openai-go</li>
+<li>CLI + Prompt驱动</li>
+<li>ReAct + 多轮压缩</li>
+</ul>
+<hr>
+<h2 id="🤔-这个项目解决什么问题？"><a href="#🤔-这个项目解决什么问题？" class="headerlink" title="🤔 这个项目解决什么问题？"></a>🤔 这个项目解决什么问题？</h2><p>一个很现实的问题：</p>
+<blockquote>
+<p>看一个陌生仓库，很花时间</p>
+</blockquote>
+<p>这个工具的目标是：</p>
+<blockquote>
+<p>帮你快速建立“第一印象”</p>
+</blockquote>
+<p>不追求 100% 准确，但要：</p>
+<ul>
+<li>快</li>
+<li>有结构</li>
+<li>能用</li>
+</ul>
+<hr>
+<h1 id="二、api-registry-mcp：API-注册与文档生成（MCP-实践）"><a href="#二、api-registry-mcp：API-注册与文档生成（MCP-实践）" class="headerlink" title="二、api-registry-mcp：API 注册与文档生成（MCP 实践）"></a>二、api-registry-mcp：API 注册与文档生成（MCP 实践）</h1><p>这个项目是学习 MCP 时做的一个小工具。</p>
+<hr>
+<h2 id="🧠-是干嘛的？-1"><a href="#🧠-是干嘛的？-1" class="headerlink" title="🧠 是干嘛的？"></a>🧠 是干嘛的？</h2><p>一句话：</p>
+<blockquote>
+<p>把代码里的 API 结构提取出来，并生成文档</p>
+</blockquote>
+<hr>
+<h2 id="⚙️-实现了什么功能？"><a href="#⚙️-实现了什么功能？" class="headerlink" title="⚙️ 实现了什么功能？"></a>⚙️ 实现了什么功能？</h2><h3 id="1️⃣-注册-API"><a href="#1️⃣-注册-API" class="headerlink" title="1️⃣ 注册 API"></a>1️⃣ 注册 API</h3><p>通过 MCP tool 注册接口：</p>
+<ul>
+<li>API 名称</li>
+<li>路径</li>
+<li>HTTP 方法</li>
+<li>请求参数</li>
+<li>响应结构</li>
+</ul>
+<p>按 session 存储。</p>
+<hr>
+<h3 id="2️⃣-查询-API"><a href="#2️⃣-查询-API" class="headerlink" title="2️⃣ 查询 API"></a>2️⃣ 查询 API</h3><ul>
+<li>查看当前 session 下所有接口</li>
+<li>简单列表展示</li>
+</ul>
+<hr>
+<h3 id="3️⃣-生成文档"><a href="#3️⃣-生成文档" class="headerlink" title="3️⃣ 生成文档"></a>3️⃣ 生成文档</h3><ul>
+<li>输出 Markdown</li>
+<li>参数表格</li>
+<li>响应示例</li>
+</ul>
+<hr>
+<h2 id="🧩-MCP-Tool-设计"><a href="#🧩-MCP-Tool-设计" class="headerlink" title="🧩 MCP Tool 设计"></a>🧩 MCP Tool 设计</h2><p>实现了 3 个工具：</p>
+<ul>
+<li>register_endpoint</li>
+<li>list_endpoints</li>
+<li>generate_docs</li>
+</ul>
+<hr>
+<h2 id="🏗️-结构（很简单）"><a href="#🏗️-结构（很简单）" class="headerlink" title="🏗️ 结构（很简单）"></a>🏗️ 结构（很简单）</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SSE Client</span><br><span class="line">   ↓</span><br><span class="line">MCP Server</span><br><span class="line">   ↓</span><br><span class="line">Session Manager</span><br><span class="line">   ↓</span><br><span class="line">API Registry</span><br></pre></td></tr></table></figure>
+
+<p>每个连接一个 session，数据隔离。</p>
+<hr>
+<h2 id="📌-学到什么？"><a href="#📌-学到什么？" class="headerlink" title="📌 学到什么？"></a>📌 学到什么？</h2><p>主要是：</p>
+<ul>
+<li>MCP server 基本结构</li>
+<li>tool 注册 &#x2F; 调用方式</li>
+<li>session 如何隔离数据</li>
+<li>如何把 API 结构化</li>
+</ul>
+<hr>
+<p>在你这篇文章结尾加这一段就很自然👇</p>
+<hr>
+<h1 id="三、-一些实际使用场景"><a href="#三、-一些实际使用场景" class="headerlink" title="三、 一些实际使用场景"></a>三、 一些实际使用场景</h1><p>除了学习用途，这两个小工具在一些实际场景里也可能有用：</p>
+<h3 id="1️⃣-快速理解新项目"><a href="#1️⃣-快速理解新项目" class="headerlink" title="1️⃣ 快速理解新项目"></a>1️⃣ 快速理解新项目</h3><p>当你接手一个陌生仓库时，可以：</p>
+<ul>
+<li>用 CodeSense 快速扫一遍结构</li>
+<li>理清模块划分和关键调用关系</li>
+<li>降低前期“读代码成本”</li>
+</ul>
+<p>比较适合：</p>
+<blockquote>
+<p>刚接手项目 &#x2F; 看开源仓库 &#x2F; 做技术调研</p>
+</blockquote>
+<hr>
+<h3 id="2️⃣-给老项目补-API-文档"><a href="#2️⃣-给老项目补-API-文档" class="headerlink" title="2️⃣ 给老项目补 API 文档"></a>2️⃣ 给老项目补 API 文档</h3><p>很多老项目都有一个问题：</p>
+<blockquote>
+<p>有接口，但没有文档（或者文档不全）</p>
+</blockquote>
+<p>可以用 api-registry-mcp：</p>
+<ul>
+<li>手动或半自动提取接口结构</li>
+<li>注册 API</li>
+<li>统一生成 Markdown 文档</li>
+</ul>
+<p>适合：</p>
+<blockquote>
+<p>内部系统 &#x2F; 历史项目 &#x2F; 没有 OpenAPI 的服务</p>
+</blockquote>
+<hr>
+<p>整体来说，不一定是“生产级工具”，但在这些场景下：</p>
+<blockquote>
+<p>能帮你少走一些弯路 👍</p>
+</blockquote>
+<hr>
+<h1 id="四、当前状态"><a href="#四、当前状态" class="headerlink" title="四、当前状态"></a>四、当前状态</h1><p>两个项目都属于学习性质：</p>
+<h3 id="CodeSense"><a href="#CodeSense" class="headerlink" title="CodeSense"></a>CodeSense</h3><ul>
+<li>✅ Agent 流程跑通</li>
+<li>✅ 能生成结构化报告</li>
+<li>🚧 复杂项目还不稳定</li>
+</ul>
+<hr>
+<h3 id="api-registry-mcp"><a href="#api-registry-mcp" class="headerlink" title="api-registry-mcp"></a>api-registry-mcp</h3><ul>
+<li>✅ MCP tool 基本完整</li>
+<li>✅ session 隔离实现</li>
+<li>🚧 功能还比较简单</li>
+</ul>
+<hr>
+<p>可以稍微收一下语气，更贴“学习项目”的定位，改成这样👇</p>
+<hr>
+<h1 id="五、为什么做这两个？"><a href="#五、为什么做这两个？" class="headerlink" title="五、为什么做这两个？"></a>五、为什么做这两个？</h1><p>主要还是出于学习目的，在实践中回答两个问题：</p>
+<h3 id="1️⃣-如何让-AI-理解代码？"><a href="#1️⃣-如何让-AI-理解代码？" class="headerlink" title="1️⃣ 如何让 AI 理解代码？"></a>1️⃣ 如何让 AI 理解代码？</h3><p>→ CodeSense</p>
+<p>尝试把“代码理解”这件事，用 Agent（ReAct）模式跑通。</p>
+<hr>
+<h3 id="2️⃣-如何结构化接口信息？"><a href="#2️⃣-如何结构化接口信息？" class="headerlink" title="2️⃣ 如何结构化接口信息？"></a>2️⃣ 如何结构化接口信息？</h3><p>→ api-registry-mcp</p>
+<p>用 MCP 的方式，把接口注册、查询和文档生成这套流程串起来。</p>
+<hr>
+<p>整体来说，这两个项目更多是：</p>
+<blockquote>
+<p>在动手过程中理解 Agent 和 MCP，而不是做一个完整产品</p>
+</blockquote>
+<hr>
+<h1 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h1><p>这两个项目都不复杂，但对我来说主要价值是：</p>
+<blockquote>
+<p>把“代码理解”和“工具调用”这两件事跑通</p>
+</blockquote>
+<p>同时也验证了一点：</p>
+<ul>
+<li>Agent 可以做“探索型任务”（理解代码）</li>
+<li>MCP 更适合“结构化能力”（注册&#x2F;查询&#x2F;生成）</li>
+</ul>
+<hr>
+<h2 id="📌-最后"><a href="#📌-最后" class="headerlink" title="📌 最后"></a>📌 最后</h2><p>这两个项目更像是：</p>
+<blockquote>
+<p>学习 Agent &#x2F; MCP 的实验项目</p>
+</blockquote>
+<p>如果你在折腾：</p>
+<ul>
+<li>Agent</li>
+<li>ReAct</li>
+<li>MCP</li>
+<li>代码理解</li>
+</ul>
+<p>可以拿去参考或者改着玩。</p>
+<hr>
+
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg" alt="GitHub" width="16" height="16"> </i></a>
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://leetcode.cn/u/yu-peng-f"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/leetcode.svg" alt="LeetCode" width="16" height="16"> </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/gmail.svg" alt="Mail" width="16" height="16"> </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+  </body>
+</html>

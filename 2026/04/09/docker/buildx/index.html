@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog 使用 Docker Buildx 构建多架构镜像并推送到私有 HTTP Registry </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">使用 Docker Buildx 构建多架构镜像并推送到私有 HTTP Registry</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2026-04-09T07:54:46.000Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2026-04-09 15:54:46
+</time>
+
+    
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/docker/" rel="tag">docker</a>
+</div>
+
+
+    <div id="/2026/04/09/docker/buildx/" class="leancloud_visitors post__stat" data-flag-title="使用 Docker Buildx 构建多架构镜像并推送到私有 HTTP Registry">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E4%BD%BF%E7%94%A8-Docker-Buildx-%E6%9E%84%E5%BB%BA%E5%A4%9A%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F%E5%B9%B6%E6%8E%A8%E9%80%81%E5%88%B0%E7%A7%81%E6%9C%89-HTTP-Registry"><span class="post__toc-text">使用 Docker Buildx 构建多架构镜像并推送到私有 HTTP Registry</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#1-%E5%89%8D%E6%8F%90%E6%9D%A1%E4%BB%B6"><span class="post__toc-text">1. 前提条件</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#2-%E5%88%9B%E5%BB%BA-BuildKit-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="post__toc-text">2. 创建 BuildKit 配置文件</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#3-%E5%88%9B%E5%BB%BA-Buildx-Builder"><span class="post__toc-text">3. 创建 Buildx Builder</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#4-%E6%9E%84%E5%BB%BA%E5%B9%B6%E6%8E%A8%E9%80%81%E5%A4%9A%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F"><span class="post__toc-text">4. 构建并推送多架构镜像</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#5-%E9%AA%8C%E8%AF%81-multi-arch-%E9%95%9C%E5%83%8F"><span class="post__toc-text">5. 验证 multi-arch 镜像</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#6-%E6%80%BB%E7%BB%93"><span class="post__toc-text">6. 总结</span></a></li></ol></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h1 id="使用-Docker-Buildx-构建多架构镜像并推送到私有-HTTP-Registry"><a href="#使用-Docker-Buildx-构建多架构镜像并推送到私有-HTTP-Registry" class="headerlink" title="使用 Docker Buildx 构建多架构镜像并推送到私有 HTTP Registry"></a>使用 Docker Buildx 构建多架构镜像并推送到私有 HTTP Registry</h1><p>在日常开发中，我们可能需要将镜像推送到私有 Docker Registry，而且希望支持多平台（如 <code>amd64</code> 和 <code>arm64</code>）。本文介绍一种完整流程，包括 <strong>BuildKit 配置、Buildx Builder 创建、multi-arch 构建与推送</strong>。</p>
+<hr>
+<h2 id="1-前提条件"><a href="#1-前提条件" class="headerlink" title="1. 前提条件"></a>1. 前提条件</h2><ul>
+<li>Docker 版本 ≥ 24</li>
+<li>安装 Docker Buildx</li>
+<li>私有 Registry（HTTP &#x2F; 不安全）</li>
+<li>需要构建的平台：<code>linux/amd64</code>、<code>linux/arm64</code></li>
+<li>已设置 HTTP 代理（如公司内网环境）</li>
+</ul>
+<hr>
+<h2 id="2-创建-BuildKit-配置文件"><a href="#2-创建-BuildKit-配置文件" class="headerlink" title="2. 创建 BuildKit 配置文件"></a>2. 创建 BuildKit 配置文件</h2><p>在服务器上创建 BuildKit 配置文件，例如 <code>/root/.docker/buildkitd.toml</code>：</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">debug</span> = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 允许不安全的 entitlements</span></span><br><span class="line"><span class="attr">insecure-entitlements</span> = [<span class="string">&quot;my-private-registry&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置私有 Registry</span></span><br><span class="line"><span class="section">[registry.&quot;my-private-registry&quot;]</span></span><br><span class="line">  <span class="attr">http</span> = <span class="literal">true</span></span><br><span class="line">  <span class="attr">insecure</span> = <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>⚠️ <code>my-private-registry</code> 替换为你的私有 Registry 地址（IP 或域名）。</p>
+</blockquote>
+<hr>
+<h2 id="3-创建-Buildx-Builder"><a href="#3-创建-Buildx-Builder" class="headerlink" title="3. 创建 Buildx Builder"></a>3. 创建 Buildx Builder</h2><p>使用 <code>docker buildx create</code> 创建 builder，并启用自定义配置和代理：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">docker buildx create \</span><br><span class="line">  --name multiarch \</span><br><span class="line">  --use \</span><br><span class="line">  --driver docker-container \</span><br><span class="line">  --config /root/.docker/buildkitd.toml \</span><br><span class="line">  --driver-opt network=host \</span><br><span class="line">  --driver-opt env.http_proxy=http://proxy.example.com:10808 \</span><br><span class="line">  --driver-opt env.https_proxy=http://proxy.example.com:10808 \</span><br><span class="line">  --driver-opt env.no_proxy=my-private-registry \</span><br><span class="line">  --driver-opt env.NO_PROXY=my-private-registry</span><br></pre></td></tr></table></figure>
+
+<p>检查 Builder 是否生效：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker buildx <span class="built_in">ls</span></span><br><span class="line">docker buildx inspect multiarch --bootstrap</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="4-构建并推送多架构镜像"><a href="#4-构建并推送多架构镜像" class="headerlink" title="4. 构建并推送多架构镜像"></a>4. 构建并推送多架构镜像</h2><p>使用 Buildx 的 <code>--platform</code> 参数一次构建多平台镜像，并直接推送到私有 Registry：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker buildx build \</span><br><span class="line">  --platform linux/amd64,linux/arm64 \</span><br><span class="line">  -t my-private-registry/my-app:latest \</span><br><span class="line">  --push \</span><br><span class="line">  .</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>✅ 关键点：</p>
+<ul>
+<li><code>--platform</code> 指定多平台。</li>
+<li><code>--push</code> 直接将镜像推送到 Registry。</li>
+<li>如果 Registry 是 HTTP 不安全的，确保在 BuildKit 配置中设置了 <code>http = true</code> 和 <code>insecure = true</code>。</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="5-验证-multi-arch-镜像"><a href="#5-验证-multi-arch-镜像" class="headerlink" title="5. 验证 multi-arch 镜像"></a>5. 验证 multi-arch 镜像</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker manifest inspect my-private-registry/my-app:latest</span><br></pre></td></tr></table></figure>
+
+<p>你会看到类似的输出，包含 <code>amd64</code> 和 <code>arm64</code> 两个平台信息：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;manifests&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span> <span class="attr">&quot;platform&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;architecture&quot;</span><span class="punctuation">:</span> <span class="string">&quot;amd64&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;os&quot;</span><span class="punctuation">:</span> <span class="string">&quot;linux&quot;</span> <span class="punctuation">&#125;</span><span class="punctuation">,</span> ... <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span> <span class="attr">&quot;platform&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;architecture&quot;</span><span class="punctuation">:</span> <span class="string">&quot;arm64&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;os&quot;</span><span class="punctuation">:</span> <span class="string">&quot;linux&quot;</span> <span class="punctuation">&#125;</span><span class="punctuation">,</span> ... <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>拉取镜像时，Docker 会根据本机平台自动选择对应架构：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull my-private-registry/my-app:latest</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="6-总结"><a href="#6-总结" class="headerlink" title="6. 总结"></a>6. 总结</h2><p>通过以上流程，你可以：</p>
+<ol>
+<li>支持 <strong>HTTP &#x2F; 不安全的私有 Registry</strong>。</li>
+<li>一次构建并推送 <strong>多平台镜像</strong>。</li>
+<li>避免手动推送单平台镜像再创建 manifest 的繁琐流程。</li>
+<li>支持代理环境与 BuildKit 配置，便于企业内网部署。</li>
+</ol>
+
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg" alt="GitHub" width="16" height="16"> </i></a>
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://leetcode.cn/u/yu-peng-f"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/leetcode.svg" alt="LeetCode" width="16" height="16"> </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/gmail.svg" alt="Mail" width="16" height="16"> </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+  </body>
+</html>
