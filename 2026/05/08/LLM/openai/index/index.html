@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog OpenAI 工具调用与 JSON 输出的进化史：从 Prompt 黑魔法到原生支持 </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">OpenAI 工具调用与 JSON 输出的进化史：从 Prompt 黑魔法到原生支持</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2026-05-08T12:22:22.000Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2026-05-08 20:22:22
+</time>
+
+    
+<div class="post__category">
+  <i class="blogfont">&#xe62d;</i>
+  <a class="category-link" href="/categories/LLM%E5%AE%9E%E8%B7%B5/">LLM实践</a>
+</div>
+  
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/LLM/" rel="tag">LLM</a>
+</div>
+
+
+    <div id="/2026/05/08/LLM/openai/index/" class="leancloud_visitors post__stat" data-flag-title="OpenAI 工具调用与 JSON 输出的进化史：从 Prompt 黑魔法到原生支持">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%89%8D%E8%A8%80"><span class="post__toc-text">前言</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5%EF%BC%9A%E7%BA%AF-Prompt-%E6%97%B6%E4%BB%A3-%E2%80%94%E2%80%94-%E5%9C%A8%E9%BB%91%E6%9A%97%E4%B8%AD%E6%91%B8%E7%B4%A2"><span class="post__toc-text">第一阶段：纯 Prompt 时代 —— 在黑暗中摸索</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8%EF%BC%9F%E5%85%A8%E9%9D%A0-Prompt-%E6%8F%8F%E8%BF%B0"><span class="post__toc-text">工具调用？全靠 Prompt 描述</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#JSON-%E8%BE%93%E5%87%BA%EF%BC%9F%E6%9B%B4%E6%98%AF%E5%99%A9%E6%A2%A6"><span class="post__toc-text">JSON 输出？更是噩梦</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E7%AC%AC%E4%BA%8C%E9%98%B6%E6%AE%B5%EF%BC%9AJSON-Mode-%E2%80%94%E2%80%94-%E4%B8%80%E9%81%93%E6%9B%99%E5%85%89"><span class="post__toc-text">第二阶段：JSON Mode —— 一道曙光</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E7%AC%AC%E4%B8%89%E9%98%B6%E6%AE%B5%EF%BC%9A%E5%8E%9F%E7%94%9F%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8-Structured-Outputs-%E2%80%94%E2%80%94-%E7%9C%9F%E6%AD%A3%E7%9A%84%E9%93%B6%E5%BC%B9"><span class="post__toc-text">第三阶段：原生工具调用 + Structured Outputs —— 真正的银弹</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E5%8E%9F%E7%94%9F%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8%EF%BC%88Function-Calling%EF%BC%89"><span class="post__toc-text">原生工具调用（Function Calling）</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E7%BB%93%E6%9E%84%E5%8C%96%E8%BE%93%E5%87%BA%EF%BC%88Structured-Outputs%EF%BC%89"><span class="post__toc-text">结构化输出（Structured Outputs）</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E6%80%BB%E7%BB%93"><span class="post__toc-text">总结</span></a></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在使用大语言模型构建应用时，两个需求几乎无处不在：</p>
+<ol>
+<li><strong>让模型调用外部工具&#x2F;函数</strong>（比如查数据库、调 API、发邮件）</li>
+<li><strong>让模型输出结构化的 JSON</strong>（方便程序解析和处理）</li>
+</ol>
+<p>如今在 OpenAI 的 API 中，这两个需求都有了非常成熟的原生支持。但在早期，开发者们可没这么幸运——我们只能靠 <strong>Prompt Engineering（提示词工程）</strong> 这种”黑魔法”来碰运气。</p>
+<p>这篇文章带你回顾一下这段进化史。</p>
+<hr>
+<h2 id="第一阶段：纯-Prompt-时代-——-在黑暗中摸索"><a href="#第一阶段：纯-Prompt-时代-——-在黑暗中摸索" class="headerlink" title="第一阶段：纯 Prompt 时代 —— 在黑暗中摸索"></a>第一阶段：纯 Prompt 时代 —— 在黑暗中摸索</h2><p>在 GPT-3.5 &#x2F; GPT-4 刚出来的年代，API 根本没有什么”工具调用”或”结构化输出”的概念。模型就是一个黑箱：你给它文字，它返回文字。</p>
+<h3 id="工具调用？全靠-Prompt-描述"><a href="#工具调用？全靠-Prompt-描述" class="headerlink" title="工具调用？全靠 Prompt 描述"></a>工具调用？全靠 Prompt 描述</h3><p>如果你想做一个能查天气的 AI 助手，你大概会这样写 system prompt：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">你是一个助手。当用户询问天气时，你需要输出一个 JSON 来调用函数。</span><br><span class="line">可用的函数：</span><br><span class="line">- get_weather(location: string, unit: &quot;celsius&quot; | &quot;fahrenheit&quot;)</span><br><span class="line"></span><br><span class="line">当你想调用函数时，必须严格按以下格式输出：</span><br><span class="line">&#123;&quot;function&quot;: &quot;get_weather&quot;, &quot;arguments&quot;: &#123;&quot;location&quot;: &quot;...&quot;, &quot;unit&quot;: &quot;...&quot;&#125;&#125;</span><br><span class="line"></span><br><span class="line">如果你不想调用函数，就正常回复用户。</span><br></pre></td></tr></table></figure>
+
+<p>然后你的代码就得：</p>
+<ol>
+<li>解析模型返回的文本</li>
+<li>用正则或者 JSON.parse 试图提取函数调用</li>
+<li>如果解析失败……重试、换措辞、祈祷 🙏</li>
+</ol>
+<h3 id="JSON-输出？更是噩梦"><a href="#JSON-输出？更是噩梦" class="headerlink" title="JSON 输出？更是噩梦"></a>JSON 输出？更是噩梦</h3><p>想让模型稳定输出 JSON 就更痛苦了。你能做的只有：</p>
+<ul>
+<li>在 prompt 里反复强调”你必须返回合法的 JSON”</li>
+<li>给出一两个示例（few-shot）</li>
+<li>在 prompt 结尾加上 <code>&#123;</code> 来诱导模型开始输出 JSON</li>
+<li>用各种后处理手段修复模型吐出来的”近似 JSON”</li>
+</ul>
+<p>即便如此，你还是会经常遇到：</p>
+<ul>
+<li>模型在 JSON 前后加了一堆废话：<code>好的，以下是结果：&#123;...&#125;</code></li>
+<li>多了个 trailing comma：<code>&#123;&quot;name&quot;: &quot;Tom&quot;,&#125;</code></li>
+<li>缺了引号：<code>&#123;name: &quot;Tom&quot;&#125;</code></li>
+<li>凭空编造字段、漏掉 required 字段</li>
+<li>JSON 嵌套超过一定深度就开始放飞自我</li>
+</ul>
+<p>那时候搞 LLM 应用的开发者，代码里最长的部分往往不是业务逻辑，而是<strong>解析和容错逻辑</strong>。</p>
+<hr>
+<h2 id="第二阶段：JSON-Mode-——-一道曙光"><a href="#第二阶段：JSON-Mode-——-一道曙光" class="headerlink" title="第二阶段：JSON Mode —— 一道曙光"></a>第二阶段：JSON Mode —— 一道曙光</h2><p>OpenAI 后来推出了 <strong>JSON Mode</strong>，通过在请求中设置：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;response_format&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;json_object&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>这让模型<strong>保证输出合法的 JSON</strong>（不再是”尽力而为”）。</p>
+<p>这已经是一个巨大的进步——至少你不用再处理 trailing commas 和缺引号的问题了。但它有一个关键局限：</p>
+<blockquote>
+<p><strong>JSON Mode 只保证合法的 JSON 格式，不保证符合你指定的 Schema。</strong></p>
+</blockquote>
+<p>也就是说，模型输出的确实是合法 JSON，但它依然可能：</p>
+<ul>
+<li>漏掉你需要的字段</li>
+<li>多出你不知道的字段</li>
+<li>字段类型不对（该是 number 的给了 string）</li>
+<li>枚举值超出范围</li>
+</ul>
+<p>你还是需要在代码里做一层校验。</p>
+<hr>
+<h2 id="第三阶段：原生工具调用-Structured-Outputs-——-真正的银弹"><a href="#第三阶段：原生工具调用-Structured-Outputs-——-真正的银弹" class="headerlink" title="第三阶段：原生工具调用 + Structured Outputs —— 真正的银弹"></a>第三阶段：原生工具调用 + Structured Outputs —— 真正的银弹</h2><p>这才是真正革命性的变化。OpenAI 在 2024 年 8 月前后推出了 <strong>Structured Outputs</strong>，同时工具调用也进入了<strong>原生 + strict mode</strong> 时代。</p>
+<h3 id="原生工具调用（Function-Calling）"><a href="#原生工具调用（Function-Calling）" class="headerlink" title="原生工具调用（Function Calling）"></a>原生工具调用（Function Calling）</h3><p>现在的工具调用不再是往 prompt 里塞描述文字了，而是通过 <code>tools</code> 参数<strong>结构化的方式</strong>声明：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">tools = [</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;type&quot;</span>: <span class="string">&quot;function&quot;</span>,</span><br><span class="line">        <span class="string">&quot;name&quot;</span>: <span class="string">&quot;get_weather&quot;</span>,</span><br><span class="line">        <span class="string">&quot;description&quot;</span>: <span class="string">&quot;获取指定地点的天气&quot;</span>,</span><br><span class="line">        <span class="string">&quot;strict&quot;</span>: <span class="literal">True</span>,</span><br><span class="line">        <span class="string">&quot;parameters&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;type&quot;</span>: <span class="string">&quot;object&quot;</span>,</span><br><span class="line">            <span class="string">&quot;properties&quot;</span>: &#123;</span><br><span class="line">                <span class="string">&quot;location&quot;</span>: &#123;</span><br><span class="line">                    <span class="string">&quot;type&quot;</span>: <span class="string">&quot;string&quot;</span>,</span><br><span class="line">                    <span class="string">&quot;description&quot;</span>: <span class="string">&quot;城市和国家，例如：北京, 中国&quot;</span></span><br><span class="line">                &#125;,</span><br><span class="line">                <span class="string">&quot;unit&quot;</span>: &#123;</span><br><span class="line">                    <span class="string">&quot;type&quot;</span>: <span class="string">&quot;string&quot;</span>,</span><br><span class="line">                    <span class="string">&quot;enum&quot;</span>: [<span class="string">&quot;celsius&quot;</span>, <span class="string">&quot;fahrenheit&quot;</span>]</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="string">&quot;required&quot;</span>: [<span class="string">&quot;location&quot;</span>, <span class="string">&quot;unit&quot;</span>],</span><br><span class="line">            <span class="string">&quot;additionalProperties&quot;</span>: <span class="literal">False</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">response = client.responses.create(</span><br><span class="line">    model=<span class="string">&quot;gpt-4o&quot;</span>,</span><br><span class="line">    <span class="built_in">input</span>=[&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;北京今天天气怎么样？&quot;</span>&#125;],</span><br><span class="line">    tools=tools</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>模型返回的不再是需要你手动解析的文本，而是结构化的 <code>function_call</code> 对象，带有 <code>call_id</code>、<code>name</code> 和准确的 <code>arguments</code> JSON。</p>
+<p>而你执行完函数后，也只需返回结构化的 <code>function_call_output</code>，整个流程干净、可靠。</p>
+<p><strong>Strict mode</strong>（<code>strict: true</code>）更是确保了模型传回的参数<strong>严格遵循你定义的 Schema</strong>，不会多字段、不会少字段、类型也对得上。</p>
+<blockquote>
+<p>详细介绍：<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/tools">OpenAI Tools Guide</a></p>
+</blockquote>
+<h3 id="结构化输出（Structured-Outputs）"><a href="#结构化输出（Structured-Outputs）" class="headerlink" title="结构化输出（Structured Outputs）"></a>结构化输出（Structured Outputs）</h3><p>对于 JSON 输出的需求，Structured Outputs 是 JSON Mode 的全面进化版：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">response = client.responses.create(</span><br><span class="line">    model=<span class="string">&quot;gpt-4o-2024-08-06&quot;</span>,</span><br><span class="line">    <span class="built_in">input</span>=[&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: <span class="string">&quot;8x + 7 = -23 怎么解？&quot;</span>&#125;],</span><br><span class="line">    text=&#123;</span><br><span class="line">        <span class="string">&quot;format&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;type&quot;</span>: <span class="string">&quot;json_schema&quot;</span>,</span><br><span class="line">            <span class="string">&quot;name&quot;</span>: <span class="string">&quot;math_response&quot;</span>,</span><br><span class="line">            <span class="string">&quot;schema&quot;</span>: &#123;</span><br><span class="line">                <span class="string">&quot;type&quot;</span>: <span class="string">&quot;object&quot;</span>,</span><br><span class="line">                <span class="string">&quot;properties&quot;</span>: &#123;</span><br><span class="line">                    <span class="string">&quot;steps&quot;</span>: &#123;</span><br><span class="line">                        <span class="string">&quot;type&quot;</span>: <span class="string">&quot;array&quot;</span>,</span><br><span class="line">                        <span class="string">&quot;items&quot;</span>: &#123;</span><br><span class="line">                            <span class="string">&quot;type&quot;</span>: <span class="string">&quot;object&quot;</span>,</span><br><span class="line">                            <span class="string">&quot;properties&quot;</span>: &#123;</span><br><span class="line">                                <span class="string">&quot;explanation&quot;</span>: &#123;<span class="string">&quot;type&quot;</span>: <span class="string">&quot;string&quot;</span>&#125;,</span><br><span class="line">                                <span class="string">&quot;output&quot;</span>: &#123;<span class="string">&quot;type&quot;</span>: <span class="string">&quot;string&quot;</span>&#125;</span><br><span class="line">                            &#125;,</span><br><span class="line">                            <span class="string">&quot;required&quot;</span>: [<span class="string">&quot;explanation&quot;</span>, <span class="string">&quot;output&quot;</span>],</span><br><span class="line">                            <span class="string">&quot;additionalProperties&quot;</span>: <span class="literal">False</span></span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;,</span><br><span class="line">                    <span class="string">&quot;final_answer&quot;</span>: &#123;<span class="string">&quot;type&quot;</span>: <span class="string">&quot;string&quot;</span>&#125;</span><br><span class="line">                &#125;,</span><br><span class="line">                <span class="string">&quot;required&quot;</span>: [<span class="string">&quot;steps&quot;</span>, <span class="string">&quot;final_answer&quot;</span>],</span><br><span class="line">                <span class="string">&quot;additionalProperties&quot;</span>: <span class="literal">False</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="string">&quot;strict&quot;</span>: <span class="literal">True</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>这个方案的核心优势：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>JSON Mode</th>
+<th>Structured Outputs</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>输出合法 JSON</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>严格符合 Schema</strong></td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>安全拒绝可被程序检测</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>支持模型</td>
+<td>gpt-3.5-turbo 及更新</td>
+<td>gpt-4o-2024-08-06 及更新</td>
+</tr>
+</tbody></table>
+<p>有了 Structured Outputs，你不再需要：</p>
+<ul>
+<li>❌ 在 prompt 里反复强调输出格式</li>
+<li>❌ 写各种 JSON 修复&#x2F;容错代码</li>
+<li>❌ 处理字段缺失或类型错误</li>
+<li>❌ 担心枚举值越界</li>
+</ul>
+<p>模型会保证输出的 JSON <strong>100% 符合你给的 Schema</strong>。</p>
+<blockquote>
+<p>详细介绍：<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/structured-outputs">OpenAI Structured Outputs Guide</a></p>
+</blockquote>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>工具调用</th>
+<th>JSON 输出</th>
+<th>可靠性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>早期（~2023）</td>
+<td>Prompt 描述 + 文本解析</td>
+<td>Prompt 约束 + 后处理修复</td>
+<td>😰 经常出幺蛾子</td>
+</tr>
+<tr>
+<td>JSON Mode</td>
+<td>Prompt 描述 + 文本解析</td>
+<td><code>json_object</code> 保证合法 JSON</td>
+<td>😐 格式合法，Schema 不保证</td>
+</tr>
+<tr>
+<td>现在</td>
+<td>原生 <code>tools</code> + strict mode</td>
+<td><code>json_schema</code> + Structured Outputs</td>
+<td>😎 开箱即用，严格可靠</td>
+</tr>
+</tbody></table>
+<p>回顾这段进化史，最大的感受是：<strong>大模型应用开发正在从”玄学”走向”工程化”。</strong></p>
+<p>以前我们不得不花大量精力在 prompt tuning 和 defensive parsing 上，和模型斗智斗勇；而现在，OpenAI 把这些能力做成了可靠的 API 原语，让我们可以把注意力放回业务逻辑本身。</p>
+<p>如果你正在构建 LLM 应用，强烈建议直接上 <strong>原生工具调用 + Structured Outputs</strong>，别再回到 prompt 手工解析的黑暗时代了。</p>
+
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg" alt="GitHub" width="16" height="16"> </i></a>
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://leetcode.cn/u/yu-peng-f"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/leetcode.svg" alt="LeetCode" width="16" height="16"> </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/gmail.svg" alt="Mail" width="16" height="16"> </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+  </body>
+</html>
