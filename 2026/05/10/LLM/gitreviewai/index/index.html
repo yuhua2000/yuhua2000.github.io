@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog GitLab AI 代码审查工具 </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">GitLab AI 代码审查工具</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2026-05-10T03:46:40.000Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2026-05-10 11:46:40
+</time>
+
+    
+<div class="post__category">
+  <i class="blogfont">&#xe62d;</i>
+  <a class="category-link" href="/categories/LLM%E5%AE%9E%E8%B7%B5/">LLM实践</a>
+</div>
+  
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/LLM/" rel="tag">LLM</a>, <a class="tag-link-link" href="/tags/git/" rel="tag">git</a>
+</div>
+
+
+    <div id="/2026/05/10/LLM/gitreviewai/index/" class="leancloud_visitors post__stat" data-flag-title="GitLab AI 代码审查工具">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E7%94%A8-Go-%E5%86%99%E4%BA%86%E4%B8%80%E4%B8%AA-GitLab-AI-%E4%BB%A3%E7%A0%81%E5%AE%A1%E6%9F%A5%E5%B7%A5%E5%85%B7%EF%BC%88%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%B0%83%E7%94%A8%E5%AE%9E%E8%B7%B5%EF%BC%89"><span class="post__toc-text">用 Go 写了一个 GitLab AI 代码审查工具（大模型调用实践）</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E4%B8%80%E3%80%81GitReviewAI%EF%BC%9A%E4%B8%80%E4%B8%AA-GitLab-%E8%87%AA%E5%8A%A8%E4%BB%A3%E7%A0%81%E5%AE%A1%E6%9F%A5%E5%B7%A5%E5%85%B7"><span class="post__toc-text">一、GitReviewAI：一个 GitLab 自动代码审查工具</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%F0%9F%A7%A0-%E6%98%AF%E5%B9%B2%E5%98%9B%E7%9A%84%EF%BC%9F"><span class="post__toc-text">🧠 是干嘛的？</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E2%9A%99%EF%B8%8F-%E6%A0%B8%E5%BF%83%E6%80%9D%E8%B7%AF%EF%BC%9AAI-Webhook-%E9%97%AD%E7%8E%AF"><span class="post__toc-text">⚙️ 核心思路：AI + Webhook 闭环</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E4%BA%8C%E3%80%81%E5%81%9A%E4%BA%86%E5%93%AA%E4%BA%9B%E4%B8%9C%E8%A5%BF%EF%BC%9F"><span class="post__toc-text">二、做了哪些东西？</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#1%EF%B8%8F%E2%83%A3-Webhook-%E5%A4%84%E7%90%86"><span class="post__toc-text">1️⃣ Webhook 处理</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#2%EF%B8%8F%E2%83%A3-Prompt-%E8%AE%BE%E8%AE%A1%EF%BC%88%E5%85%B3%E9%94%AE%EF%BC%89"><span class="post__toc-text">2️⃣ Prompt 设计（关键）</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#3%EF%B8%8F%E2%83%A3-OpenAI-%E8%B0%83%E7%94%A8%E5%B0%81%E8%A3%85"><span class="post__toc-text">3️⃣ OpenAI 调用封装</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#4%EF%B8%8F%E2%83%A3-%E8%AF%84%E8%AE%BA%E5%9B%9E%E5%86%99"><span class="post__toc-text">4️⃣ 评论回写</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E4%B8%89%E3%80%81%E6%8A%80%E6%9C%AF%E5%AE%9E%E7%8E%B0"><span class="post__toc-text">三、技术实现</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%9B%9B%E3%80%81%E8%BF%99%E4%B8%AA%E9%A1%B9%E7%9B%AE%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="post__toc-text">四、这个项目解决什么问题？</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E4%BA%94%E3%80%81%E4%B8%80%E4%BA%9B%E5%AE%9E%E9%99%85%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="post__toc-text">五、一些实际使用场景</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#1%EF%B8%8F%E2%83%A3-%E5%B0%8F%E5%9B%A2%E9%98%9F%E6%8F%90%E6%95%88"><span class="post__toc-text">1️⃣ 小团队提效</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#2%EF%B8%8F%E2%83%A3-%E6%96%B0%E6%89%8B%E4%BB%A3%E7%A0%81%E6%8A%8A%E5%85%B3"><span class="post__toc-text">2️⃣ 新手代码把关</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#3%EF%B8%8F%E2%83%A3-%E5%AD%A6%E4%B9%A0%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%B0%83%E7%94%A8"><span class="post__toc-text">3️⃣ 学习大模型调用</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%85%AD%E3%80%81%E5%BD%93%E5%89%8D%E7%8A%B6%E6%80%81"><span class="post__toc-text">六、当前状态</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E4%B8%83%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E5%81%9A%E8%BF%99%E4%B8%AA%EF%BC%9F"><span class="post__toc-text">七、为什么做这个？</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%85%AB%E3%80%81%E6%80%BB%E7%BB%93"><span class="post__toc-text">八、总结</span></a></li></ol></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h1 id="用-Go-写了一个-GitLab-AI-代码审查工具（大模型调用实践）"><a href="#用-Go-写了一个-GitLab-AI-代码审查工具（大模型调用实践）" class="headerlink" title="用 Go 写了一个 GitLab AI 代码审查工具（大模型调用实践）"></a>用 Go 写了一个 GitLab AI 代码审查工具（大模型调用实践）</h1><p>最近在学习大模型 API 调用，想找一个既实用又不复杂的场景练手。正好平时用 GitLab 做代码评审，每次盯着 diff 逐行看总觉得有些机械化的工作可以交给 AI。于是动手写了一个自动 Review 工具，顺便把调用 OpenAI API 的完整流程跑一遍。</p>
+<p>📦 项目地址<br>👉 GitReviewAI <a target="_blank" rel="noopener" href="https://github.com/yuhua2000/GitReviewAI">https://github.com/yuhua2000/GitReviewAI</a></p>
+<h2 id="一、GitReviewAI：一个-GitLab-自动代码审查工具"><a href="#一、GitReviewAI：一个-GitLab-自动代码审查工具" class="headerlink" title="一、GitReviewAI：一个 GitLab 自动代码审查工具"></a>一、GitReviewAI：一个 GitLab 自动代码审查工具</h2><h3 id="🧠-是干嘛的？"><a href="#🧠-是干嘛的？" class="headerlink" title="🧠 是干嘛的？"></a>🧠 是干嘛的？</h3><p>一句话：<br>用 AI 自动审查 GitLab MR 的代码变更，并把意见贴到评论区。</p>
+<p>提交 MR 后，它会自动：</p>
+<ul>
+<li>接收 GitLab Webhook 通知</li>
+<li>获取代码 diff</li>
+<li>调用 OpenAI 分析代码</li>
+<li>生成 Review 意见贴回 MR</li>
+</ul>
+<h3 id="⚙️-核心思路：AI-Webhook-闭环"><a href="#⚙️-核心思路：AI-Webhook-闭环" class="headerlink" title="⚙️ 核心思路：AI + Webhook 闭环"></a>⚙️ 核心思路：AI + Webhook 闭环</h3><p>流程不复杂，关键是把这个闭环跑通：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MR 触发 → GitLab Webhook → 解析 diff → 调用 OpenAI → 生成意见 → 通过 GitLab API 贴评论</span><br></pre></td></tr></table></figure>
+
+<p>具体就是：</p>
+<ul>
+<li>GitLab 发来 webhook 事件</li>
+<li>提取 diff 内容，控制 token 长度</li>
+<li>构造 Prompt，调用 GPT 分析</li>
+<li>把结果写回 MR 评论区</li>
+</ul>
+<h2 id="二、做了哪些东西？"><a href="#二、做了哪些东西？" class="headerlink" title="二、做了哪些东西？"></a>二、做了哪些东西？</h2><h3 id="1️⃣-Webhook-处理"><a href="#1️⃣-Webhook-处理" class="headerlink" title="1️⃣ Webhook 处理"></a>1️⃣ Webhook 处理</h3><ul>
+<li>接收 GitLab MR 事件</li>
+<li>校验 Secret Token</li>
+<li>提取 diff 和文件变更信息</li>
+<li>过滤不需要审查的文件（如 lock 文件）</li>
+</ul>
+<h3 id="2️⃣-Prompt-设计（关键）"><a href="#2️⃣-Prompt-设计（关键）" class="headerlink" title="2️⃣ Prompt 设计（关键）"></a>2️⃣ Prompt 设计（关键）</h3><ul>
+<li>设计 System Prompt：告诉 GPT 它是资深代码审查员</li>
+<li>约束输出维度：安全、性能、可读性、逻辑错误</li>
+<li>控制输出格式，方便展示</li>
+</ul>
+<h3 id="3️⃣-OpenAI-调用封装"><a href="#3️⃣-OpenAI-调用封装" class="headerlink" title="3️⃣ OpenAI 调用封装"></a>3️⃣ OpenAI 调用封装</h3><ul>
+<li>超时控制 + 重试机制</li>
+<li>错误日志记录</li>
+<li>Token 用量统计</li>
+</ul>
+<h3 id="4️⃣-评论回写"><a href="#4️⃣-评论回写" class="headerlink" title="4️⃣ 评论回写"></a>4️⃣ 评论回写</h3><ul>
+<li>通过 GitLab API 将审查意见贴到对应 MR</li>
+<li>支持多条意见批量提交</li>
+</ul>
+<h2 id="三、技术实现"><a href="#三、技术实现" class="headerlink" title="三、技术实现"></a>三、技术实现</h2><ul>
+<li>Go</li>
+<li>openai-go</li>
+<li>GitLab Webhook + API</li>
+<li>YAML 配置驱动</li>
+<li>Docker 多阶段构建</li>
+</ul>
+<h2 id="四、这个项目解决什么问题？"><a href="#四、这个项目解决什么问题？" class="headerlink" title="四、这个项目解决什么问题？"></a>四、这个项目解决什么问题？</h2><p>一个很现实的问题：<br>小团队没精力每个 MR 都仔细 Review，但直接跳过又容易出问题。</p>
+<p>这个工具的目标是：</p>
+<ul>
+<li>帮你做第一轮“机械审查”</li>
+<li>把明显问题（空指针、SQL 注入、死循环等）先筛出来</li>
+<li>不追求 100% 准确，但要好用、省时间</li>
+</ul>
+<h2 id="五、一些实际使用场景"><a href="#五、一些实际使用场景" class="headerlink" title="五、一些实际使用场景"></a>五、一些实际使用场景</h2><h3 id="1️⃣-小团队提效"><a href="#1️⃣-小团队提效" class="headerlink" title="1️⃣ 小团队提效"></a>1️⃣ 小团队提效</h3><p>人少事多，MR 经常没人看。GitReviewAI 先过一遍，人工再重点看 AI 标记的地方。</p>
+<h3 id="2️⃣-新手代码把关"><a href="#2️⃣-新手代码把关" class="headerlink" title="2️⃣ 新手代码把关"></a>2️⃣ 新手代码把关</h3><p>实习生或新人提交的代码，AI 先扫一遍常见坑，带新人更省心。</p>
+<h3 id="3️⃣-学习大模型调用"><a href="#3️⃣-学习大模型调用" class="headerlink" title="3️⃣ 学习大模型调用"></a>3️⃣ 学习大模型调用</h3><p>代码量不大，核心逻辑清晰，适合想学习如何在业务里集成 OpenAI 的同学。</p>
+<h2 id="六、当前状态"><a href="#六、当前状态" class="headerlink" title="六、当前状态"></a>六、当前状态</h2><p>学习项目性质：</p>
+<ul>
+<li>✅ Webhook 处理跑通</li>
+<li>✅ OpenAI 调用跑通</li>
+<li>✅ MR 评论回写跑通</li>
+<li>✅ Docker 部署支持</li>
+<li>🚧 Prompt 持续优化中</li>
+</ul>
+<h2 id="七、为什么做这个？"><a href="#七、为什么做这个？" class="headerlink" title="七、为什么做这个？"></a>七、为什么做这个？</h2><p>主要还是出于学习目的，在实践中回答一个问题：<br>如何把大模型 API 调用嵌入到真实工作流中？</p>
+<p>→ GitReviewAI<br>把“代码审查”这件事，用 AI + Webhook 的模式跑通一个完整闭环。</p>
+<p>整体来说，更多是：<br>在动手过程中理解大模型调用和业务整合，而不是做一个完整产品。</p>
+<h2 id="八、总结"><a href="#八、总结" class="headerlink" title="八、总结"></a>八、总结</h2><p>这个项目不复杂，但对我来说主要价值是：<br>把“Webhook 接收 → 调用 AI → 结果回写”这个链路完整跑通。</p>
+<p>同时也验证了一点：</p>
+<ul>
+<li>Prompt 设计直接决定输出质量</li>
+<li>大模型应用的关键不只是调 API，而是怎么把它嵌入业务流</li>
+</ul>
+<p>📌 最后<br>这个项目更像是：<br>学习大模型 API 调用的实验项目。</p>
+<p>如果你在折腾：</p>
+<ul>
+<li>Go + OpenAI</li>
+<li>GitLab 集成</li>
+<li>代码审查自动化</li>
+<li>Webhook 处理</li>
+</ul>
+<p>可以拿去参考或者改着玩。</p>
+
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg" alt="GitHub" width="16" height="16"> </i></a>
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://leetcode.cn/u/yu-peng-f"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/leetcode.svg" alt="LeetCode" width="16" height="16"> </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/gmail.svg" alt="Mail" width="16" height="16"> </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+  </body>
+</html>
