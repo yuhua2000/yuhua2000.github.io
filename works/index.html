@@ -42,7 +42,32 @@
       <article id="about" class="post">
   <h1 class="post__title"></h1>
   <div class="post__content" itemprop="articleBody">
-    <h2 id="敬请期待"><a href="#敬请期待" class="headerlink" title="敬请期待"></a>敬请期待</h2>
+    <p>学习 LLM、Agent、MCP 过程中写的小工具，代码都在 GitHub 上，欢迎交流。</p>
+<hr>
+<h2 id="GitReviewAI-—-GitLab-AI-代码审查工具"><a href="#GitReviewAI-—-GitLab-AI-代码审查工具" class="headerlink" title="GitReviewAI — GitLab AI 代码审查工具"></a>GitReviewAI — GitLab AI 代码审查工具</h2><p>用 AI 自动审查 GitLab MR 的代码变更，把 Review 意见贴到评论区。</p>
+<p>提交 MR 后自动触发 Webhook → 解析 diff → 调用 OpenAI 分析 → 生成意见回写 MR 评论。</p>
+<ul>
+<li><strong>技术栈：</strong> Go &#x2F; openai-go &#x2F; GitLab Webhook + API &#x2F; Docker</li>
+<li><strong>GitHub：</strong> <a target="_blank" rel="noopener" href="https://github.com/yuhua2000/gitreviewai">yuhua2000&#x2F;gitreviewai</a></li>
+<li><strong>详细介绍：</strong> <a href="/2026/05/10/LLM/gitreviewai/index/">用 Go 写了一个 GitLab AI 代码审查工具</a></li>
+</ul>
+<hr>
+<h2 id="api-registry-mcp-—-API-注册与文档生成"><a href="#api-registry-mcp-—-API-注册与文档生成" class="headerlink" title="api-registry-mcp — API 注册与文档生成"></a>api-registry-mcp — API 注册与文档生成</h2><p>学习 MCP（Model Context Protocol）时做的小工具，把代码里的 API 结构提取出来并生成文档。</p>
+<p>通过 MCP Tool 注册接口（名称、路径、HTTP 方法、请求参数、响应结构），按 session 存储，支持查询并自动生成结构化文档。</p>
+<ul>
+<li><strong>技术栈：</strong> Go &#x2F; MCP SDK &#x2F; openai-go</li>
+<li><strong>GitHub：</strong> <a target="_blank" rel="noopener" href="https://github.com/yuhua2000/api-registry-mcp">yuhua2000&#x2F;api-registry-mcp</a></li>
+<li><strong>详细介绍：</strong> <a href="/2026/04/26/LLM/agent-mcp/index/">代码理解 Agent + API 文档生成（MCP 实践）</a></li>
+</ul>
+<hr>
+<h2 id="CodeSense-—-代码理解-Agent"><a href="#CodeSense-—-代码理解-Agent" class="headerlink" title="CodeSense — 代码理解 Agent"></a>CodeSense — 代码理解 Agent</h2><p>用 AI 自动分析代码仓库，生成结构化总结报告。输入一个代码路径，自动分析项目结构、识别核心模块、提取关键方法、输出 Markdown 报告。</p>
+<p>核心采用 ReAct 模式（思考 → 执行 → 再思考 → 再执行），结合上下文压缩避免多轮分析时 token 爆炸。</p>
+<ul>
+<li><strong>技术栈：</strong> Go &#x2F; openai-go &#x2F; CLI + Prompt 驱动 &#x2F; ReAct</li>
+<li><strong>GitHub：</strong> <a target="_blank" rel="noopener" href="https://github.com/yuhua2000/codesense">yuhua2000&#x2F;codesense</a></li>
+<li><strong>详细介绍：</strong> <a href="/2026/04/26/LLM/agent-mcp/index/">代码理解 Agent + API 文档生成（MCP 实践）</a></li>
+</ul>
+
   </div>
 </article>
     </main>
@@ -64,5 +89,19 @@
 
 <script src="/scripts/main.js"></script>
 
+<!-- mermaid -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var charts = document.querySelectorAll('.mermaid-chart')
+  if (charts.length === 0) return
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'default',
+    securityLevel: 'loose'
+  })
+  mermaid.run({ querySelector: '.mermaid-chart' })
+})
+</script>
   </body>
 </html>

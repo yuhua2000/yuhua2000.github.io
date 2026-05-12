@@ -22,7 +22,7 @@
     tipBox.style.display = 'block' // 显示提示框
     setTimeout(() => {
       tipBox.style.display = 'none' // 2秒后隐藏提示框
-    }, 200)
+    }, 2000)
   }
   window.onload = function () {
     let backTopBtn = document.getElementById('backTop')

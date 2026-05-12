@@ -11,7 +11,7 @@
   cursor: pointer;
 }
 .list__title::first-letter {
-  color: font-color-light;
+  color: accent-color;
 }
 .list__title.closed + .list__list {
   animation: slideUp 0.2s forwards;
@@ -19,25 +19,28 @@
 .list__count {
   font: bold font-normal/1 aside-font-en;
   vertical-align: super;
+  color: font-color-light;
 }
 .list__item {
   display: flex;
   align-items: baseline;
   margin-bottom: space-normal;
   border-bottom: border-width dashed border-color;
+  padding-bottom: space-small;
 }
 .list__item a {
   flex: 1;
   font: font-normal/1.5 title-font;
   letter-spacing: 1px;
+  color: font-color-dark;
 }
 .list__item a:hover {
-  text-decoration: underline;
+  color: accent-color;
 }
 .list__date {
   flex-basis: 10rem;
   font: font-smaller/1.5 text-font-en;
-  color: font-color-normal;
+  color: font-color-light;
   letter-spacing: 2px;
 }
 @media screen and (max-width: 720px) {

@@ -1,5 +1,5 @@
 @font-face {
-  font-family: 'Blogfont'; /* project id 1842100 */
+  font-family: 'Blogfont';
   src: url("//at.alicdn.com/t/font_1842100_he8ga4uxvyo.eot");
   src: url("//at.alicdn.com/t/font_1842100_he8ga4uxvyo.eot?#iefix") format('embedded-opentype'), url("//at.alicdn.com/t/font_1842100_he8ga4uxvyo.woff2") format('woff2'), url("//at.alicdn.com/t/font_1842100_he8ga4uxvyo.woff") format('woff'), url("//at.alicdn.com/t/font_1842100_he8ga4uxvyo.ttf") format('truetype'), url("//at.alicdn.com/t/font_1842100_he8ga4uxvyo.svg#Blogfont") format('svg');
 }
@@ -17,16 +17,12 @@
   word-break: break-word;
 }
 a {
-  font-size: inherit;
+  color: #1a1a1a;
+  text-decoration: none;
   transition: color 0.2s;
 }
-a,
-alink,
-ahover,
-aactive,
-avisited {
-  color: #000;
-  text-decoration: none;
+a:hover {
+  color: #b5725a;
 }
 img {
   max-width: 100%;
@@ -44,26 +40,24 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #000;
+  color: #1a1a1a;
+  background-color: #fdfdfc;
   overflow-x: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
 }
-/*定义滚动条宽高及背景，宽高分别对应横竖滚动条的尺寸*/
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-  background-color: #fff;
+  width: 6px;
+  height: 6px;
 }
-/*定义滚动条的轨道，内阴影及圆角*/
 ::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
-  border-radius: 3px;
-  background-color: #f9f9f9;
+  background-color: #fdfdfc;
 }
-/*定义滑块，内阴影及圆角*/
 ::-webkit-scrollbar-thumb {
-  border-radius: 3px;
-  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
-  background-color: #ccc;
+  border-radius: 4px;
+  background-color: #bbb;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #888;
 }
 @-moz-keyframes slideUp {
   from {
@@ -161,12 +155,28 @@ body {
   margin: 0 1rem;
 }
 #header .menu__item {
-  font: 2rem/1 'Microsoft JhengHei UI Light';
-  color: #000;
+  font: 2rem/1 -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  color: #1a1a1a;
   margin: 0 2rem;
+  letter-spacing: 1px;
+  position: relative;
+}
+#header .menu__item::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background-color: #b5725a;
+  transition: width 0.3s ease;
 }
 #header .menu__item:hover {
-  color: #ccc;
+  color: #b5725a;
+}
+#header .menu__item:hover::after {
+  width: 100%;
 }
 @media screen and (max-width: 1200px) {
   #header .menu__item {
@@ -175,25 +185,33 @@ body {
 }
 main {
   width: 56vw;
-  border-bottom: 0.5px solid #ccc;
+  max-width: 740px;
+  border-bottom: 1px solid #e5e2dd;
   text-align: center;
+  padding: 0 1rem;
 }
 @media screen and (max-width: 1200px) {
   main {
     width: 80vw;
   }
 }
+@media screen and (max-width: 720px) {
+  main {
+    width: 92vw;
+    padding: 0 0.5rem;
+  }
+}
 #footer {
   position: relative;
   width: 100%;
-  font: 1.3rem/1 'Microsoft JhengHei UI Light';
+  font: 1.3rem/1 -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   padding: 1.5rem;
   text-align: center;
 }
 #footer .social-links {
   display: inline-block;
   margin: 0 0.5rem;
-  color: #666;
+  color: #444;
 }
 .list {
   width: 40vw;
@@ -201,40 +219,43 @@ main {
   text-align: left;
 }
 .list__title {
-  font: bold 3rem/1 '方正粗黑宋简体';
-  color: #666;
+  font: bold 3rem/1 'Noto Serif SC', 'Source Han Serif SC', STSong, SimSun, Georgia, serif;
+  color: #444;
   margin: 2rem 0;
   letter-spacing: 3px;
   cursor: pointer;
 }
 .list__title::first-letter {
-  color: #ccc;
+  color: #b5725a;
 }
 .list__title.closed + .list__list {
   animation: slideUp 0.2s forwards;
 }
 .list__count {
-  font: bold 1.5rem/1 'HP Simplified Light';
+  font: bold 1.5rem/1 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   vertical-align: super;
+  color: #888;
 }
 .list__item {
   display: flex;
   align-items: baseline;
   margin-bottom: 1.5rem;
-  border-bottom: 0.5px dashed #ccc;
+  border-bottom: 1px dashed #e5e2dd;
+  padding-bottom: 0.5rem;
 }
 .list__item a {
   flex: 1;
-  font: 1.5rem/1.5 '方正粗黑宋简体';
+  font: 1.5rem/1.5 'Noto Serif SC', 'Source Han Serif SC', STSong, SimSun, Georgia, serif;
   letter-spacing: 1px;
+  color: #1a1a1a;
 }
 .list__item a:hover {
-  text-decoration: underline;
+  color: #b5725a;
 }
 .list__date {
   flex-basis: 10rem;
-  font: 1.3rem/1.5 'Microsoft Yahei Light';
-  color: #666;
+  font: 1.3rem/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: #888;
   letter-spacing: 2px;
 }
 @media screen and (max-width: 720px) {
@@ -253,11 +274,11 @@ main {
 .post__title,
 .post__subtitle,
 .post__reference {
-  font-family: '方正粗黑宋简体';
+  font-family: 'Noto Serif SC', 'Source Han Serif SC', STSong, SimSun, Georgia, serif;
   line-height: 1.5;
 }
 .post__title {
-  font-size: 5rem;
+  font-size: 4rem;
 }
 .post__subtitle {
   font-size: 3rem;
@@ -267,7 +288,7 @@ main {
   font-size: 2rem;
 }
 .post__reference a {
-  color: #ccc;
+  color: #888;
 }
 .post__reference a:hover,
 .post__reference a:active {
@@ -276,7 +297,7 @@ main {
 .post__meta {
   display: flex;
   flex-wrap: wrap;
-  font: 1.5rem/2.5 'HP Simplified Light';
+  font: 1.5rem/2.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   margin-bottom: 1.5rem;
 }
 .post__date {
@@ -295,7 +316,7 @@ main {
 .post__category .category-link:hover,
 .post__tag .tag-link:hover {
   cursor: pointer;
-  color: #ccc;
+  color: #888;
 }
 .post__stat .leancloud-visitors-count {
   letter-spacing: 2px;
@@ -311,12 +332,12 @@ main {
 }
 .post__share,
 .post__top {
-  color: #ccc;
+  color: #888;
   margin-right: 0.5rem;
 }
 .post__share:hover,
 .post__top:hover {
-  color: #666;
+  color: #444;
 }
 .post__share .blogfont,
 .post__top .blogfont {
@@ -324,12 +345,12 @@ main {
   margin-right: 2px;
 }
 .post__toc-text {
-  color: #ccc;
-  font: 1.3rem/1.75 'HP Simplified Light';
+  color: #888;
+  font: 1.3rem/1.75 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   transition: color 0.2s;
 }
 .post__toc-text:hover {
-  color: #000;
+  color: #1a1a1a;
 }
 .post__toc-level-2::before {
   content: '·';
@@ -339,39 +360,223 @@ main {
   text-indent: 1em;
 }
 .post__content {
-  font: 1.5rem/2 '\5E7C\5706';
+  font: 1.5rem/1.8 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: #1a1a1a;
 }
 .post__content h2 {
-  margin-bottom: 1rem;
+  font-size: 2.5rem;
+  font-family: 'Noto Serif SC', 'Source Han Serif SC', STSong, SimSun, Georgia, serif;
+  margin: 4rem 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e5e2dd;
+  color: #1a1a1a;
 }
-.post__content code {
-  font-family: 'Microsoft Yahei Light';
+.post__content h3 {
+  font-size: 2rem;
+  font-family: 'Noto Serif SC', 'Source Han Serif SC', STSong, SimSun, Georgia, serif;
+  margin: 2rem 0 0.5rem;
+  color: #1a1a1a;
 }
-.post__content figure {
-  border: 0.5px dotted #ccc;
-  border-left: 2px solid #ccc;
-  border-radius: 3px;
-  padding: 1rem 1.5rem;
-  margin-bottom: 1rem;
-  overflow: auto;
+.post__content h4 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 1.5rem 0 0.5rem;
+  color: #1a1a1a;
 }
-.post__content pre,
-.post__content .gutter {
-  font: 1.5rem/2 'Calibri Light';
-  letter-spacing: 1px;
-}
-.post__content pre {
-  padding-right: 1.5rem;
-}
-.post__content .gutter {
-  width: 20px;
+.post__content h5,
+.post__content h6 {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin: 1.5rem 0 0.5rem;
+  color: #444;
 }
 .post__content p {
   margin-bottom: 1.5rem;
-  color: #666;
+  color: #1a1a1a;
 }
 .post__content p a {
+  color: #b5725a;
   text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.post__content p a:hover {
+  color: #1a1a1a;
+}
+.post__content p code,
+.post__content li code,
+.post__content td code,
+.post__content blockquote code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.9em;
+  background-color: #f6f6f4;
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: #c7254e;
+}
+.post__content figure {
+  border: 1px solid #e5e2dd;
+  border-radius: 4px;
+  margin: 1rem 0;
+  overflow: hidden;
+  background-color: #fafafa;
+}
+.post__content figure.highlight table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.post__content figure.highlight td {
+  padding: 0;
+  vertical-align: top;
+}
+.post__content figure.highlight .gutter {
+  width: 40px;
+  padding: 1rem 0;
+  background-color: #f0f0f0;
+  border-right: 1px solid #e5e2dd;
+  text-align: right;
+}
+.post__content figure.highlight .gutter pre {
+  padding: 1rem 0.5rem;
+  background: none;
+  color: #bbb;
+  font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 1.3rem;
+  line-height: 1.6;
+}
+.post__content figure.highlight .gutter pre .line {
+  padding: 0 0.25rem;
+}
+.post__content figure.highlight .code {
+  padding: 0;
+}
+.post__content figure.highlight .code pre {
+  padding: 1rem 1.5rem;
+  font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 1.4rem;
+  line-height: 1.6;
+  background: none;
+  color: #1a1a1a;
+  overflow-x: auto;
+}
+.post__content figure.highlight .keyword {
+  color: #d73a49;
+  font-weight: bold;
+}
+.post__content figure.highlight .type {
+  color: #6f42c1;
+}
+.post__content figure.highlight .comment {
+  color: #6a737d;
+  font-style: italic;
+}
+.post__content figure.highlight .function .title,
+.post__content figure.highlight .function .params {
+  color: #6f42c1;
+}
+.post__content figure.highlight .built_in {
+  color: #005cc5;
+}
+.post__content figure.highlight .number {
+  color: #005cc5;
+}
+.post__content figure.highlight .string {
+  color: #032f62;
+}
+.post__content figure.highlight .attr {
+  color: #005cc5;
+}
+.post__content figure.highlight .selector-class {
+  color: #6f42c1;
+}
+.post__content figure.highlight .selector-tag {
+  color: #d73a49;
+}
+.post__content figure.highlight .literal {
+  color: #005cc5;
+}
+.post__content .mermaid-chart {
+  text-align: center;
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+.post__content img {
+  display: block;
+  max-width: 100%;
+  margin: 1rem auto;
+  border-radius: 4px;
+}
+.post__content figcaption {
+  text-align: center;
+  font-size: 1.3rem;
+  color: #888;
+  padding: 0.5rem 1rem;
+  border-top: 1px solid #e5e2dd;
+}
+.post__content blockquote {
+  border-left: 3px solid #b5725a;
+  background-color: #f9f8f5;
+  margin: 1rem 0;
+  padding: 1rem 1.5rem;
+  color: #444;
+}
+.post__content blockquote p {
+  color: #444;
+}
+.post__content blockquote p:last-child {
+  margin-bottom: 0;
+}
+.post__content ul,
+.post__content ol {
+  margin: 0.5rem 0 1.5rem 2rem;
+}
+.post__content ul li,
+.post__content ol li {
+  list-style: disc;
+  margin-bottom: 0.5rem;
+  line-height: 1.8;
+  color: #1a1a1a;
+}
+.post__content ul li ul,
+.post__content ol li ul,
+.post__content ul li ol,
+.post__content ol li ol {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+.post__content ol li {
+  list-style: decimal;
+}
+.post__content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 1.4rem;
+}
+.post__content table th,
+.post__content table td {
+  border: 1px solid #e5e2dd;
+  padding: 0.5rem 1rem;
+  text-align: left;
+}
+.post__content table th {
+  background-color: #f6f6f4;
+  font-weight: bold;
+  color: #1a1a1a;
+}
+.post__content table tr:hover {
+  background-color: #f6f6f4;
+}
+.post__content hr {
+  border: none;
+  border-top: 1px solid #e5e2dd;
+  margin: 2rem 0;
+}
+.post__content strong {
+  font-weight: bold;
+  color: #1a1a1a;
+}
+.post__content em {
+  font-style: italic;
 }
 @media screen and (max-width: 1200px) {
   .post__title,
@@ -398,12 +603,15 @@ main {
 }
 .pagination {
   margin: 2rem;
+  text-align: center;
 }
 .pagination .page-number {
-  font-family: 'Microsoft Yahei Light';
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   margin: 0 1rem;
+  color: #444;
 }
 .pagination .page-number:hover {
+  color: #b5725a;
   text-decoration: underline;
 }
 .block {
@@ -411,64 +619,77 @@ main {
 }
 .block__item {
   margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e5e2dd;
+}
+.block__item:last-of-type {
+  border-bottom: none;
 }
 .block__title {
   display: block;
-  color: #000;
-  font: 2.5rem/1.5 '方正粗黑宋简体';
+  color: #1a1a1a;
+  font: 2.5rem/1.5 'Noto Serif SC', 'Source Han Serif SC', STSong, SimSun, Georgia, serif;
   margin-bottom: 1rem;
   letter-spacing: 1px;
 }
 .block__title:hover {
-  text-decoration: underline;
+  color: #b5725a;
 }
 .block__date {
-  font: bold 1.5rem/2.5 '\5b8b\4f53';
-  color: #666;
+  font: bold 1.5rem/2.5 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+  color: #888;
   letter-spacing: 2px;
 }
 .block__excerpt {
   text-align: left;
-  font: 1.4rem/1.75 'Microsoft Yahei Light';
-  letter-spacing: 5px;
+  font: 1.4rem/1.75 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: #444;
+  letter-spacing: 1px;
 }
 .block__more {
-  display: block;
-  font: bold 1.8rem/1.5 '方正粗黑宋简体';
-  color: #666;
+  display: inline-block;
+  font: bold 1.8rem/1.5 'Noto Serif SC', 'Source Han Serif SC', STSong, SimSun, Georgia, serif;
+  color: #444;
   margin: 2rem 0;
   letter-spacing: 2px;
+  padding-bottom: 2px;
+  border-bottom: 2px solid #e5e2dd;
+  transition: color 0.2s, #e5e2dd 0.2s;
 }
 .block__more:hover {
-  color: #ccc;
+  color: #b5725a;
+  border-color: #b5725a;
 }
 @media screen and (max-width: 720px) {
   .block__title {
     font-weight: bold;
     font-size: 1.8rem;
   }
+  .block__excerpt {
+    letter-spacing: 0;
+  }
 }
 .comments {
   margin-bottom: 3rem;
 }
 .comments .vcount {
-  font-family: 'Microsoft Yahei Light';
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 .comments .vinput {
-  font-family: 'Microsoft Yahei Light';
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   transition: all 0.5s;
 }
 .comments .vinput:active,
 .comments .vinput:focus {
-  border-bottom-color: #000 !important;
+  border-bottom-color: border-color-dark !important;
 }
 .comments .vbtn:active,
 .comments .vbtn:hover {
-  border-color: #000 !important;
-  color: #000 !important;
+  border-color: border-color-dark !important;
+  color: #1a1a1a !important;
 }
 .comments .vat {
-  color: #666 !important;
+  color: #444 !important;
 }
 .comments .vsys,
 .comments .vempty,

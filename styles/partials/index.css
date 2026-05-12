@@ -3,6 +3,11 @@
 }
 .block__item {
   margin-bottom: space-larger;
+  padding-bottom: space-large;
+  border-bottom: border-width solid border-color;
+}
+.block__item:last-of-type {
+  border-bottom: none;
 }
 .block__title {
   display: block;
@@ -12,31 +17,39 @@
   letter-spacing: 1px;
 }
 .block__title:hover {
-  text-decoration: underline;
+  color: accent-color;
 }
 .block__date {
   font: bold font-normal/2.5 aside-font;
-  color: font-color-normal;
+  color: font-color-light;
   letter-spacing: 2px;
 }
 .block__excerpt {
   text-align: left;
   font: font-small/1.75 text-font-en;
-  letter-spacing: 5px;
+  color: font-color-normal;
+  letter-spacing: 1px;
 }
 .block__more {
-  display: block;
+  display: inline-block;
   font: bold 1.8rem/1.5 title-font;
   color: font-color-normal;
   margin: space-large 0;
   letter-spacing: 2px;
+  padding-bottom: 2px;
+  border-bottom: 2px solid border-color;
+  transition: color 0.2s, border-color 0.2s;
 }
 .block__more:hover {
-  color: font-color-light;
+  color: accent-color;
+  border-color: accent-color;
 }
 @media screen and (max-width: 720px) {
   .block__title {
     font-weight: bold;
     font-size: 1.8rem;
+  }
+  .block__excerpt {
+    letter-spacing: 0;
   }
 }

@@ -150,5 +150,19 @@ new Valine({
 
 <script src="/scripts/main.js"></script>
 
+<!-- mermaid -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var charts = document.querySelectorAll('.mermaid-chart')
+  if (charts.length === 0) return
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'default',
+    securityLevel: 'loose'
+  })
+  mermaid.run({ querySelector: '.mermaid-chart' })
+})
+</script>
   </body>
 </html>

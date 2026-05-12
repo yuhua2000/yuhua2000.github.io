@@ -17,9 +17,25 @@
   font: font-large/1 header-font;
   color: font-color-dark;
   margin: 0 space-large;
+  letter-spacing: 1px;
+  position: relative;
+}
+#header .menu__item::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background-color: accent-color;
+  transition: width 0.3s ease;
 }
 #header .menu__item:hover {
-  color: font-color-light;
+  color: accent-color;
+}
+#header .menu__item:hover::after {
+  width: 100%;
 }
 @media screen and (max-width: 1200px) {
   #header .menu__item {

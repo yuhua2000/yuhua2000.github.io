@@ -1,10 +1,13 @@
 .pagination {
   margin: space-large;
+  text-align: center;
 }
 .pagination .page-number {
   font-family: text-font-en;
   margin: 0 space-base;
+  color: font-color-normal;
 }
 .pagination .page-number:hover {
+  color: accent-color;
   text-decoration: underline;
 }
