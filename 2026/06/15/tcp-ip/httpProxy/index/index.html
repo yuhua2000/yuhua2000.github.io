@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Yu Peng的技术博客，分享Go语言、系统设计与技术思考">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog HTTP 正向代理与反向代理 </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">HTTP 正向代理与反向代理</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2026-06-15T03:22:13.000Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2026-06-15 11:22:13
+</time>
+
+    
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/HTTP/" rel="tag">HTTP</a>, <a class="tag-link-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a>
+</div>
+
+
+    <div id="/2026/06/15/tcp-ip/httpProxy/index/" class="leancloud_visitors post__stat" data-flag-title="HTTP 正向代理与反向代理">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86%E3%80%81%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E4%B8%8E-MITM%EF%BC%9A%E4%BB%8E%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82%E6%B5%81%E5%90%91%E7%9C%8B%E6%B8%85%E4%B8%89%E8%80%85%E6%9C%AC%E8%B4%A8"><span class="post__toc-text">正向代理、反向代理与 MITM：从网络请求流向看清三者本质</span></a></li><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E4%B8%80%E3%80%81%E5%85%88%E4%BB%8E%E4%B8%80%E6%9D%A1%E6%9C%80%E6%99%AE%E9%80%9A%E7%9A%84-HTTP-%E8%AF%B7%E6%B1%82%E5%BC%80%E5%A7%8B"><span class="post__toc-text">一、先从一条最普通的 HTTP 请求开始</span></a></li><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E4%BA%8C%E3%80%81%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86%EF%BC%88Forward-Proxy%EF%BC%89"><span class="post__toc-text">二、正向代理（Forward Proxy）</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#1-%E7%BB%93%E6%9E%84%E5%8F%98%E5%8C%96"><span class="post__toc-text">1. 结构变化</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#2-%E8%AF%B7%E6%B1%82%E6%B5%81%E7%A8%8B"><span class="post__toc-text">2. 请求流程</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#Step-1%EF%BC%9A%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%B7%E6%B1%82%E4%BB%A3%E7%90%86"><span class="post__toc-text">Step 1：客户端请求代理</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#Step-2%EF%BC%9A%E4%BB%A3%E7%90%86%E4%BB%A3%E4%B8%BA%E8%AF%B7%E6%B1%82"><span class="post__toc-text">Step 2：代理代为请求</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#Step-3%EF%BC%9A%E8%BF%94%E5%9B%9E%E7%BB%93%E6%9E%9C"><span class="post__toc-text">Step 3：返回结果</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#3-%E5%85%B3%E9%94%AE%E7%89%B9%E5%BE%81"><span class="post__toc-text">3. 关键特征</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#4-%E5%B8%B8%E8%A7%81%E7%94%A8%E9%80%94"><span class="post__toc-text">4. 常见用途</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%EF%BC%881%EF%BC%89%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91"><span class="post__toc-text">（1）科学上网</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%EF%BC%882%EF%BC%89%E5%85%AC%E5%8F%B8%E7%BD%91%E7%BB%9C%E5%87%BA%E5%8F%A3%E6%8E%A7%E5%88%B6"><span class="post__toc-text">（2）公司网络出口控制</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%EF%BC%883%EF%BC%89%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E8%B0%83%E8%AF%95"><span class="post__toc-text">（3）开发环境调试</span></a></li></ol></li></ol></li><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E4%B8%89%E3%80%81%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%EF%BC%88Reverse-Proxy%EF%BC%89"><span class="post__toc-text">三、反向代理（Reverse Proxy）</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#1-%E7%BB%93%E6%9E%84%E5%8F%98%E5%8C%96-1"><span class="post__toc-text">1. 结构变化</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#2-%E8%AF%B7%E6%B1%82%E6%B5%81%E7%A8%8B-1"><span class="post__toc-text">2. 请求流程</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#Step-1%EF%BC%9A%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BF%E9%97%AE%E7%BB%9F%E4%B8%80%E5%85%A5%E5%8F%A3"><span class="post__toc-text">Step 1：客户端访问统一入口</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#Step-2%EF%BC%9A%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%88%86%E5%8F%91%E8%AF%B7%E6%B1%82"><span class="post__toc-text">Step 2：反向代理分发请求</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#Step-3%EF%BC%9A%E5%90%8E%E7%AB%AF%E8%BF%94%E5%9B%9E"><span class="post__toc-text">Step 3：后端返回</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#3-%E5%85%B3%E9%94%AE%E7%89%B9%E5%BE%81-1"><span class="post__toc-text">3. 关键特征</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#4-%E5%B8%B8%E8%A7%81%E7%94%A8%E9%80%94-1"><span class="post__toc-text">4. 常见用途</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%EF%BC%881%EF%BC%89%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="post__toc-text">（1）负载均衡</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%EF%BC%882%EF%BC%89%E7%BB%9F%E4%B8%80%E5%85%A5%E5%8F%A3%E7%BD%91%E5%85%B3"><span class="post__toc-text">（2）统一入口网关</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%EF%BC%883%EF%BC%89SSL-%E7%BB%88%E6%AD%A2"><span class="post__toc-text">（3）SSL 终止</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%EF%BC%884%EF%BC%89%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3"><span class="post__toc-text">（4）微服务网关</span></a></li></ol></li></ol></li><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E5%9B%9B%E3%80%81MITM%EF%BC%88%E4%B8%AD%E9%97%B4%E4%BA%BA%EF%BC%89"><span class="post__toc-text">四、MITM（中间人）</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#1-MITM-%E7%9A%84%E6%9C%AC%E8%B4%A8"><span class="post__toc-text">1. MITM 的本质</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#2-HTTPS-%E4%B8%8B%E7%9A%84-MITM-%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0"><span class="post__toc-text">2. HTTPS 下的 MITM 如何实现</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#3-MITM-%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%EF%BC%88%E9%87%8D%E7%82%B9%EF%BC%89"><span class="post__toc-text">3. MITM 工作流程（重点）</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#Step-1%EF%BC%9A%E4%BC%AA%E9%80%A0%E8%AF%81%E4%B9%A6"><span class="post__toc-text">Step 1：伪造证书</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#Step-2%EF%BC%9A%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BF%A1%E4%BB%BB%E6%A0%B9%E8%AF%81%E4%B9%A6"><span class="post__toc-text">Step 2：客户端信任根证书</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#Step-3%EF%BC%9A%E5%BB%BA%E7%AB%8B%E4%B8%A4%E6%9D%A1-TLS"><span class="post__toc-text">Step 3：建立两条 TLS</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#Step-4%EF%BC%9A%E8%A7%A3%E5%AF%86%E4%B8%8E%E8%BD%AC%E5%8F%91"><span class="post__toc-text">Step 4：解密与转发</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#4-MITM-%E5%B8%B8%E8%A7%81%E7%94%A8%E9%80%94"><span class="post__toc-text">4. MITM 常见用途</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%EF%BC%881%EF%BC%89%E6%8A%93%E5%8C%85%E8%B0%83%E8%AF%95"><span class="post__toc-text">（1）抓包调试</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%EF%BC%882%EF%BC%89%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95"><span class="post__toc-text">（2）安全测试</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%EF%BC%883%EF%BC%89%E4%BC%81%E4%B8%9A%E5%AE%A1%E8%AE%A1"><span class="post__toc-text">（3）企业审计</span></a></li></ol></li></ol></li><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E4%BA%94%E3%80%81%E4%B8%89%E8%80%85%E5%AF%B9%E6%AF%94%EF%BC%88%E6%A0%B8%E5%BF%83%E4%B8%80%E5%BC%A0%E8%A1%A8%EF%BC%89"><span class="post__toc-text">五、三者对比（核心一张表）</span></a></li><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E5%85%AD%E3%80%81%E6%80%BB%E7%BB%93%E4%B8%80%E5%8F%A5%E8%AF%9D"><span class="post__toc-text">六、总结一句话</span></a></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h1 id="正向代理、反向代理与-MITM：从网络请求流向看清三者本质"><a href="#正向代理、反向代理与-MITM：从网络请求流向看清三者本质" class="headerlink" title="正向代理、反向代理与 MITM：从网络请求流向看清三者本质"></a>正向代理、反向代理与 MITM：从网络请求流向看清三者本质</h1><p>在做网关、代理、抓包、甚至 LLM Proxy 的时候，经常会遇到三个概念：</p>
+<ul>
+<li>正向代理（Forward Proxy）</li>
+<li>反向代理（Reverse Proxy）</li>
+<li>MITM（Man-in-the-Middle，中间人攻击&#x2F;中间人代理）</li>
+</ul>
+<p>我们其实只要抓住一个核心问题：</p>
+<blockquote>
+<p><strong>请求到底是谁发起的？又是谁在“替谁”说话？</strong></p>
+</blockquote>
+<p>把这个关系理清楚，这三者基本就能理解了。</p>
+<hr>
+<h1 id="一、先从一条最普通的-HTTP-请求开始"><a href="#一、先从一条最普通的-HTTP-请求开始" class="headerlink" title="一、先从一条最普通的 HTTP 请求开始"></a>一、先从一条最普通的 HTTP 请求开始</h1><p>没有任何代理时，请求是这样的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">浏览器  →  目标服务器（example.com）</span><br></pre></td></tr></table></figure>
+
+<p>过程很直接：</p>
+<ol>
+<li>DNS 解析</li>
+<li>建立 TCP&#x2F;TLS</li>
+<li>发送 HTTP 请求</li>
+<li>返回响应</li>
+</ol>
+<p>客户端知道服务器是谁，服务器也知道客户端是谁。</p>
+<hr>
+<h1 id="二、正向代理（Forward-Proxy）"><a href="#二、正向代理（Forward-Proxy）" class="headerlink" title="二、正向代理（Forward Proxy）"></a>二、正向代理（Forward Proxy）</h1><h2 id="1-结构变化"><a href="#1-结构变化" class="headerlink" title="1. 结构变化"></a>1. 结构变化</h2><p>正向代理的本质是：</p>
+<blockquote>
+<p><strong>客户端不直接访问目标服务器，而是先访问代理，由代理替它去访问外部世界。</strong></p>
+</blockquote>
+<p>结构变成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">客户端 → 正向代理 → 目标服务器</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2-请求流程"><a href="#2-请求流程" class="headerlink" title="2. 请求流程"></a>2. 请求流程</h2><p>假设访问 google.com：</p>
+<h3 id="Step-1：客户端请求代理"><a href="#Step-1：客户端请求代理" class="headerlink" title="Step 1：客户端请求代理"></a>Step 1：客户端请求代理</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET http://google.com</span><br><span class="line">Host: google.com</span><br></pre></td></tr></table></figure>
+
+<p>客户端其实只知道：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">我要访问 google.com</span><br><span class="line">但我先发给代理</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="Step-2：代理代为请求"><a href="#Step-2：代理代为请求" class="headerlink" title="Step 2：代理代为请求"></a>Step 2：代理代为请求</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">正向代理 → google.com</span><br></pre></td></tr></table></figure>
+
+<p>代理拿到请求后：</p>
+<ul>
+<li>解析目标地址</li>
+<li>发起真实请求</li>
+<li>拿到响应</li>
+</ul>
+<hr>
+<h3 id="Step-3：返回结果"><a href="#Step-3：返回结果" class="headerlink" title="Step 3：返回结果"></a>Step 3：返回结果</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">google.com → 正向代理 → 客户端</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3-关键特征"><a href="#3-关键特征" class="headerlink" title="3. 关键特征"></a>3. 关键特征</h2><p>正向代理的关键点：</p>
+<ul>
+<li>客户端“知道”代理存在</li>
+<li>目标服务器“不知道”客户端真实身份</li>
+<li>代理隐藏的是客户端</li>
+</ul>
+<hr>
+<h2 id="4-常见用途"><a href="#4-常见用途" class="headerlink" title="4. 常见用途"></a>4. 常见用途</h2><h3 id="（1）科学上网"><a href="#（1）科学上网" class="headerlink" title="（1）科学上网"></a>（1）科学上网</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">浏览器 → Clash/V2Ray → Google</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="（2）公司网络出口控制"><a href="#（2）公司网络出口控制" class="headerlink" title="（2）公司网络出口控制"></a>（2）公司网络出口控制</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">员工电脑 → 企业代理 → 外网</span><br></pre></td></tr></table></figure>
+
+<p>可以做到：</p>
+<ul>
+<li>上网审计</li>
+<li>URL过滤</li>
+<li>流量缓存</li>
+</ul>
+<hr>
+<h3 id="（3）开发环境调试"><a href="#（3）开发环境调试" class="headerlink" title="（3）开发环境调试"></a>（3）开发环境调试</h3><p>比如：</p>
+<ul>
+<li>Charles</li>
+<li>Fiddler</li>
+<li>Burp Suite（基础模式）</li>
+</ul>
+<hr>
+<h1 id="三、反向代理（Reverse-Proxy）"><a href="#三、反向代理（Reverse-Proxy）" class="headerlink" title="三、反向代理（Reverse Proxy）"></a>三、反向代理（Reverse Proxy）</h1><h2 id="1-结构变化-1"><a href="#1-结构变化-1" class="headerlink" title="1. 结构变化"></a>1. 结构变化</h2><p>反向代理刚好相反：</p>
+<blockquote>
+<p><strong>客户端不知道真实服务器是谁，只访问代理，由代理决定转发到哪台后端。</strong></p>
+</blockquote>
+<p>结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">客户端 → 反向代理 → 真实服务器</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2-请求流程-1"><a href="#2-请求流程-1" class="headerlink" title="2. 请求流程"></a>2. 请求流程</h2><p>访问 api.example.com：</p>
+<h3 id="Step-1：客户端访问统一入口"><a href="#Step-1：客户端访问统一入口" class="headerlink" title="Step 1：客户端访问统一入口"></a>Step 1：客户端访问统一入口</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /api/user</span><br><span class="line">Host: api.example.com</span><br></pre></td></tr></table></figure>
+
+<p>客户端只知道一个域名。</p>
+<hr>
+<h3 id="Step-2：反向代理分发请求"><a href="#Step-2：反向代理分发请求" class="headerlink" title="Step 2：反向代理分发请求"></a>Step 2：反向代理分发请求</h3><p>反向代理（如 Nginx）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/api/user → 10.0.0.1:8080</span><br></pre></td></tr></table></figure>
+
+<p>或者：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/api/user → 10.0.0.2:8080</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="Step-3：后端返回"><a href="#Step-3：后端返回" class="headerlink" title="Step 3：后端返回"></a>Step 3：后端返回</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">后端服务 → Nginx → 客户端</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3-关键特征-1"><a href="#3-关键特征-1" class="headerlink" title="3. 关键特征"></a>3. 关键特征</h2><p>反向代理的核心：</p>
+<ul>
+<li>客户端不知道后端真实结构</li>
+<li>代理隐藏的是服务器</li>
+<li>服务器对外是“统一入口”</li>
+</ul>
+<hr>
+<h2 id="4-常见用途-1"><a href="#4-常见用途-1" class="headerlink" title="4. 常见用途"></a>4. 常见用途</h2><h3 id="（1）负载均衡"><a href="#（1）负载均衡" class="headerlink" title="（1）负载均衡"></a>（1）负载均衡</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Nginx → 多台后端服务</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="（2）统一入口网关"><a href="#（2）统一入口网关" class="headerlink" title="（2）统一入口网关"></a>（2）统一入口网关</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">api.example.com</span><br></pre></td></tr></table></figure>
+
+<p>背后可能是：</p>
+<ul>
+<li>用户服务</li>
+<li>订单服务</li>
+<li>支付服务</li>
+</ul>
+<hr>
+<h3 id="（3）SSL-终止"><a href="#（3）SSL-终止" class="headerlink" title="（3）SSL 终止"></a>（3）SSL 终止</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HTTPS → Nginx → HTTP 后端</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="（4）微服务网关"><a href="#（4）微服务网关" class="headerlink" title="（4）微服务网关"></a>（4）微服务网关</h3><p>如：</p>
+<ul>
+<li>Kong</li>
+<li>Traefik</li>
+<li>APISIX</li>
+</ul>
+<hr>
+<h1 id="四、MITM（中间人）"><a href="#四、MITM（中间人）" class="headerlink" title="四、MITM（中间人）"></a>四、MITM（中间人）</h1><p>MITM 不是“代理类型”，而是一种<strong>流量劫持方式</strong>。</p>
+<p>它可以用来实现正向代理，也可以用来做调试工具。</p>
+<hr>
+<h2 id="1-MITM-的本质"><a href="#1-MITM-的本质" class="headerlink" title="1. MITM 的本质"></a>1. MITM 的本质</h2><p>MITM 的结构是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">客户端 ↔ MITM ↔ 目标服务器</span><br></pre></td></tr></table></figure>
+
+<p>关键点：</p>
+<blockquote>
+<p>MITM 不是简单转发，而是<strong>解密 + 读取 + 重新加密</strong></p>
+</blockquote>
+<hr>
+<h2 id="2-HTTPS-下的-MITM-如何实现"><a href="#2-HTTPS-下的-MITM-如何实现" class="headerlink" title="2. HTTPS 下的 MITM 如何实现"></a>2. HTTPS 下的 MITM 如何实现</h2><p>以 HTTPS 为例：</p>
+<p>正常流程：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">客户端 ←TLS→ 服务器</span><br></pre></td></tr></table></figure>
+
+<p>MITM 要做到：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">客户端 ←TLS→ MITM ←TLS→ 服务器</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3-MITM-工作流程（重点）"><a href="#3-MITM-工作流程（重点）" class="headerlink" title="3. MITM 工作流程（重点）"></a>3. MITM 工作流程（重点）</h2><h3 id="Step-1：伪造证书"><a href="#Step-1：伪造证书" class="headerlink" title="Step 1：伪造证书"></a>Step 1：伪造证书</h3><p>MITM 会生成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">example.com 伪造证书</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="Step-2：客户端信任根证书"><a href="#Step-2：客户端信任根证书" class="headerlink" title="Step 2：客户端信任根证书"></a>Step 2：客户端信任根证书</h3><p>关键前提：</p>
+<blockquote>
+<p>客户端安装了 MITM 的 Root CA</p>
+</blockquote>
+<p>例如：</p>
+<ul>
+<li>Charles 安装证书</li>
+<li>Burp 安装证书</li>
+</ul>
+<hr>
+<h3 id="Step-3：建立两条-TLS"><a href="#Step-3：建立两条-TLS" class="headerlink" title="Step 3：建立两条 TLS"></a>Step 3：建立两条 TLS</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">客户端 ←TLS→ MITM</span><br><span class="line">MITM ←TLS→ 服务器</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="Step-4：解密与转发"><a href="#Step-4：解密与转发" class="headerlink" title="Step 4：解密与转发"></a>Step 4：解密与转发</h3><p>MITM 可以：</p>
+<ul>
+<li>看到明文 HTTP</li>
+<li>修改请求</li>
+<li>修改响应</li>
+<li>记录数据</li>
+</ul>
+<hr>
+<h2 id="4-MITM-常见用途"><a href="#4-MITM-常见用途" class="headerlink" title="4. MITM 常见用途"></a>4. MITM 常见用途</h2><h3 id="（1）抓包调试"><a href="#（1）抓包调试" class="headerlink" title="（1）抓包调试"></a>（1）抓包调试</h3><p>工具：</p>
+<ul>
+<li>Charles</li>
+<li>Fiddler</li>
+<li>mitmproxy</li>
+</ul>
+<hr>
+<h3 id="（2）安全测试"><a href="#（2）安全测试" class="headerlink" title="（2）安全测试"></a>（2）安全测试</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Burp Suite</span><br></pre></td></tr></table></figure>
+
+<p>用于：</p>
+<ul>
+<li>SQL 注入测试</li>
+<li>XSS 测试</li>
+<li>请求篡改</li>
+</ul>
+<hr>
+<h3 id="（3）企业审计"><a href="#（3）企业审计" class="headerlink" title="（3）企业审计"></a>（3）企业审计</h3><p>公司可能用：</p>
+<ul>
+<li>HTTPS 解密网关</li>
+<li>安全代理</li>
+</ul>
+<hr>
+<h1 id="五、三者对比（核心一张表）"><a href="#五、三者对比（核心一张表）" class="headerlink" title="五、三者对比（核心一张表）"></a>五、三者对比（核心一张表）</h1><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>代理谁</th>
+<th>谁知道代理存在</th>
+<th>隐藏谁</th>
+<th>典型用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>正向代理</td>
+<td>客户端</td>
+<td>客户端知道</td>
+<td>客户端</td>
+<td>翻墙、抓包</td>
+</tr>
+<tr>
+<td>反向代理</td>
+<td>服务器</td>
+<td>客户端不知道</td>
+<td>服务器结构</td>
+<td>负载均衡</td>
+</tr>
+<tr>
+<td>MITM</td>
+<td>双向流量</td>
+<td>通常双方都“不知道”</td>
+<td>双方通信内容</td>
+<td>抓包、审计</td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="六、总结一句话"><a href="#六、总结一句话" class="headerlink" title="六、总结一句话"></a>六、总结一句话</h1><p>如果只记一句话：</p>
+<blockquote>
+<p>正向代理是“替客户端出去”，反向代理是“替服务器接客”，MITM 是“把中间那条线拆开看内容”。</p>
+</blockquote>
+
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg" alt="GitHub" width="16" height="16"> </i></a>
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://leetcode.cn/u/yu-peng-f"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/leetcode.svg" alt="LeetCode" width="16" height="16"> </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/gmail.svg" alt="Mail" width="16" height="16"> </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+<!-- mermaid -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var charts = document.querySelectorAll('.mermaid-chart')
+  if (charts.length === 0) return
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'default',
+    securityLevel: 'loose'
+  })
+  mermaid.run({ querySelector: '.mermaid-chart' })
+})
+</script>
+  </body>
+</html>

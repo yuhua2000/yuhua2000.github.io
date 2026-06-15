@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Yu Peng的技术博客，分享Go语言、系统设计与技术思考">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog 用 Go 写了一个 GitLab AI 代码审查工具（v0.3.0） </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">用 Go 写了一个 GitLab AI 代码审查工具（v0.3.0）</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2026-06-07T04:39:17.000Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2026-06-07 12:39:17
+</time>
+
+    
+<div class="post__category">
+  <i class="blogfont">&#xe62d;</i>
+  <a class="category-link" href="/categories/LLM%E5%AE%9E%E8%B7%B5/">LLM实践</a>
+</div>
+  
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/Code-Review/" rel="tag">Code Review</a>, <a class="tag-link-link" href="/tags/GitLab/" rel="tag">GitLab</a>, <a class="tag-link-link" href="/tags/LLM/" rel="tag">LLM</a>, <a class="tag-link-link" href="/tags/git/" rel="tag">git</a>
+</div>
+
+
+    <div id="/2026/06/07/LLM/gitreviewai/gitreviewai/" class="leancloud_visitors post__stat" data-flag-title="用 Go 写了一个 GitLab AI 代码审查工具（v0.3.0）">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E7%94%A8-Go-%E5%86%99%E4%BA%86%E4%B8%80%E4%B8%AA-GitLab-AI-%E4%BB%A3%E7%A0%81%E5%AE%A1%E6%9F%A5%E5%B7%A5%E5%85%B7%EF%BC%88v0-3-0%EF%BC%89"><span class="post__toc-text">用 Go 写了一个 GitLab AI 代码审查工具（v0.3.0）</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%81%9A%E8%BF%99%E4%B8%AA%EF%BC%9F"><span class="post__toc-text">为什么要做这个？</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%AE%83%E8%83%BD%E5%B9%B2%E5%98%9B%EF%BC%9F"><span class="post__toc-text">它能干嘛？</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B"><span class="post__toc-text">核心流程</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E5%85%B7%E4%BD%93%E5%8A%9F%E8%83%BD"><span class="post__toc-text">具体功能</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E6%8A%80%E6%9C%AF%E5%AE%9E%E7%8E%B0"><span class="post__toc-text">技术实现</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E6%8A%80%E6%9C%AF%E6%A0%88"><span class="post__toc-text">技术栈</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1"><span class="post__toc-text">架构设计</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E5%85%B3%E9%94%AE%E8%AE%BE%E8%AE%A1"><span class="post__toc-text">关键设计</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B"><span class="post__toc-text">快速开始</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#1-%E5%AE%89%E8%A3%85"><span class="post__toc-text">1. 安装</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#2-%E9%85%8D%E7%BD%AE"><span class="post__toc-text">2. 配置</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#3-%E9%85%8D%E7%BD%AE-GitLab-Webhook"><span class="post__toc-text">3. 配置 GitLab Webhook</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#4-%E5%BC%80%E5%A7%8B%E4%BD%BF%E7%94%A8"><span class="post__toc-text">4. 开始使用</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%AE%9E%E9%99%85%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="post__toc-text">实际使用场景</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E5%9C%BA%E6%99%AF%E4%B8%80%EF%BC%9A%E5%B0%8F%E5%9B%A2%E9%98%9F%E6%8F%90%E6%95%88"><span class="post__toc-text">场景一：小团队提效</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E5%9C%BA%E6%99%AF%E4%BA%8C%EF%BC%9A%E6%96%B0%E6%89%8B%E4%BB%A3%E7%A0%81%E6%8A%8A%E5%85%B3"><span class="post__toc-text">场景二：新手代码把关</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E5%9C%BA%E6%99%AF%E4%B8%89%EF%BC%9A%E5%AE%89%E5%85%A8%E6%89%AB%E6%8F%8F"><span class="post__toc-text">场景三：安全扫描</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E5%9C%BA%E6%99%AF%E5%9B%9B%EF%BC%9A%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83%E7%BB%9F%E4%B8%80"><span class="post__toc-text">场景四：代码规范统一</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8-Go%EF%BC%9F"><span class="post__toc-text">为什么用 Go？</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%92%8C%E5%85%B6%E4%BB%96%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94"><span class="post__toc-text">和其他方案对比</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%90%8E%E7%BB%AD%E8%AE%A1%E5%88%92"><span class="post__toc-text">后续计划</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E6%9C%80%E5%90%8E"><span class="post__toc-text">最后</span></a></li></ol></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h1 id="用-Go-写了一个-GitLab-AI-代码审查工具（v0-3-0）"><a href="#用-Go-写了一个-GitLab-AI-代码审查工具（v0-3-0）" class="headerlink" title="用 Go 写了一个 GitLab AI 代码审查工具（v0.3.0）"></a>用 Go 写了一个 GitLab AI 代码审查工具（v0.3.0）</h1><p>GitReviewAI 是一个用 Go 写的 GitLab AI 代码审查机器人。提交 MR 后自动触发审查，把 AI 生成的意见贴到评论区。支持自定义审查规则、多模型绑定、审计日志追踪，业务配置全部 Web 化管理。</p>
+<p>📦 开源地址：<a target="_blank" rel="noopener" href="https://github.com/yuhua2000/GitReviewAI">https://github.com/yuhua2000/GitReviewAI</a></p>
+<hr>
+<h2 id="为什么要做这个？"><a href="#为什么要做这个？" class="headerlink" title="为什么要做这个？"></a>为什么要做这个？</h2><p>团队用 GitLab 做代码评审，但有几个痛点：</p>
+<ol>
+<li><strong>MR 经常没人看</strong> — 人少事多，Review 经常被跳过</li>
+<li><strong>审查质量不稳定</strong> — 不同人审查标准不一样，有的严格有的敷衍</li>
+<li><strong>明显问题被放过</strong> — 空指针、SQL 注入、资源泄漏这种低级错误，人眼看多了也会漏</li>
+</ol>
+<p>想了个办法：<strong>让 AI 先过一遍，把明显问题筛出来，人再重点看 AI 标记的地方。</strong></p>
+<p>不是替代人工审查，是帮人工审查提效。</p>
+<hr>
+<h2 id="它能干嘛？"><a href="#它能干嘛？" class="headerlink" title="它能干嘛？"></a>它能干嘛？</h2><h3 id="核心流程"><a href="#核心流程" class="headerlink" title="核心流程"></a>核心流程</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MR 提交 → GitLab Webhook → 获取 Diff → AI 分析 → 生成意见 → 贴到 MR 评论区</span><br></pre></td></tr></table></figure>
+
+<p>整个过程全自动，不需要人工干预。</p>
+<h3 id="具体功能"><a href="#具体功能" class="headerlink" title="具体功能"></a>具体功能</h3><p><strong>1. 行级评论 + 整体报告</strong></p>
+<p>AI 会针对具体代码行给出意见（比如”第 42 行有空指针风险”），也会生成一份整体审查报告。</p>
+<p><strong>2. 自定义审查规则</strong></p>
+<p>内置 11 条规则，按严重性分三级：</p>
+<ul>
+<li>🔴 <strong>ERROR</strong> — 逻辑错误、安全漏洞、并发问题、错误处理、数据一致性</li>
+<li>🟡 <strong>WARNING</strong> — 性能问题、代码规范、可维护性、代码格式</li>
+<li>🟢 <strong>INFO</strong> — 最佳实践、文档建议</li>
+</ul>
+<p>每条规则可单独启用&#x2F;禁用，也可以添加自定义规则。不同项目可以有不同的规则配置。</p>
+<p><strong>3. 多模型支持</strong></p>
+<p>不同项目可以用不同的 AI 模型：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">项目 A → GPT-4o（代码质量要求高）</span><br><span class="line">项目 B → DeepSeek（成本敏感）</span><br><span class="line">项目 C → 千帆（内网部署）</span><br></pre></td></tr></table></figure>
+
+<p>支持注册多个模型，项目级绑定，全局默认兜底。</p>
+<p><strong>4. 审计日志</strong></p>
+<p>每次审查都记录一条日志：状态、模型、规则数、评论数、Token 消耗、耗时、失败原因。</p>
+<p>Token 消耗能帮你估算成本，错误信息能快速定位问题。失败的审查可以一键重试。</p>
+<p><strong>5. 项目自动发现</strong></p>
+<p>不用手动注册项目。第一次收到某个项目的 MR Webhook 时，自动创建项目配置，用默认设置直接开始审查。事后在 Web 端调整即可。</p>
+<p><strong>6. 触发条件</strong></p>
+<ul>
+<li>跳过 Draft MR</li>
+<li>指定目标分支（只审查合并到 main 的 MR）</li>
+<li>自动提交 or 人工审核后手动提交</li>
+</ul>
+<hr>
+<h2 id="技术实现"><a href="#技术实现" class="headerlink" title="技术实现"></a>技术实现</h2><h3 id="技术栈"><a href="#技术栈" class="headerlink" title="技术栈"></a>技术栈</h3><ul>
+<li><strong>后端：</strong> Go 1.25 + Gin + SQLite</li>
+<li><strong>前端：</strong> Vue 3 + Naive UI</li>
+<li><strong>AI：</strong> OpenAI 兼容 API（支持任意 OpenAI SDK 兼容的服务）</li>
+<li><strong>部署：</strong> 单二进制 + Docker</li>
+</ul>
+<h3 id="架构设计"><a href="#架构设计" class="headerlink" title="架构设计"></a>架构设计</h3><div class="mermaid-chart">graph TD
+    A[GitLab Webhook] --> B[Webhook Handler]
+    B --> C[项目配置查询]
+    C -->|首次| C1[自动建仓]
+    C -->|已有| C2[读取配置]
+    B --> D[触发条件检查]
+    D -->|Draft/分支不匹配| D1[跳过]
+    D -->|通过| E[AI 模型选择]
+    E --> F[动态生成系统提示词]
+    F --> G[AI 审查]
+    G -->|Tool Call| G1[ReadFile]
+    G -->|Tool Call| G2[FindInFile]
+    G -->|Tool Call| G3[AddLineComment]
+    G --> H[结果持久化 + 审计日志]
+    H --> I[提交到 GitLab]</div>
+
+<h3 id="关键设计"><a href="#关键设计" class="headerlink" title="关键设计"></a>关键设计</h3><p><strong>动态系统提示词：</strong> 系统提示词不是固定的，而是根据项目启用的规则动态拼接。基础提示词 + 规则列表 + 自定义规则 + 项目专属要求。</p>
+<p><strong>Tool Calling：</strong> AI 通过调用工具来完成审查：<code>ReadFile</code>（读文件）、<code>FindInFile</code>（搜索代码）、<code>AddLineComment</code>（添加评论）、<code>GenerateMDReport</code>（生成报告）等。</p>
+<p><strong>对话压缩：</strong> 审查大 MR 时对话可能很长，超过阈值后自动压缩历史消息，保留关键信息。</p>
+<p><strong>Token 统计：</strong> 每次 API 调用都累加 Token 用量，记录到审计日志，方便成本核算。</p>
+<hr>
+<h2 id="快速开始"><a href="#快速开始" class="headerlink" title="快速开始"></a>快速开始</h2><h3 id="1-安装"><a href="#1-安装" class="headerlink" title="1. 安装"></a>1. 安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Docker</span></span><br><span class="line">docker build -t gitreviewai .</span><br><span class="line">docker run -p 8080:8080 -v ./data:/app/data gitreviewai server</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或者直接编译</span></span><br><span class="line">make build</span><br><span class="line">./gitreviewai server</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或者下载预编译二进制（推荐）</span></span><br><span class="line"><span class="comment"># 下载（以 Linux amd64 为例，替换版本号）</span></span><br><span class="line">wget https://github.com/yuhua2000/GitReviewAI/releases/latest/download/gitreviewai-linux-amd64</span><br><span class="line"><span class="built_in">chmod</span> +x gitreviewai-linux-amd64</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行</span></span><br><span class="line">./gitreviewai-linux-amd64 server</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="2-配置"><a href="#2-配置" class="headerlink" title="2. 配置"></a>2. 配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cp</span> config.yaml.example config.yaml</span><br><span class="line"><span class="comment"># 编辑 config.yaml，填入必要配置</span></span><br></pre></td></tr></table></figure>
+
+<p>最小配置只需 4 项：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">password:</span> <span class="string">&quot;your-login-password&quot;</span></span><br><span class="line"><span class="attr">jwt_secret:</span> <span class="string">&quot;your-jwt-secret-at-least-32-chars&quot;</span></span><br><span class="line"><span class="attr">gitlab_token:</span> <span class="string">&quot;glpat-xxx&quot;</span></span><br><span class="line"><span class="attr">openai_api_key:</span> <span class="string">&quot;sk-xxx&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-配置-GitLab-Webhook"><a href="#3-配置-GitLab-Webhook" class="headerlink" title="3. 配置 GitLab Webhook"></a>3. 配置 GitLab Webhook</h3><p>在 GitLab 项目 Settings → Webhooks 中添加：</p>
+<ul>
+<li>URL: <code>http://your-server:8080/webhook</code></li>
+<li>Secret Token: 和 config.yaml 中的 <code>webhook_token</code> 一致</li>
+<li>Trigger: Merge request events</li>
+</ul>
+<h3 id="4-开始使用"><a href="#4-开始使用" class="headerlink" title="4. 开始使用"></a>4. 开始使用</h3><p>提交一个 MR，系统会自动审查。打开 Web 界面（<code>http://your-server:8080</code>）查看审查结果。</p>
+<hr>
+<h2 id="实际使用场景"><a href="#实际使用场景" class="headerlink" title="实际使用场景"></a>实际使用场景</h2><h3 id="场景一：小团队提效"><a href="#场景一：小团队提效" class="headerlink" title="场景一：小团队提效"></a>场景一：小团队提效</h3><p>人少事多，MR 经常没人看。GitReviewAI 先过一遍，人工再重点看 AI 标记的地方。相当于多了一个 7x24 小时的初级审查员。</p>
+<h3 id="场景二：新手代码把关"><a href="#场景二：新手代码把关" class="headerlink" title="场景二：新手代码把关"></a>场景二：新手代码把关</h3><p>实习生或新人提交的代码，AI 先扫一遍常见坑。带新人更省心，AI 帮你指出”这里应该检查 err”、”这里有空指针风险”。</p>
+<h3 id="场景三：安全扫描"><a href="#场景三：安全扫描" class="headerlink" title="场景三：安全扫描"></a>场景三：安全扫描</h3><p>启用安全相关规则（SQL 注入、XSS、权限绕过），AI 帮你做第一轮安全筛查。不替代专业安全工具，但能捞出一些明显问题。</p>
+<h3 id="场景四：代码规范统一"><a href="#场景四：代码规范统一" class="headerlink" title="场景四：代码规范统一"></a>场景四：代码规范统一</h3><p>团队代码风格不一致？启用代码规范规则，AI 帮你检查命名、格式、magic number 等问题。配合自定义规则，可以强制团队规范。</p>
+<hr>
+<h2 id="为什么用-Go？"><a href="#为什么用-Go？" class="headerlink" title="为什么用 Go？"></a>为什么用 Go？</h2><ol>
+<li><strong>单二进制部署</strong> — 编译完一个文件，拷到服务器就能跑</li>
+<li><strong>并发友好</strong> — 多个 MR 同时审查，goroutine 天然支持</li>
+<li><strong>标准库够用</strong> — HTTP、JSON、加密、数据库，标准库全有</li>
+<li><strong>Docker 镜像小</strong> — CGO disabled 后镜像很小</li>
+</ol>
+<hr>
+<h2 id="和其他方案对比"><a href="#和其他方案对比" class="headerlink" title="和其他方案对比"></a>和其他方案对比</h2><table>
+<thead>
+<tr>
+<th>方案</th>
+<th>特点</th>
+<th>局限</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>GitLab 自带</strong></td>
+<td>免费，集成好</td>
+<td>AI 功能弱，规则不灵活</td>
+</tr>
+<tr>
+<td><strong>SonarQube</strong></td>
+<td>功能强大</td>
+<td>部署重，配置复杂</td>
+</tr>
+<tr>
+<td><strong>GitHub Copilot</strong></td>
+<td>体验好</td>
+<td>不支持 GitLab</td>
+</tr>
+<tr>
+<td><strong>GitReviewAI</strong></td>
+<td>轻量、自托管、可定制</td>
+<td>功能相对简单</td>
+</tr>
+</tbody></table>
+<p>GitReviewAI 的定位是：<strong>轻量级、自托管、可定制的 AI 代码审查工具。</strong> 不追求大而全，追求好用、省时间。</p>
+<hr>
+<h2 id="后续计划"><a href="#后续计划" class="headerlink" title="后续计划"></a>后续计划</h2><ul>
+<li><input disabled="" type="checkbox"> 审查结果统计面板（按项目、按时间、按严重性）</li>
+<li><input disabled="" type="checkbox"> 支持 GitHub（目前只支持 GitLab）</li>
+<li><input disabled="" type="checkbox"> 审查结果 Webhook 回调通知</li>
+<li><input disabled="" type="checkbox"> 更多 AI 模型适配（本地模型支持）</li>
+</ul>
+<hr>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>这个项目的目标很明确：<strong>用 AI 帮团队做第一轮代码审查，把明显问题筛出来，人再重点看。</strong></p>
+<p>不替代人工审查，但能让人工审查更高效。</p>
+<p>如果你在折腾 Go + AI、GitLab 集成、代码审查自动化，可以拿去参考或者改着玩。</p>
+<p>📦 <strong>开源地址：</strong> <a target="_blank" rel="noopener" href="https://github.com/yuhua2000/GitReviewAI">https://github.com/yuhua2000/GitReviewAI</a></p>
+<p>⭐ <strong>觉得有用的话，点个 Star 支持一下！</strong></p>
+<hr>
+<p><em>本文持续更新，最新版本请关注 GitHub 仓库。</em></p>
+
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg" alt="GitHub" width="16" height="16"> </i></a>
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://leetcode.cn/u/yu-peng-f"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/leetcode.svg" alt="LeetCode" width="16" height="16"> </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/gmail.svg" alt="Mail" width="16" height="16"> </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+<!-- mermaid -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var charts = document.querySelectorAll('.mermaid-chart')
+  if (charts.length === 0) return
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'default',
+    securityLevel: 'loose'
+  })
+  mermaid.run({ querySelector: '.mermaid-chart' })
+})
+</script>
+  </body>
+</html>

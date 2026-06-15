@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Yu Peng的技术博客，分享Go语言、系统设计与技术思考">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog 从一道算法题理解最近公共祖先 LCA </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">从一道算法题理解最近公共祖先 LCA</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2026-06-13T12:54:56.000Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2026-06-13 20:54:56
+</time>
+
+    
+<div class="post__category">
+  <i class="blogfont">&#xe62d;</i>
+  <a class="category-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a>, <a class="category-link" href="/categories/%E7%AE%97%E6%B3%95/LCA/">LCA</a>
+</div>
+  
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a>
+</div>
+
+
+    <div id="/2026/06/13/algorithm/LCA/index/" class="leancloud_visitors post__stat" data-flag-title="从一道算法题理解最近公共祖先 LCA">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E4%BB%8E%E6%9A%B4%E5%8A%9B%E5%88%B0%E5%80%8D%E5%A2%9E-LCA%EF%BC%9A%E4%B8%80%E9%A2%98%E7%90%86%E8%A7%A3%E6%A0%91%E4%B8%8A%E8%B7%AF%E5%BE%84%E4%BC%98%E5%8C%96"><span class="post__toc-text">从暴力到倍增 LCA：一题理解树上路径优化</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="post__toc-text">题目描述</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E6%9A%B4%E5%8A%9B%E6%80%9D%E8%B7%AF"><span class="post__toc-text">暴力思路</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E4%BC%98%E5%8C%96%E6%80%9D%E8%B7%AF%EF%BC%9A%E4%BB%8E%E9%80%90%E6%A0%BC%E8%B5%B0%E5%88%B0%E5%80%8D%E5%A2%9E%E8%B7%B3%E8%B7%83"><span class="post__toc-text">优化思路：从逐格走到倍增跳跃</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%80%8D%E5%A2%9E-LCA-%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="post__toc-text">倍增 LCA 的核心思想</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E9%80%92%E6%8E%A8%E5%85%B3%E7%B3%BB"><span class="post__toc-text">递推关系</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E7%A4%BA%E4%BE%8B%E6%8E%A8%E5%AF%BC"><span class="post__toc-text">示例推导</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#LCA-%E6%9F%A5%E8%AF%A2"><span class="post__toc-text">LCA 查询</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E6%A0%B7%E5%B0%B1%E8%83%BD%E6%89%BE%E5%88%B0-LCA%EF%BC%9F"><span class="post__toc-text">为什么这样就能找到 LCA？</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E8%B7%9D%E7%A6%BB%E8%AE%A1%E7%AE%97"><span class="post__toc-text">距离计算</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%9B%9E%E5%88%B0%E9%A2%98%E7%9B%AE"><span class="post__toc-text">回到题目</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#Go-%E5%AE%9E%E7%8E%B0"><span class="post__toc-text">Go 实现</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E6%80%BB%E7%BB%93"><span class="post__toc-text">总结</span></a></li></ol></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h1 id="从暴力到倍增-LCA：一题理解树上路径优化"><a href="#从暴力到倍增-LCA：一题理解树上路径优化" class="headerlink" title="从暴力到倍增 LCA：一题理解树上路径优化"></a>从暴力到倍增 LCA：一题理解树上路径优化</h1><h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/number-of-ways-to-assign-edge-weights-ii/description/?envType=daily-question&envId=2026-06-13">LeetCode 3558</a></p>
+<p>给你一棵 n 个节点的无向树，节点编号为 1 ~ n，1 为根。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">edges[i] = [u, v] 表示 u 和 v 之间有一条边。</span><br></pre></td></tr></table></figure>
+
+<p>每条边可以赋值为 1 或 2。对于每次查询 (u, v)：</p>
+<ol>
+<li>找到 u → v 的唯一路径（树上任意两点之间有且仅有一条路径）</li>
+<li>计算路径上的边数 dist</li>
+<li>返回 <code>2^(dist - 1) mod (10^9 + 7)</code>（为什么是这个公式？可以参考 <a target="_blank" rel="noopener" href="https://leetcode.cn/problems/number-of-ways-to-assign-edge-weights-i/solutions/3981974/gei-bian-fu-quan-zhi-de-fang-an-shu-i-by-7coj/?envType=daily-question&envId=2026-06-13">给边赋权值的方案数 I 题解</a>）</li>
+</ol>
+<p>举个例子：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">    1</span><br><span class="line">   / \</span><br><span class="line">  2   3</span><br><span class="line"> / \</span><br><span class="line">4   5</span><br></pre></td></tr></table></figure>
+
+<p>查询 (5, 3)：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">路径：5 → 2 → 1 → 3</span><br><span class="line">边数：dist = 3</span><br><span class="line">答案：2^(3-1) = 4</span><br></pre></td></tr></table></figure>
+
+<p>每次查询都需要快速求出树上两点之间的距离，这就是 LCA（最近公共祖先）的典型应用。</p>
+<p>怎么求距离？关键在于找到 u 和 v 的最近公共祖先——知道了 LCA，距离就是 <code>depth[u] + depth[v] - 2 * depth[lca]</code>。</p>
+<p>那先不管优化，最朴素的做法是什么？</p>
+<h2 id="暴力思路"><a href="#暴力思路" class="headerlink" title="暴力思路"></a>暴力思路</h2><p>从 u 和 v 各自往上爬，谁深谁先走，直到碰面。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">function distance(u, v):</span><br><span class="line">    while u != v:</span><br><span class="line">        if depth[u] &gt; depth[v]:</span><br><span class="line">            u = parent[u]</span><br><span class="line">        else:</span><br><span class="line">            v = parent[v]</span><br><span class="line">        step++</span><br><span class="line"></span><br><span class="line">    return step</span><br></pre></td></tr></table></figure>
+
+<p>问题很明显：单次 O(n)，多次查询 O(nq)，数据一大直接 TLE。</p>
+<hr>
+<h2 id="优化思路：从逐格走到倍增跳跃"><a href="#优化思路：从逐格走到倍增跳跃" class="headerlink" title="优化思路：从逐格走到倍增跳跃"></a>优化思路：从逐格走到倍增跳跃</h2><p>观察暴力过程会发现：每次查询，本质都在重复”向上走同一条路径”。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">5 → 4 → 3 → 2 → 1</span><br></pre></td></tr></table></figure>
+
+<p>每次都从头走一遍，非常浪费。那能不能一次多跳几步？</p>
+<p>如果能一次跳 2 步、4 步、8 步 … 那走 13 步就只需要跳 3 次：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">13 = 8 + 4 + 1   →   跳 3 次就到了</span><br></pre></td></tr></table></figure>
+
+<p>这就是<strong>二进制拆分</strong>——任何步数都能拆成若干个 2 的幂之和。顺着这个想法，只需要预处理出每个节点向上跳 2^k 步到达哪里，查询时就能 O(log n) 拼出任意路径。</p>
+<p>这就是<strong>倍增（Binary Lifting）</strong> 的由来。</p>
+<hr>
+<h2 id="倍增-LCA-的核心思想"><a href="#倍增-LCA-的核心思想" class="headerlink" title="倍增 LCA 的核心思想"></a>倍增 LCA 的核心思想</h2><p>定义一个数组：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">up[u][k] = u 向上跳 2^k 步到达的节点</span><br></pre></td></tr></table></figure>
+
+<p>比如 <code>up[5][0]</code> 是 5 的父节点（跳 1 步），<code>up[5][1]</code> 是向上跳 2 步到达的节点，<code>up[5][2]</code> 是跳 4 步……</p>
+<p>有了这张表，任意距离的跳跃都可以用二进制拆分完成。</p>
+<h3 id="递推关系"><a href="#递推关系" class="headerlink" title="递推关系"></a>递推关系</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">up[u][k] = up[ up[u][k-1] ][k-1]</span><br></pre></td></tr></table></figure>
+
+<p>意思很简单：想跳 2^k 步，先跳 2^(k-1) 步到中间节点，再从那里跳 2^(k-1) 步。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">u ──2^(k-1)步──&gt; 中间节点 ──2^(k-1)步──&gt; 目标节点</span><br><span class="line">         合计：2^(k-1) + 2^(k-1) = 2^k 步</span><br></pre></td></tr></table></figure>
+
+<p>大步拆两小步，小步已经预处理好了。</p>
+<hr>
+<h2 id="示例推导"><a href="#示例推导" class="headerlink" title="示例推导"></a>示例推导</h2><p>用一棵树来演示 up 表是怎么算的：</p>
+<div class="mermaid-chart">graph TD
+1((1))
+2((2))
+3((3))
+4((4))
+5((5))
+6((6))
+
+1 --> 2
+1 --> 3
+2 --> 4
+2 --> 5
+3 --> 6</div>
+
+<p>其中 5 → 4 → 3 → 2 → 1 是一条链，看 <code>up[5][k]</code> 怎么递推。</p>
+<p><strong>up[5][0]：跳 1 步</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">up[5][0] = 4     （5 的父节点）</span><br></pre></td></tr></table></figure>
+
+<p><strong>up[5][1]：跳 2 步</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">up[5][1] = up[ up[5][0] ][0]</span><br><span class="line">         = up[4][0]</span><br><span class="line">         = 3</span><br></pre></td></tr></table></figure>
+
+<p>从 5 跳 1 步到 4，再从 4 跳 1 步到 3，合计 2 步。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">5 → 4 → 3</span><br><span class="line"> (1步) (1步) = 2步</span><br></pre></td></tr></table></figure>
+
+<p><strong>up[5][2]：跳 4 步</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">up[5][2] = up[ up[5][1] ][1]</span><br><span class="line">         = up[3][1]</span><br></pre></td></tr></table></figure>
+
+<p>而 <code>up[3][1]</code> 是 3 向上跳 2 步：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">up[3][1] = up[ up[3][0] ][0]</span><br><span class="line">         = up[2][0]</span><br><span class="line">         = 1</span><br></pre></td></tr></table></figure>
+
+<p>所以 <code>up[5][2] = 1</code>，从 5 跳 2 步到 3，再从 3 跳 2 步到 1，合计 4 步。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">5 → 4 → 3 → 2 → 1</span><br><span class="line">   (2步)    (2步)  = 4步</span><br></pre></td></tr></table></figure>
+
+<p>汇总：</p>
+<table>
+<thead>
+<tr>
+<th>k</th>
+<th>2^k</th>
+<th>up[5][k]</th>
+<th>拆分方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>1</td>
+<td>4</td>
+<td>直接跳 1 步</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>1 步 + 1 步</td>
+</tr>
+<tr>
+<td>2</td>
+<td>4</td>
+<td>1</td>
+<td>2 步 + 2 步</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="LCA-查询"><a href="#LCA-查询" class="headerlink" title="LCA 查询"></a>LCA 查询</h2><p>分两步：</p>
+<p><strong>Step 1：拉齐深度</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function lift(u, diff):</span><br><span class="line">    for k from LOG downto 0:</span><br><span class="line">        if diff &gt;= 2^k:</span><br><span class="line">            u = up[u][k]</span><br></pre></td></tr></table></figure>
+
+<p><strong>Step 2：一起跳</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">function lca(u, v):</span><br><span class="line">    if depth[u] &lt; depth[v]:</span><br><span class="line">        swap(u, v)</span><br><span class="line"></span><br><span class="line">    lift u to same depth as v</span><br><span class="line"></span><br><span class="line">    if u == v:</span><br><span class="line">        return u</span><br><span class="line"></span><br><span class="line">    for k from LOG downto 0:</span><br><span class="line">        if up[u][k] != up[v][k]:</span><br><span class="line">            u = up[u][k]</span><br><span class="line">            v = up[v][k]</span><br><span class="line"></span><br><span class="line">    return up[u][0]</span><br></pre></td></tr></table></figure>
+
+<h3 id="为什么这样就能找到-LCA？"><a href="#为什么这样就能找到-LCA？" class="headerlink" title="为什么这样就能找到 LCA？"></a>为什么这样就能找到 LCA？</h3><p><strong>拉齐深度后，u 和 v 到 LCA 的距离为什么相等？</strong></p>
+<p>因为 LCA 是公共祖先，到 LCA 的距离 &#x3D; 自身深度 - LCA 深度。深度相同，距离就相同。</p>
+<p><strong>“一起跳”为什么能精确停在 LCA 的下一层？</strong></p>
+<p>关键在 <code>up[u][k] != up[v][k]</code> 这个判断：</p>
+<ul>
+<li><code>!=</code>：2^k 级祖先还没汇合，还在 LCA 下面，可以安全跳</li>
+<li><code>==</code>：2^k 级祖先已经相同了，跳过去就越过 LCA 了，不跳</li>
+</ul>
+<p>从大到小遍历 k，就是在用二进制逐步逼近 LCA：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">距离 LCA 还有 5 步：5 = 4 + 1</span><br><span class="line"></span><br><span class="line">k=2: 2^2=4, 跳了不会越过 → 跳   （剩 1 步）</span><br><span class="line">k=1: 2^1=2, 跳了会越过   → 不跳</span><br><span class="line">k=0: 2^0=1, 跳了不会越过 → 跳   （剩 0 步）</span><br></pre></td></tr></table></figure>
+
+<p>循环结束后，u 和 v 刚好停在 LCA 的正下方，所以 <code>up[u][0]</code> 就是 LCA。</p>
+<hr>
+<h2 id="距离计算"><a href="#距离计算" class="headerlink" title="距离计算"></a>距离计算</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dist = depth[u] + depth[v] - 2 * depth[lca]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="回到题目"><a href="#回到题目" class="headerlink" title="回到题目"></a>回到题目</h2><p>每条边赋值 1 或 2，路径上 dist 条边共有 <code>2^dist</code> 种赋值方案。</p>
+<p>权值和的奇偶性取决于有多少条边赋值为 1。每条边独立选择，恰好一半方案的权值和为奇数：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">奇数和的方案数 = 2^dist / 2 = 2^(dist - 1)</span><br></pre></td></tr></table></figure>
+
+<p>所以只要快速算出 dist，就能 O(log n) 得到答案：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lca = LCA(u, v)</span><br><span class="line">dist = depth[u] + depth[v] - 2 * depth[lca]</span><br><span class="line">ans = 2^(dist - 1) mod (10^9 + 7)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Go-实现"><a href="#Go-实现" class="headerlink" title="Go 实现"></a>Go 实现</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> leetcode</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> MOD <span class="type">int64</span> = <span class="number">1</span>_000_000_007</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">modPow</span><span class="params">(a, b <span class="type">int64</span>)</span></span> <span class="type">int64</span> &#123;</span><br><span class="line">	res := <span class="type">int64</span>(<span class="number">1</span>)</span><br><span class="line">	<span class="keyword">for</span> b &gt; <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> b&amp;<span class="number">1</span> == <span class="number">1</span> &#123;</span><br><span class="line">			res = res * a % MOD</span><br><span class="line">		&#125;</span><br><span class="line">		a = a * a % MOD</span><br><span class="line">		b &gt;&gt;= <span class="number">1</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> res</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">assignEdgeWeights</span><span class="params">(edges [][]<span class="type">int</span>, queries [][]<span class="type">int</span>)</span></span> []<span class="type">int</span> &#123;</span><br><span class="line">	n := <span class="built_in">len</span>(edges) + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	graph := <span class="built_in">make</span>([][]<span class="type">int</span>, n+<span class="number">1</span>)</span><br><span class="line">	<span class="keyword">for</span> _, edge := <span class="keyword">range</span> edges &#123;</span><br><span class="line">		graph[edge[<span class="number">0</span>]] = <span class="built_in">append</span>(graph[edge[<span class="number">0</span>]], edge[<span class="number">1</span>])</span><br><span class="line">		graph[edge[<span class="number">1</span>]] = <span class="built_in">append</span>(graph[edge[<span class="number">1</span>]], edge[<span class="number">0</span>])</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> LOG = <span class="number">18</span></span><br><span class="line"></span><br><span class="line">	up := <span class="built_in">make</span>([][LOG]<span class="type">int</span>, n+<span class="number">1</span>)</span><br><span class="line">	q := []<span class="type">int</span>&#123;<span class="number">1</span>&#125;</span><br><span class="line">	depth := <span class="built_in">make</span>([]<span class="type">int</span>, n+<span class="number">1</span>)</span><br><span class="line">	depth[<span class="number">1</span>] = <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> <span class="built_in">len</span>(q) &gt; <span class="number">0</span> &#123;</span><br><span class="line">		size := <span class="built_in">len</span>(q)</span><br><span class="line">		<span class="keyword">for</span> _, node := <span class="keyword">range</span> q[:size] &#123;</span><br><span class="line">			<span class="keyword">for</span> _, nextNode := <span class="keyword">range</span> graph[node] &#123;</span><br><span class="line">				<span class="keyword">if</span> depth[nextNode] == <span class="number">0</span> &#123;</span><br><span class="line">					up[nextNode][<span class="number">0</span>] = node</span><br><span class="line">					depth[nextNode] = depth[node] + <span class="number">1</span></span><br><span class="line">					q = <span class="built_in">append</span>(q, nextNode)</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		q = q[size:]</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">1</span>; i &lt; LOG; i++ &#123;</span><br><span class="line">		<span class="keyword">for</span> u := <span class="number">1</span>; u &lt;= n; u++ &#123;</span><br><span class="line">			up[u][i] = up[up[u][i<span class="number">-1</span>]][i<span class="number">-1</span>]</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	result := <span class="built_in">make</span>([]<span class="type">int</span>, <span class="number">0</span>, <span class="built_in">len</span>(queries))</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> lca <span class="function"><span class="keyword">func</span><span class="params">(u, v <span class="type">int</span>)</span></span> <span class="type">int</span></span><br><span class="line"></span><br><span class="line">	lca = <span class="function"><span class="keyword">func</span><span class="params">(u, v <span class="type">int</span>)</span></span> <span class="type">int</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> depth[u] &gt; depth[v] &#123;</span><br><span class="line">			diff := depth[u] - depth[v]</span><br><span class="line">			<span class="keyword">for</span> k := LOG - <span class="number">1</span>; k &gt;= <span class="number">0</span>; k-- &#123;</span><br><span class="line">				<span class="keyword">if</span> diff&amp;(<span class="number">1</span>&lt;&lt;k) != <span class="number">0</span> &#123;</span><br><span class="line">					u = up[u][k]</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> depth[v] &gt; depth[u] &#123;</span><br><span class="line">			diff := depth[v] - depth[u]</span><br><span class="line">			<span class="keyword">for</span> k := LOG - <span class="number">1</span>; k &gt;= <span class="number">0</span>; k-- &#123;</span><br><span class="line">				<span class="keyword">if</span> diff&amp;(<span class="number">1</span>&lt;&lt;k) != <span class="number">0</span> &#123;</span><br><span class="line">					v = up[v][k]</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> u == v &#123;</span><br><span class="line">			<span class="keyword">return</span> u</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> k := LOG - <span class="number">1</span>; k &gt;= <span class="number">0</span>; k-- &#123;</span><br><span class="line">			<span class="keyword">if</span> up[u][k] != up[v][k] &#123;</span><br><span class="line">				u = up[u][k]</span><br><span class="line">				v = up[v][k]</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> up[u][<span class="number">0</span>]</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> _, querie := <span class="keyword">range</span> queries &#123;</span><br><span class="line">		u, v := querie[<span class="number">0</span>], querie[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> v == u &#123;</span><br><span class="line">			result = <span class="built_in">append</span>(result, <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		distance := depth[u] + depth[v] - <span class="number">2</span>*depth[lca(u, v)]</span><br><span class="line"></span><br><span class="line">		result = <span class="built_in">append</span>(result, <span class="type">int</span>(modPow(<span class="number">2</span>, <span class="type">int64</span>(distance<span class="number">-1</span>))))</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这道题的核心不在公式，而在如何快速求 dist。</p>
+<p>树上两点距离 &#x3D; 两点到 LCA 的距离之和，暴力求 LCA 每次 O(n)，多次查询会 TLE。倍增 LCA 通过预处理 2^k 级别的跳跃表，把查询优化到 O(log n)——本质就是把”逐层爬树”变成”二进制拆分跳跃”。</p>
+
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg" alt="GitHub" width="16" height="16"> </i></a>
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://leetcode.cn/u/yu-peng-f"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/leetcode.svg" alt="LeetCode" width="16" height="16"> </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/gmail.svg" alt="Mail" width="16" height="16"> </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+<!-- mermaid -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var charts = document.querySelectorAll('.mermaid-chart')
+  if (charts.length === 0) return
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'default',
+    securityLevel: 'loose'
+  })
+  mermaid.run({ querySelector: '.mermaid-chart' })
+})
+</script>
+  </body>
+</html>
