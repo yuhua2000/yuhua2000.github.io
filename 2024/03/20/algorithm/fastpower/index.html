@@ -82,12 +82,12 @@
       <i class="blogfont">&#xe6c1;</i>
     </a>
   </div>
-  <ol class="post__toc"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%BF%AB%E9%80%9F%E5%B9%82%E7%AE%97%E6%B3%95"><span class="post__toc-text">快速幂算法</span></a></li></ol>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%BF%AB%E9%80%9F%E5%B9%82%E7%AE%97%E6%B3%95"><span class="post__toc-text"> 快速幂算法</span></a></li></ol>
 </aside>
   <div class="post__content" itemprop="articleBody">
-    <h2 id="快速幂算法"><a href="#快速幂算法" class="headerlink" title="快速幂算法"></a>快速幂算法</h2><p>快速幂算法是一种高效的算法，用于计算 ( a^b ) 的值，特别是当 ( b ) 非常大时。这个算法的基本思想是将指数 ( b ) 分解为2的幂次的和，然后通过连续平方来减少乘法的次数。</p>
+    <h2 id="快速幂算法"><a class="markdownIt-Anchor" href="#快速幂算法"></a> 快速幂算法</h2>
+<p>快速幂算法是一种高效的算法，用于计算 ( a^b ) 的值，特别是当 ( b ) 非常大时。这个算法的基本思想是将指数 ( b ) 分解为2的幂次的和，然后通过连续平方来减少乘法的次数。</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">long</span> <span class="type">long</span> <span class="title">quickPow</span><span class="params">(<span class="type">long</span> <span class="type">long</span> a, <span class="type">long</span> <span class="type">long</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="type">long</span> <span class="type">long</span> res = <span class="number">1</span>; <span class="comment">// 结果初始化为1</span></span><br><span class="line">    <span class="keyword">while</span> (b &gt; <span class="number">0</span>) &#123; <span class="comment">// 当 b 大于0时循环</span></span><br><span class="line">        <span class="keyword">if</span> (b &amp; <span class="number">1</span>) &#123; <span class="comment">// 如果 b 的当前最低位为1，则将当前的 a 加入结果中</span></span><br><span class="line">            res = res * a;</span><br><span class="line">        &#125;</span><br><span class="line">        a = a * a; <span class="comment">// a 自乘，即 a 的平方</span></span><br><span class="line">        b &gt;&gt;= <span class="number">1</span>; <span class="comment">// b 右移一位，即除以2</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res; <span class="comment">// 返回结果</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>在这段代码中，我们使用了位运算来检查 ( b ) 的每一位是否为1（即 if (b &amp; 1)）。如果为1，我们就将 ( a ) 的当前幂次乘到结果 res 中。每次循环，我们都将 ( a ) 自乘（即平方），并将 ( b ) 右移一位（即除以2）。</p>
 
   </div>

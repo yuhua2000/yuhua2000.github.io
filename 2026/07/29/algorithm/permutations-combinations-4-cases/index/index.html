@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html  lang=en>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Yu Peng的技术博客，分享Go语言、系统设计与技术思考">
+  
+    
+    <link rel="shortcut icon" href="/images/favicon.ico ">
+    
+    
+    <link rel="icon" type="image/png" href="/images/favicon-android.png " sizes="192x192">
+    
+    
+    <link rel="apple-touch-icon" href="/images/favicon-apple.png " sizes="180x180">
+    
+  
+  <!-- title -->
+  <title>Yu Peng blog 排列组合的四种常见情况 </title>
+  <!-- styles -->
+  <!-- styles -->
+
+<link rel="stylesheet" href="/styles/global.css">
+
+  <!-- rss -->
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <header id="header">
+  
+  <nav class="menu menu--right">
+  
+    <a class="menu__item" href="/">主页</a>
+    <a class="menu__item" href="/archives/">归档</a>
+    <a class="menu__item" href="/categories/">专题</a>
+    <a class="menu__item" href="/tags/">标签</a>
+    <a class="menu__item" href="/works/">作品</a>
+    <a class="menu__item" href="/about/">关于</a>
+  </nav>
+</header>
+    <main>
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post__header">
+  <h1 class="post__title">排列组合的四种常见情况</h1>
+  
+  
+  <div class="post__meta">
+    
+<time class="post__date" datetime="2026-07-29T06:22:42.000Z" itemprop="datePublished">
+  
+  <i class="blogfont">&#xedff;</i>
+  
+  2026-07-29 14:22:42
+</time>
+
+    
+<div class="post__category">
+  <i class="blogfont">&#xe62d;</i>
+  <a class="category-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a>
+</div>
+  
+
+    
+<div class="post__tag">
+  <i class="blogfont">&#xe7ec;</i>
+  <a class="tag-link-link" href="/tags/%E6%8E%92%E5%88%97%E7%BB%84%E5%90%88/" rel="tag">排列组合</a>, <a class="tag-link-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a>
+</div>
+
+
+    <div id="/2026/07/29/algorithm/permutations-combinations-4-cases/index/" class="leancloud_visitors post__stat" data-flag-title="排列组合的四种常见情况">
+  <i class="blogfont">&#xe672;</i>
+  <span class="leancloud-visitors-count">loading...</span>
+</div>
+  </div>
+</header>
+  <aside class="post__aside">
+  <div class="post__actions">
+    <a id="backTop" class="post__top" href="javascript:">
+      <i class="blogfont">&#xe6b1;</i><!-- Top -->
+    </a>
+    <a id="share" class="post__share" href="javascript:">
+      <i class="blogfont">&#xe6c1;</i>
+    </a>
+  </div>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82%E6%8E%92%E5%88%97%E7%BB%84%E5%90%884%E7%A7%8D%E6%83%85%E5%86%B5%E7%9A%84%E9%80%9A%E7%94%A8%E5%85%AC%E5%BC%8F"><span class="post__toc-text"> 一文搞懂排列组合：4种情况的通用公式</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E4%B8%80%E5%BC%A0%E8%A1%A8%E5%BF%AB%E9%80%9F%E7%90%86%E8%A7%A3"><span class="post__toc-text"> 一张表快速理解</span></a></li></ol></li><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#1-%E7%BB%84%E5%90%88%E4%B8%8D%E8%80%83%E8%99%91%E9%A1%BA%E5%BA%8F%E4%B8%8D%E5%85%81%E8%AE%B8%E9%87%8D%E5%A4%8D"><span class="post__toc-text"> 1. 组合：不考虑顺序，不允许重复</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%9C%BA%E6%99%AF"><span class="post__toc-text"> 场景</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%85%AC%E5%BC%8F"><span class="post__toc-text"> 公式</span></a></li></ol></li><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#2-%E6%8E%92%E5%88%97%E8%80%83%E8%99%91%E9%A1%BA%E5%BA%8F%E4%B8%8D%E5%85%81%E8%AE%B8%E9%87%8D%E5%A4%8D"><span class="post__toc-text"> 2. 排列：考虑顺序，不允许重复</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%9C%BA%E6%99%AF-2"><span class="post__toc-text"> 场景</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%85%AC%E5%BC%8F-2"><span class="post__toc-text"> 公式</span></a></li></ol></li><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#3-%E5%8F%AF%E9%87%8D%E5%A4%8D%E7%BB%84%E5%90%88%E4%B8%8D%E8%80%83%E8%99%91%E9%A1%BA%E5%BA%8F%E5%85%81%E8%AE%B8%E9%87%8D%E5%A4%8D"><span class="post__toc-text"> 3. 可重复组合：不考虑顺序，允许重复</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%9C%BA%E6%99%AF-3"><span class="post__toc-text"> 场景</span></a></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%85%AC%E5%BC%8F-3"><span class="post__toc-text"> 公式</span></a></li></ol></li><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#4-%E5%8F%AF%E9%87%8D%E5%A4%8D%E6%8E%92%E5%88%97%E8%80%83%E8%99%91%E9%A1%BA%E5%BA%8F%E5%85%81%E8%AE%B8%E9%87%8D%E5%A4%8D"><span class="post__toc-text"> 4. 可重复排列：考虑顺序，允许重复</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E5%9C%BA%E6%99%AF-4"><span class="post__toc-text"> 场景</span></a></li></ol></li><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E5%88%A4%E6%96%AD"><span class="post__toc-text"> 如何快速判断？</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E7%AC%AC%E4%B8%80%E4%B8%AA%E9%97%AE%E9%A2%98%E9%A1%BA%E5%BA%8F%E9%87%8D%E8%A6%81%E5%90%97"><span class="post__toc-text"> 第一个问题：顺序重要吗？</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E4%B8%8D%E9%87%8D%E8%A6%81"><span class="post__toc-text"> 不重要：</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E9%87%8D%E8%A6%81"><span class="post__toc-text"> 重要：</span></a></li></ol></li><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#%E7%AC%AC%E4%BA%8C%E4%B8%AA%E9%97%AE%E9%A2%98%E8%83%BD%E9%87%8D%E5%A4%8D%E5%90%97"><span class="post__toc-text"> 第二个问题：能重复吗？</span></a><ol class="post__toc-child"><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E4%B8%8D%E8%83%BD%E9%87%8D%E5%A4%8D"><span class="post__toc-text"> 不能重复：</span></a></li><li class="post__toc-item post__toc-level-3"><a class="post__toc-link" href="#%E5%8F%AF%E4%BB%A5%E9%87%8D%E5%A4%8D"><span class="post__toc-text"> 可以重复：</span></a></li></ol></li></ol></li><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E6%9C%80%E7%BB%88%E8%AE%B0%E5%BF%86%E5%9B%BE"><span class="post__toc-text"> 最终记忆图</span></a></li><li class="post__toc-item post__toc-level-1"><a class="post__toc-link" href="#%E6%80%BB%E7%BB%93%E4%B8%80%E5%8F%A5%E8%AF%9D"><span class="post__toc-text"> 总结一句话</span></a></li></ol>
+</aside>
+  <div class="post__content" itemprop="articleBody">
+    <h1 id="一文搞懂排列组合4种情况的通用公式"><a class="markdownIt-Anchor" href="#一文搞懂排列组合4种情况的通用公式"></a> 一文搞懂排列组合：4种情况的通用公式</h1>
+<p>在算法和数学中，经常会遇到这样的问题：</p>
+<blockquote>
+<p>从 n 个不同的元素中选择 m 个，有多少种选择方式？</p>
+</blockquote>
+<p>看似简单，但根据两个条件的不同，会产生 <strong>4 种经典情况</strong>：</p>
+<ol>
+<li>是否考虑顺序</li>
+<li>是否允许重复选择</li>
+</ol>
+<p>这两个条件组合起来，就是排列组合中最常见的四类问题。</p>
+<hr />
+<h2 id="一张表快速理解"><a class="markdownIt-Anchor" href="#一张表快速理解"></a> 一张表快速理解</h2>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>是否考虑顺序</th>
+<th>是否允许重复</th>
+<th>公式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>组合</td>
+<td>❌ 不考虑</td>
+<td>❌ 不允许</td>
+<td>C(n,m)</td>
+</tr>
+<tr>
+<td>排列</td>
+<td>✅ 考虑</td>
+<td>❌ 不允许</td>
+<td>P(n,m)</td>
+</tr>
+<tr>
+<td>可重复组合</td>
+<td>❌ 不考虑</td>
+<td>✅ 允许</td>
+<td>C(n+m-1,m)</td>
+</tr>
+<tr>
+<td>可重复排列</td>
+<td>✅ 考虑</td>
+<td>✅ 允许</td>
+<td>n^m</td>
+</tr>
+</tbody>
+</table>
+<p>下面逐个分析。</p>
+<hr />
+<h1 id="1-组合不考虑顺序不允许重复"><a class="markdownIt-Anchor" href="#1-组合不考虑顺序不允许重复"></a> 1. 组合：不考虑顺序，不允许重复</h1>
+<h2 id="场景"><a class="markdownIt-Anchor" href="#场景"></a> 场景</h2>
+<p>从 n 个不同元素中选择 m 个，只关心选中了哪些。</p>
+<p>例如：</p>
+<p>有 5 个数字：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 2 3 4 5</span><br></pre></td></tr></table></figure>
+<p>选择 3 个。</p>
+<p>那么：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 2 3</span><br></pre></td></tr></table></figure>
+<p>和：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">3 2 1</span><br></pre></td></tr></table></figure>
+<p>认为是同一种。</p>
+<hr />
+<h2 id="公式"><a class="markdownIt-Anchor" href="#公式"></a> 公式</h2>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>C</mi><mo stretchy="false">(</mo><mi>n</mi><mo separator="true">,</mo><mi>m</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mi>n</mi><mo stretchy="false">!</mo></mrow><mrow><mi>m</mi><mo stretchy="false">!</mo><mo stretchy="false">(</mo><mi>n</mi><mo>−</mo><mi>m</mi><mo stretchy="false">)</mo><mo stretchy="false">!</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">C(n,m)=\frac{n!}{m!(n-m)!}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal">m</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.30744em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.37144em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">m</span><span class="mclose">!</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathnormal">m</span><span class="mclose">)</span><span class="mclose">!</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">n</span><span class="mclose">!</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p>其中：</p>
+<ul>
+<li>n! 表示阶乘</li>
+<li>m! 用来去除选中元素内部的排列情况</li>
+</ul>
+<p>例如：</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>C</mi><mo stretchy="false">(</mo><mn>5</mn><mo separator="true">,</mo><mn>3</mn><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mn>5</mn><mo stretchy="false">!</mo></mrow><mrow><mn>3</mn><mo stretchy="false">!</mo><mn>2</mn><mo stretchy="false">!</mo></mrow></mfrac><mo>=</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">C(5,3)
+=
+\frac{5!}{3!2!}
+=
+10
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mopen">(</span><span class="mord">5</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">3</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.05744em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.37144em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span><span class="mclose">!</span><span class="mord">2</span><span class="mclose">!</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5</span><span class="mclose">!</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord">0</span></span></span></span></span></p>
+<hr />
+<h1 id="2-排列考虑顺序不允许重复"><a class="markdownIt-Anchor" href="#2-排列考虑顺序不允许重复"></a> 2. 排列：考虑顺序，不允许重复</h1>
+<h2 id="场景-2"><a class="markdownIt-Anchor" href="#场景-2"></a> 场景</h2>
+<p>选择出来的元素需要区分位置。</p>
+<p>例如：</p>
+<p>5个人里面选3个人排队：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A B C</span><br></pre></td></tr></table></figure>
+<p>和：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">B A C</span><br></pre></td></tr></table></figure>
+<p>属于不同情况。</p>
+<hr />
+<h2 id="公式-2"><a class="markdownIt-Anchor" href="#公式-2"></a> 公式</h2>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>n</mi><mo separator="true">,</mo><mi>m</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mi>n</mi><mo stretchy="false">!</mo></mrow><mrow><mo stretchy="false">(</mo><mi>n</mi><mo>−</mo><mi>m</mi><mo stretchy="false">)</mo><mo stretchy="false">!</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">P(n,m)=\frac{n!}{(n-m)!}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal">m</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.30744em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.37144em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathnormal">m</span><span class="mclose">)</span><span class="mclose">!</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">n</span><span class="mclose">!</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p>计算：</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mn>5</mn><mo separator="true">,</mo><mn>3</mn><mo stretchy="false">)</mo><mo>=</mo><mn>5</mn><mo>×</mo><mn>4</mn><mo>×</mo><mn>3</mn><mo>=</mo><mn>60</mn></mrow><annotation encoding="application/x-tex">P(5,3)
+=
+5\times4\times3
+=
+60
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord">5</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">3</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">5</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">4</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">6</span><span class="mord">0</span></span></span></span></span></p>
+<p>原因：</p>
+<p>第一个位置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">5种选择</span><br></pre></td></tr></table></figure>
+<p>第二个位置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">4种选择</span><br></pre></td></tr></table></figure>
+<p>第三个位置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">3种选择</span><br></pre></td></tr></table></figure>
+<hr />
+<h1 id="3-可重复组合不考虑顺序允许重复"><a class="markdownIt-Anchor" href="#3-可重复组合不考虑顺序允许重复"></a> 3. 可重复组合：不考虑顺序，允许重复</h1>
+<h2 id="场景-3"><a class="markdownIt-Anchor" href="#场景-3"></a> 场景</h2>
+<p>元素可以被多次选择，并且不关心顺序。</p>
+<p>例如：</p>
+<p>有：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">苹果 香蕉 橘子</span><br></pre></td></tr></table></figure>
+<p>选择两个水果。</p>
+<p>允许：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">苹果 苹果</span><br><span class="line">苹果 香蕉</span><br><span class="line">香蕉 香蕉</span><br></pre></td></tr></table></figure>
+<p>但是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">苹果 香蕉</span><br></pre></td></tr></table></figure>
+<p>和：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">香蕉 苹果</span><br></pre></td></tr></table></figure>
+<p>算一种。</p>
+<hr />
+<h2 id="公式-3"><a class="markdownIt-Anchor" href="#公式-3"></a> 公式</h2>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>C</mi><mo stretchy="false">(</mo><mi>n</mi><mo>+</mo><mi>m</mi><mo>−</mo><mn>1</mn><mo separator="true">,</mo><mi>m</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">C(n+m-1,m)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal">m</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal">m</span><span class="mclose">)</span></span></span></span></span></p>
+<p>例如：</p>
+<p>3种水果选2个：</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>C</mi><mo stretchy="false">(</mo><mn>3</mn><mo>+</mo><mn>2</mn><mo>−</mo><mn>1</mn><mo separator="true">,</mo><mn>2</mn><mo stretchy="false">)</mo><mo>=</mo><mi>C</mi><mo stretchy="false">(</mo><mn>4</mn><mo separator="true">,</mo><mn>2</mn><mo stretchy="false">)</mo><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">C(3+2-1,2)
+=
+C(4,2)
+=
+6
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mopen">(</span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mopen">(</span><span class="mord">4</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">6</span></span></span></span></span></p>
+<p>所有情况：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">苹果苹果</span><br><span class="line">苹果香蕉</span><br><span class="line">苹果橘子</span><br><span class="line">香蕉香蕉</span><br><span class="line">香蕉橘子</span><br><span class="line">橘子橘子</span><br></pre></td></tr></table></figure>
+<hr />
+<h1 id="4-可重复排列考虑顺序允许重复"><a class="markdownIt-Anchor" href="#4-可重复排列考虑顺序允许重复"></a> 4. 可重复排列：考虑顺序，允许重复</h1>
+<h2 id="场景-4"><a class="markdownIt-Anchor" href="#场景-4"></a> 场景</h2>
+<p>每个位置都可以重新选择。</p>
+<p>例如：</p>
+<p>密码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0 1 2 3 4 5 6 7 8 9</span><br></pre></td></tr></table></figure>
+<p>生成一个3位密码。</p>
+<p>第一位：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">10种</span><br></pre></td></tr></table></figure>
+<p>第二位：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">10种</span><br></pre></td></tr></table></figure>
+<p>第三位：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">10种</span><br></pre></td></tr></table></figure>
+<p>所以：</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mn>1</mn><msup><mn>0</mn><mn>3</mn></msup><mo>=</mo><mn>1000</mn></mrow><annotation encoding="application/x-tex">10^3=1000
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8641079999999999em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641079999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord">0</span><span class="mord">0</span><span class="mord">0</span></span></span></span></span></p>
+<p>通用公式：</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msup><mi>n</mi><mi>m</mi></msup></mrow><annotation encoding="application/x-tex">n^m
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7143919999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7143919999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">m</span></span></span></span></span></span></span></span></span></span></span></span></p>
+<hr />
+<h1 id="如何快速判断"><a class="markdownIt-Anchor" href="#如何快速判断"></a> 如何快速判断？</h1>
+<p>做题时只问两个问题。</p>
+<hr />
+<h2 id="第一个问题顺序重要吗"><a class="markdownIt-Anchor" href="#第一个问题顺序重要吗"></a> 第一个问题：顺序重要吗？</h2>
+<h3 id="不重要"><a class="markdownIt-Anchor" href="#不重要"></a> 不重要：</h3>
+<p>例如：</p>
+<ul>
+<li>选一个团队</li>
+<li>抽几个商品</li>
+<li>选择几个元素组成集合</li>
+</ul>
+<p>使用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">组合</span><br></pre></td></tr></table></figure>
+<hr />
+<h3 id="重要"><a class="markdownIt-Anchor" href="#重要"></a> 重要：</h3>
+<p>例如：</p>
+<ul>
+<li>排队</li>
+<li>密码</li>
+<li>比赛排名</li>
+<li>座位安排</li>
+</ul>
+<p>使用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">排列</span><br></pre></td></tr></table></figure>
+<hr />
+<h2 id="第二个问题能重复吗"><a class="markdownIt-Anchor" href="#第二个问题能重复吗"></a> 第二个问题：能重复吗？</h2>
+<h3 id="不能重复"><a class="markdownIt-Anchor" href="#不能重复"></a> 不能重复：</h3>
+<p>每个元素只能使用一次。</p>
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">从5个人里面选3个人</span><br></pre></td></tr></table></figure>
+<hr />
+<h3 id="可以重复"><a class="markdownIt-Anchor" href="#可以重复"></a> 可以重复：</h3>
+<p>同一个元素可以多次出现。</p>
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">生成密码</span><br></pre></td></tr></table></figure>
+<hr />
+<h1 id="最终记忆图"><a class="markdownIt-Anchor" href="#最终记忆图"></a> 最终记忆图</h1>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">                是否允许重复</span><br><span class="line">                      |</span><br><span class="line">         -------------------------</span><br><span class="line">         |                       |</span><br><span class="line">       不允许                    允许</span><br><span class="line">         |                       |</span><br><span class="line">   ----------------        ----------------</span><br><span class="line">   |              |        |              |</span><br><span class="line">不考虑顺序    考虑顺序  不考虑顺序    考虑顺序</span><br><span class="line"></span><br><span class="line"> C(n,m)      P(n,m)   C(n+m-1,m)    n^m</span><br><span class="line"> 组合        排列     可重复组合    可重复排列</span><br></pre></td></tr></table></figure>
+<hr />
+<h1 id="总结一句话"><a class="markdownIt-Anchor" href="#总结一句话"></a> 总结一句话</h1>
+<blockquote>
+<p>不重复时：</p>
+<ul>
+<li>不看顺序 → 组合 C(n,m)</li>
+<li>看顺序 → 排列 P(n,m)</li>
+</ul>
+<p>可重复时：</p>
+<ul>
+<li>不看顺序 → C(n+m-1,m)</li>
+<li>看顺序 → n^m</li>
+</ul>
+</blockquote>
+<p>掌握这四个公式，基本可以解决绝大多数排列组合问题。</p>
+
+  </div>
+  </br>
+  </br>
+  
+  <section id="comments" class="comments">
+    <div class="valine-comment"></div>
+<!--载入js，在</body>之前插入即可-->
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+new Valine({
+    el: '.valine-comment',
+    app_id: 'aVoW8Ns48PCL9aWpyaraklyz-gzGzoHsz',
+    app_key: '5OofdgauZeSJ0SPHIgbbQ6fe',
+    placeholder: '',
+    visitor: 'true',
+  })
+</script>
+  </section>
+  
+</article>
+    </main>
+    <footer id="footer">
+  Copyright &copy;
+  2023
+  Yu Peng
+  
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://github.com/yuhua2000"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg" alt="GitHub" width="16" height="16"> </i></a>
+  
+    <a class="social-links" target="_blank" rel="noopener" href="https://leetcode.cn/u/yu-peng-f"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/leetcode.svg" alt="LeetCode" width="16" height="16"> </i></a>
+  
+    <a class="social-links" href="mailto:2651034096@qq.com"><i class="blogfont"><img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/gmail.svg" alt="Mail" width="16" height="16"> </i></a>
+  
+  
+</footer>
+    <!-- scripts -->
+
+<script src="/scripts/main.js"></script>
+
+<!-- mermaid -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var charts = document.querySelectorAll('.mermaid-chart')
+  if (charts.length === 0) return
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'default',
+    securityLevel: 'loose'
+  })
+  mermaid.run({ querySelector: '.mermaid-chart' })
+})
+</script>
+  </body>
+</html>

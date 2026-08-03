@@ -82,17 +82,18 @@
       <i class="blogfont">&#xe6c1;</i>
     </a>
   </div>
-  <ol class="post__toc"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#go-toolchain"><span class="post__toc-text">go toolchain</span></a></li></ol>
+  <ol class="post__toc"><li class="post__toc-item post__toc-level-2"><a class="post__toc-link" href="#go-toolchain"><span class="post__toc-text"> go toolchain</span></a></li></ol>
 </aside>
   <div class="post__content" itemprop="articleBody">
-    <h2 id="go-toolchain"><a href="#go-toolchain" class="headerlink" title="go toolchain"></a>go toolchain</h2><p>toolchain 声明了一个建议用于该模块的 Go 工具链。仅当该模块是主模块且默认工具链版本低于建议的工具链版本时才会生效。</p>
+    <h2 id="go-toolchain"><a class="markdownIt-Anchor" href="#go-toolchain"></a> go toolchain</h2>
+<p>toolchain 声明了一个建议用于该模块的 Go 工具链。仅当该模块是主模块且默认工具链版本低于建议的工具链版本时才会生效。</p>
 <p>语法</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">toolchain toolchain-name</span><br></pre></td></tr></table></figure>
-
-<p>toolchain-name<br>建议使用的 Go 工具链名称。标准工具链名称的形式为 goV，其中 V 是 Go 的版本号，如 go1.21.0 和 go1.18rc1。特殊值 default 会禁用自动工具链切换。</p>
-<p>示例<br>建议使用 Go 1.21.0 或更新版本：</p>
+<p>toolchain-name<br />
+建议使用的 Go 工具链名称。标准工具链名称的形式为 goV，其中 V 是 Go 的版本号，如 go1.21.0 和 go1.18rc1。特殊值 default 会禁用自动工具链切换。</p>
+<p>示例<br />
+建议使用 Go 1.21.0 或更新版本：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">toolchain go1.21.0</span><br></pre></td></tr></table></figure>
-
 <p>当本地的go环境高于建议并这个值没有什么实际作用，而本地的go版本低于这个版本设置则会根据配置、下载新的go版本或者报错等。</p>
 
   </div>
